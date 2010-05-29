@@ -542,8 +542,7 @@ function _ctools_process_data($result, $info, $module, $path, $file) {
 
 
 /**
- * Process an info file for plugin information, rather than
- * a hook.
+ * Process an info file for plugin information, rather than a hook.
  */
 function ctools_plugin_process_info($info, $module, $file) {
   $result = drupal_parse_info_file($file->filename);
@@ -569,7 +568,7 @@ function ctools_plugin_get_info($module, $type) {
     'type' => $type,
     'cache' => FALSE,
     'cache table' => 'cache',
-    'use hooks' => FALSE,
+    'use hooks' => TRUE, // TODO will default to FALSE in next major version
     'defaults' => array(),
     'hook' => $module . '_' . $type,
     'load themes' => FALSE,
