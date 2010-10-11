@@ -52,14 +52,23 @@ function ctools_modal_add_js() {
     'CToolsModal' => array(
       'loadingText' => t('Loading...'),
       'closeText' => t('Close Window'),
-      'closeImage' => theme('image', ctools_image_path('icon-close-window.png'), t('Close window'), t('Close window')),
-      'throbber' => theme('image', ctools_image_path('throbber.gif'), t('Loading...'), t('Loading')),
+      'closeImage' => theme('image', array(
+        'path' => ctools_image_path('icon-close-window.png'),
+        'title' => t('Close window'),
+        'alt' => t('Close window')
+      )),
+      'throbber' => theme('image', array(
+          'path' => ctools_image_path('throbber.gif'),
+          'title' => t('Loading...'),
+          'alt' => t('Loading'),
+      )),
     ),
   );
 
   drupal_add_js($settings, 'setting');
   drupal_add_js('misc/jquery.form.js');
-  ctools_add_js('ajax-responder');
+  drupal_add_js('misc/progress.js');
+  drupal_add_js('misc/ajax.js');
   ctools_add_js('modal');
 
   ctools_add_css('modal');
@@ -112,6 +121,10 @@ function ctools_modal_add_plugin_js($plugins) {
  *   The html to place within the modal.
  */
 function ctools_modal_command_display($title, $html) {
+  if (is_array($html)) {
+    $html = drupal_render($html);
+  }
+
   return array(
     'command' => 'modal_display',
     'title' => $title,
@@ -151,7 +164,7 @@ function ctools_modal_command_loading() {
  *   Any class to apply to the link. @todo this should be a options array.
  */
 function ctools_modal_image_button($image, $dest, $alt, $class = '') {
-  return ctools_ajax_text_button(theme('image', $image), $dest, $alt, $class, 'ctools-use-modal');
+  return ctools_ajax_text_button(theme('image', array('path' => $image)), $dest, $alt, $class, 'ctools-use-modal');
 }
 
 /**
@@ -189,14 +202,13 @@ function ctools_modal_text_button($text, $dest, $alt, $class = '') {
  *   form will never be redirected.
  */
 function ctools_modal_form_wrapper($form_id, &$form_state) {
-  ctools_include('form');
   // This won't override settings already in.
   $form_state += array(
     're_render' => FALSE,
     'no_redirect' => !empty($form_state['ajax']),
   );
 
-  $output = ctools_build_form($form_id, $form_state);
+  $output = drupal_build_form($form_id, $form_state);
   if (!empty($form_state['ajax']) && empty($form_state['executed'])) {
     return ctools_modal_form_render($form_state, $output);
   }
@@ -208,6 +220,10 @@ function ctools_modal_form_wrapper($form_id, &$form_state) {
  * Render a form into an AJAX display.
  */
 function ctools_modal_form_render($form_state, $output) {
+  if (is_array($output)) {
+    $output = drupal_render($output);
+  }
+
   $title = empty($form_state['title']) ? drupal_get_title() : $form_state['title'];
 
   // If there are messages for the form, render them.
@@ -216,10 +232,7 @@ function ctools_modal_form_render($form_state, $output) {
   }
 
   $commands = array();
-  if (isset($form_state['js settings'])) {
-    $commands[] = ajax_command_settings($form_state['js settings']);
-  }
-
+  // If the form has not yet been rendered, render it.
   $commands[] = ctools_modal_command_display($title, $output);
   return $commands;
 }

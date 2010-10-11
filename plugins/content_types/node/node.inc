@@ -66,15 +66,6 @@ function ctools_node_content_type_render($subtype, $conf, $panel_args) {
     return;
   }
 
-  if (node_access('update', $node)) {
-    $block->admin_links['update'] = array(
-      'title' => t('Edit node'),
-      'alt' => t("Edit this node"),
-      'href' => "node/$node->nid/edit",
-      'query' => drupal_get_destination(),
-    );
-  }
-
   $block->module = 'node';
   $block->delta = $node->nid;
 
@@ -98,20 +89,14 @@ function ctools_node_content_type_render($subtype, $conf, $panel_args) {
     $conf['build_mode'] = $conf['teaser'] ? 'teaser' : 'full';
   }
 
-  if (!isset($node->build_mode)) {
-    $node->build_mode = ($conf['build_mode'] == 'teaser' || $conf['build_mode'] == 'full') ? NODE_BUILD_NORMAL : $conf['build_mode'];
-  }
-
-  // FIXME some of the old behavior will likely not work after the straight
-  // drupal_render() call.
-  $block->content = drupal_render(node_build($node, $conf['teaser'] ? 'teaser' : 'full', FALSE, $conf['links']));
+  $block->content = node_view($node, $conf['build_mode']);
   return $block;
 }
 
 /**
  * The form to add or edit a node as content.
  */
-function ctools_node_content_type_edit_form(&$form, &$form_state) {
+function ctools_node_content_type_edit_form($form, &$form_state) {
   $conf = $form_state['conf'];
 
   $form['leave_node_title'] = array(
@@ -192,7 +177,7 @@ function ctools_node_content_type_edit_form(&$form, &$form_state) {
     '#options' => $build_mode_options,
     '#default_value' => $conf['build_mode'],
   );
-
+  return $form;
 }
 
 /**
@@ -233,7 +218,7 @@ function  ctools_node_content_type_edit_form_validate(&$form, &$form_state) {
 /**
  * Validate the node selection.
  */
-function ctools_node_content_type_edit_form_submit(&$form, &$form_state) {
+function ctools_node_content_type_edit_form_submit($form, &$form_state) {
   foreach (array('nid', 'links', 'leave_node_title', 'link_node_title', 'identifier', 'build_mode') as $key) {
     $form_state['conf'][$key] = $form_state['values'][$key];
   }

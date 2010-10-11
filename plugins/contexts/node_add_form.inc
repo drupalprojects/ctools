@@ -12,10 +12,11 @@
  * by the system that includes this file.
  */
 $plugin = array(
-  'title' => t("Node add form"),
+  'title' => t('Node add form'),
   'description' => t('A node add form.'),
   'context' => 'ctools_context_create_node_add_form',
-  'settings form' => 'ctools_context_node_add_form_settings_form',
+  'edit form' => 'ctools_context_node_add_form_settings_form',
+  'defaults' => array('type' => ''),
   'keyword' => 'node_add',
   'context name' => 'node_add_form',
   'convert list' => array('type' => t('Node type')),
@@ -55,10 +56,9 @@ function ctools_context_create_node_add_form($empty, $data = NULL, $conf = FALSE
       global $user;
       $node = array('uid' => $user->uid, 'name' => $user->name, 'type' => $type);
 
-      ctools_include('form');
       $form_id = $node['type'] . '_node_form';
 
-      $form_state = array('want form' => TRUE, 'args' => array($node));
+      $form_state = array('want form' => TRUE, 'build_info' => array('args' => array($node)));
 
       $file = drupal_get_path('module', 'node') . '/node.pages.inc';
       include_once './' . $file;
@@ -66,7 +66,7 @@ function ctools_context_create_node_add_form($empty, $data = NULL, $conf = FALSE
       // need to be included if this form is loaded from cache:
       $form_state['form_load_files'] = array($file);
 
-      $form = ctools_build_form($form_id, $form_state);
+      $form = drupal_build_form($form_id, $form_state);
       // In a form, $data is the object being edited.
       $context->data     = $type;
       $context->title    = $types[$type]->name;
@@ -84,18 +84,13 @@ function ctools_context_create_node_add_form($empty, $data = NULL, $conf = FALSE
   }
 }
 
-function ctools_context_node_add_form_settings_form($conf) {
+function ctools_context_node_add_form_settings_form($form, &$form_state) {
+  $conf = $form_state['conf'];
+
   foreach (node_get_types() as $type => $info) {
     $options[$type] = $info->name;
   }
   asort($options);
-
-  if (isset($conf['types']) && !isset($conf['type'])) {
-    $conf['type'] = $conf['types'];
-  }
-  if (empty($conf)) {
-    $conf = array('type' => '');
-  }
 
   $form['type'] = array(
     '#title' => t('Node type'),
@@ -106,6 +101,10 @@ function ctools_context_node_add_form_settings_form($conf) {
   );
 
   return $form;
+}
+
+function ctools_context_node_add_form_settings_form_submit($form, &$form_state) {
+  $form_state['conf']['type'] = $form_state['values']['type'];
 }
 
 /**

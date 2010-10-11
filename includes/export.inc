@@ -186,7 +186,9 @@ function ctools_export_crud_delete($table, $object) {
     // If we were sent an object, get the export key from it. Otherwise
     // assume we were sent the export key.
     $value = is_object($object) ? $object->{$export['key']} : $object;
-    db_query("DELETE FROM {" . $table . "} WHERE " . $export['key'] . " = '%s'", $value);
+    db_delete($table)
+      ->condition($export['key'], $value)
+      ->execute();
   }
 }
 
@@ -303,7 +305,6 @@ function ctools_export_load_object($table, $type = 'all', $args = array()) {
     return array();
   }
 
-  $join_schemas = array();
   $export = $schema['export'];
 
   if (!isset($cache[$table])) {
@@ -333,18 +334,18 @@ function ctools_export_load_object($table, $type = 'all', $args = array()) {
   }
 
   // Build the query
-  $query = db_select($table)->fields($table);
-  // FIXME !!!!! broken after latest merge
+  $query = db_select($table, 't__0')->fields('t__0');
   $alias_count = 1;
   if (!empty($schema['join'])) {
     foreach ($schema['join'] as $join_key => $join) {
-      $join_schema = drupal_get_schema($join['table']);
-      if (!empty($join_schema)) {
-        $query .= ' INNER JOIN {' . $join['table'] . '} t__' . $alias_count . ' ON t__0.' . $join['left_key'] . ' = ' . 't__' . $alias_count . '.' . $join['right_key'];
+      if ($join_schema = drupal_get_schema($join['table'])) {
+        $query->join($join['table'], 't__' . $alias_count, 't__0' . $join['left_key'] . ' = ' . 't__' . $alias_count . '.' . $join['right_key']);
+        $query->fields('t__' . $alias_count);
         $alias_count++;
-        $join_schemas[$join['table']] = $join_schema;
-        if (!empty($join['extra'])) {
-          $query .= ' ' . $join['extra'];
+
+        // Allow joining tables to alter the query through a callback.
+        if (isset($join['callback']) && function_exists($join['callback'])) {
+          $join['callback']($query, $schema, $join_schema);
         }
       }
     }
@@ -356,14 +357,6 @@ function ctools_export_load_object($table, $type = 'all', $args = array()) {
   // If they passed in names, add them to the query.
   if ($type == 'names') {
     $query->condition($export['key'], $args, 'IN');
-    // FIXME !!!!! broken after latest merge
-    if (!isset($export['key in table'])) {
-      $conditions[] = "$export[key] IN (" . db_placeholders($args, $schema['fields'][$export['key']]['type']) . ")";
-    }
-    else {
-      $conditions[] = "$export[key] IN (" . db_placeholders($args, $join_schemas[$export['key in table']]['fields'][$export['key']]['type']) . ")";
-    }
-    $query_args = $args;
   }
   else if ($type == 'conditions') {
     foreach ($args as $key => $value) {
@@ -466,19 +459,19 @@ function ctools_export_load_object($table, $type = 'all', $args = array()) {
  */
 function ctools_export_load_object_reset($table = NULL) {
   if (empty($table)) {
-    ctools_static_reset('ctools_export_load_object');
-    ctools_static_reset('ctools_export_load_object_all');
-    ctools_static_reset('_ctools_export_get_defaults');
-    ctools_static_reset('ctools_plugin_api_info');
+    drupal_static_reset('ctools_export_load_object');
+    drupal_static_reset('ctools_export_load_object_all');
+    drupal_static_reset('_ctools_export_get_defaults');
+    drupal_static_reset('ctools_plugin_api_info');
   }
   else {
-    $cache = &ctools_static('ctools_export_load_object');
-    $cached_database = &ctools_static('ctools_export_load_object_all');
-    $cached_defaults = &ctools_static('_ctools_export_get_defaults');
+    $cache = &drupal_static('ctools_export_load_object');
+    $cached_database = &drupal_static('ctools_export_load_object_all');
+    $cached_defaults = &drupal_static('_ctools_export_get_defaults');
     unset($cache[$table]);
     unset($cached_database[$table]);
     unset($cached_defaults[$table]);
-    ctools_static_reset('ctools_plugin_api_info');
+    drupal_static_reset('ctools_plugin_api_info');
   }
 }
 
@@ -527,7 +520,7 @@ function ctools_get_default_object($table, $name) {
  * to get default objects.
  */
 function _ctools_export_get_defaults($table, $export) {
-  $cache = &ctools_static(__FUNCTION__, array());
+  $cache = &drupal_static(__FUNCTION__, array());
 
   if (!isset($cache[$table])) {
     $cache[$table] = array();
@@ -741,7 +734,7 @@ function ctools_export_object($table, $object, $indent = '', $identifier = NULL,
  * that it's easily available.
  */
 function ctools_export_get_schema($table) {
-  $cache = &ctools_static(__FUNCTION__);
+  $cache = &drupal_static(__FUNCTION__);
   if (empty($cache[$table])) {
     $schema = drupal_get_schema($table);
 
@@ -875,7 +868,7 @@ function ctools_export_set_object_status($object, $new_status = TRUE) {
  *   $output = drupal_get_form('ctools_export_form', $code, $object_title);
  * @endcode
  */
-function ctools_export_form(&$form_state, $code, $title = '') {
+function ctools_export_form($form, &$form_state, $code, $title = '') {
   $lines = substr_count($code, "\n");
   $form['code'] = array(
     '#type' => 'textarea',

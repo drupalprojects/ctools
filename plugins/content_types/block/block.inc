@@ -27,7 +27,7 @@ $plugin = array(
  */
 function ctools_block_content_type_content_type($subtype_id) {
   list($module, $delta) = explode('-', $subtype_id, 2);
-  $module_blocks = module_invoke($module, 'block', 'list');
+  $module_blocks = module_invoke($module, 'block_info');
   if (isset($module_blocks[$delta])) {
     return _ctools_block_content_type_content_type($module, $delta, $module_blocks[$delta]);
   }
@@ -42,8 +42,8 @@ function ctools_block_content_type_content_type($subtype_id) {
  */
 function ctools_block_content_type_content_types() {
   $types = array();
-  foreach (module_list() as $module) {
-    $module_blocks = module_invoke($module, 'block', 'list');
+  foreach (module_implements('block_info') as $module) {
+    $module_blocks = module_invoke($module, 'block_info');
     if ($module_blocks) {
       foreach ($module_blocks as $delta => $block) {
         $info = _ctools_block_content_type_content_type($module, $delta, $block);
@@ -84,7 +84,15 @@ function _ctools_block_content_type_content_type($module, $delta, $block) {
  */
 function ctools_block_content_type_render($subtype, $conf) {
   list($module, $delta) = _ctools_block_get_module_delta($subtype, $conf);
-  $block = (object) module_invoke($module, 'block', 'view', $delta);
+  $info = (object) array(
+    'module' => $module,
+    'delta' => $delta,
+  );
+  $block = module_invoke($module, 'block_view', $delta);
+  // Allow modules to modify the block before it is viewed, via either
+  // hook_block_view_alter() or hook_block_view_MODULE_DELTA_alter().
+  drupal_alter(array('block_view', "block_view_{$module}_{$delta}"), $block, $info);
+  $block = (object) $block;
 
   if (empty($block)) {
     return;
@@ -113,64 +121,27 @@ function ctools_block_content_type_render($subtype, $conf) {
     $block->admin_links = array(
       array(
         'title' => t('Configure block'),
-        'alt' => t("Configure this block's 'block settings' in administer >> site building >> blocks"),
-        'href' => "admin/build/block/configure/$module/$delta",
+        'href' => "admin/structure/block/manage/$module/$delta/configure",
         'query' => drupal_get_destination(),
       ),
     );
   }
 
-  // TEMP: Disabling block visibility checking. Ultimately we may be able to
-  // finally just say it's not supported.
   return $block;
-
-  // This seems extra but it prevents an unnecessary query sometimes.
-  if (empty($conf['block_visibility']) && $block->module != 'block') {
-    return $block;
-  }
-
-  // Test for block visibility
-  $block_visibility = db_query('SELECT title, pages, visibility FROM {blocks} WHERE module = :module AND delta = :delta', array(':module' => $block->module, ':delta' => $block->delta))->fetchObject();
-
-  if ($block->module == 'block') {
-    // {block}.title is plain text, but this hook should return an HTML title.
-    $block->title = check_plain($block_visibility->title);
-  }
-
-  if (empty($conf['block_visibility'])) {
-    return $block;
-  }
-
-  if ($block_visibility && $block_visibility->pages) {
-    if ($block_visibility->visibility < 2) {
-      $path       = drupal_get_path_alias($_GET['q']);
-      $regexp     = '/^('. preg_replace(array('/(\r\n?|\n)/', '/\\\\\*/', '/(^|\|)\\\\<front\\\\>($|\|)/'), array('|', '.*', '\1'. preg_quote(variable_get('site_frontpage', 'node'), '/') .'\2'), preg_quote($block_visibility->pages, '/')) .')$/';
-      $page_match = !($block_visibility->visibility xor preg_match($regexp, $path));
-    }
-    else if (module_exists('php')) {
-      $page_match = php_eval($block_visibility->pages);
-    }
-  }
-  else {
-    $page_match = TRUE;
-  }
-
-  if ($page_match) {
-    return $block;
-  }
 }
 
 /**
  * Empty form so we can have the default override title.
  */
-function ctools_block_content_type_edit_form(&$form, &$form_state) {
+function ctools_block_content_type_edit_form($form, &$form_state) {
   // Does nothing!
+  return $form;
 }
 
 /**
  * Submit function to fix the subtype for really old panel panes.
  */
-function ctools_block_content_type_edit_form_submit(&$form, &$form_state) {
+function ctools_block_content_type_edit_form_submit($form, &$form_state) {
   if (empty($form_state['subtype']) && isset($form_state['pane'])) {
     $form_state['pane']->subtype = $form_state['conf']['module'] . '-' . $form_state['conf']['delta'];
     unset($form_state['conf']['module']);
@@ -247,7 +218,7 @@ function ctools_block_content_type_edit_form_submit(&$form, &$form_state) {
  */
 function ctools_block_content_type_admin_title($subtype, $conf) {
   list($module, $delta) = _ctools_block_get_module_delta($subtype, $conf);
-  $block = module_invoke($module, 'block', 'list');
+  $block = module_invoke($module, 'block_info');
   if (empty($block) || empty($block[$delta])) {
     return t('Deleted/missing block @module-@delta', array('@module' => $module, '@delta' => $delta));
   }

@@ -37,7 +37,7 @@ function page_manager_page_page_manager_tasks() {
     'page operations' => array(
       array(
         'title' => ' &raquo; ' . t('Create a new page'),
-        'href' => 'admin/build/pages/add',
+        'href' => 'admin/structure/pages/add',
         'html' => TRUE,
       ),
     ),
@@ -139,7 +139,7 @@ function page_manager_page_build_subtask($task, $page) {
   $operations = array();
   $operations['settings'] = array(
     'type' => 'group',
-    'class' => 'operations-settings',
+    'class' => array('operations-settings'),
     'title' => t('Settings'),
     'children' => array(),
   );
@@ -236,13 +236,13 @@ function page_manager_page_theme(&$items, $task) {
     'path' => drupal_get_path('module', 'page_manager') . '/plugins/tasks',
   );
   $items['page_manager_page_form_argument_table'] = $base + array(
-    'arguments' => array('form' => NULL),
+    'render element' => 'form',
   );
   $items['page_manager_page_lock'] = $base + array(
-    'arguments' => array('lock' => array(), 'task_name' => NULL),
+    'variables' => array('lock' => array(), 'task_name' => NULL),
   );
   $items['page_manager_page_changed'] = $base + array(
-    'arguments' => array(),
+    'variables' => array(),
   );
 }
 
@@ -314,18 +314,6 @@ function page_manager_page_execute($subtask_id) {
       $count++;
     }
   }
-
-  // Add a fake tab for 'View' so that edit tabs can be added.
-  if (user_access('administer page manager') && (!isset($page->menu['type']) || !in_array($page->menu['type'], array('tab', 'default tab')))) {
-    ctools_include('menu');
-    ctools_menu_add_tab(array(
-      'title' => t('View'),
-      'href' => $_GET['q'],
-      'type' => MENU_DEFAULT_LOCAL_TASK,
-      'weight' => -10,
-    ));
-  }
-
 
   if ($function = ctools_plugin_get_function($task, 'page callback')) {
     return call_user_func_array($function, array($page, $contexts, $args));
@@ -662,6 +650,7 @@ function page_manager_page_admin_summary($task, $subtask) {
     'normal' => t('Normal menu entry.'),
     'tab' => t('Menu tab.'),
     'default tab' => t('Default menu tab.'),
+    'action' => t('Local action'),
   );
 
   if (!empty($page->menu)) {
@@ -692,7 +681,7 @@ function page_manager_page_admin_summary($task, $subtask) {
     array('class' => array('page-summary-operation'), 'data' => $link),
   );
 
-  $output .= theme('table', array(), $rows, array('id' => 'page-manager-page-summary'));
+  $output .= theme('table', array('rows' => $rows, 'attributes' => array('id' => 'page-manager-page-summary')));
   return $output;
 }
 

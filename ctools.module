@@ -10,7 +10,7 @@
  * must be implemented in the module file.
  */
 
-define('CTOOLS_API_VERSION', '1.8');
+define('CTOOLS_API_VERSION', '2.0-alpha1');
 
 /**
  * Test the CTools API version.
@@ -165,53 +165,24 @@ function ctools_add_js($file, $module = 'ctools', $dir = 'js') {
 }
 
 /**
- * Central static variable storage. Modeled after Drupal 7's drupal_static().
+ * Format a javascript file name for use with $form['#attached']['js'].
  *
- * @param $name
- *   Globally unique name for the variable. For a function with only one static,
- *   variable, the function name (e.g. via the PHP magic __FUNCTION__ constant)
- *   is recommended. For a function with multiple static variables add a
- *   distinguishing suffix to the function name for each one.
- * @param $default_value
- *   Optional default value.
- * @return $reset
- *   TRUE to reset a specific named variable, or all variables if $name is NULL.
- *   Resetting every variable should only be used, for example, for running unit
- *   tests with a clean environment. Should be used only though via function
- *   ctools_static_reset().
- */
-function &ctools_static($name, $default_value = NULL, $reset = FALSE) {
-  static $data = array();
-
-  // Reset a single value, or all values.
-  if ($reset) {
-    if (isset($name)) {
-      unset($data[$name]);
-    }
-    else {
-      $data = array();
-    }
-    // We must return a reference to a variable.
-    $dummy = NULL;
-    return $dummy;
-  }
-
-  if (!isset($data[$name])) {
-    $data[$name] = $default_value;
-  }
-
-  return $data[$name];
-}
-
-/**
- * Reset one or all centrally stored static variable(s).
- * Modeled after Drupal 7's drupal_static_reset().
+ * This helper function is used by ctools but can also be used in other
+ * modules in the same way as explained in the comments of ctools_include.
  *
- * @param $name
- *   Name of the static variable to reset. Omit to reset all variables.
+ * @code
+ *   $form['#attached']['js'] = array(ctools_attach_js('auto-submit'));
+ * @endcode
+ *
+ * @param $file
+ *   The base file name to be included.
+ * @param $module
+ *   Optional module containing the include.
+ * @param $dir
+ *   Optional subdirectory containing the include file.
  */
-function ctools_static_reset($name) {
-  ctools_static($name, NULL, TRUE);
+function ctools_attach_js($file, $module = 'ctools', $dir = 'js') {
+  return drupal_get_path('module', $module) . "/$dir/$file.js";
 }
 
 /**
@@ -223,11 +194,8 @@ function ctools_static_reset($name) {
 function ctools_get_roles() {
   static $roles = NULL;
   if (!isset($roles)) {
-    $roles = array();
-    $result = db_query("SELECT r.rid, r.name FROM {role} r ORDER BY r.name");
-    while ($obj = db_fetch_object($result)) {
-      $roles[$obj->rid] = $obj->name;
-    }
+    $roles = user_roles(TRUE);
+    unset($roles[DRUPAL_AUTHENTICATED_RID]);
   }
 
   return $roles;
@@ -346,7 +314,7 @@ function ctools_init() {
   }
 
   // Clear plugin cache on the module page submit.
-  if ($_GET['q'] == 'admin/build/modules/list/confirm' && !empty($_POST)) {
+  if ($_GET['q'] == 'admin/modules/list/confirm' && !empty($_POST)) {
     cache_clear_all('ctools_plugin_files:', 'cache', TRUE);
   }
 }
@@ -453,6 +421,17 @@ function ctools_file_download($filepath) {
   }
 }
 
+/**
+ * Implements hook_registry_files_alter().
+ *
+ * Alter the registry of files to automagically include all classes in
+ * class-based plugins.
+ */
+function ctools_registry_files_alter(&$files, $indexed_modules) {
+  ctools_include('registry');
+  return _ctools_registry_files_alter($files, $indexed_modules);
+}
+
 // -----------------------------------------------------------------------
 // CTools hook implementations.
 
@@ -467,31 +446,19 @@ function ctools_ctools_plugin_directory($owner, $plugin_type) {
 }
 
 /**
- * Inform CTools that the layout plugin can be loaded from themes.
+ * Implements hook_ctools_plugin_type().
  */
-function ctools_ctools_plugin_access() {
-  return array(
-    'child plugins' => TRUE,
-  );
+function ctools_ctools_plugin_type() {
+  ctools_include('utility');
+  $items = array();
+  // Add all the plugins that have their own declaration space elsewhere.
+  _ctools_passthrough($items, 'plugin-type');
+
+  return $items;
 }
 
 // -----------------------------------------------------------------------
 // Drupal theme preprocess hooks that must be in the .module file.
-
-/**
- * Override or insert PHPTemplate variables into the templates.
- *
- * This needs to be in the .module file to ensure availability; we can't change the
- * paths or it won't be able to find templates.
- */
-function ctools_garland_preprocess_page(&$vars) {
-  $vars['tabs2'] = ctools_menu_secondary_local_tasks();
-
-  // Hook into color.module
-  if (module_exists('color')) {
-    _color_page_alter($vars);
-  }
-}
 
 /**
  * A theme preprocess function to automatically allow panels-based node
@@ -533,10 +500,6 @@ function ctools_preprocess_page(&$variables) {
       }
     }
     $variables['content'] = strtr($variables['content'], $tokens);
-  }
-
-  if (defined('CTOOLS_AJAX_INCLUDED')) {
-    ctools_ajax_page_preprocess($variables);
   }
 }
 
@@ -630,7 +593,7 @@ function ctools_js_load($js) {
  * %ctools_export_ui in menu paths.
  */
 function ctools_export_ui_load($item_name, $plugin_name) {
-  $return = &ctools_static(__FUNCTION__, FALSE);
+  $return = &drupal_static(__FUNCTION__, FALSE);
 
   if (!$return) {
     ctools_include('export-ui');
@@ -669,28 +632,16 @@ function ctools_export_ui_task_access($plugin_name, $op, $item = NULL) {
  * Cache callback on behalf of ctools_export_ui.
  */
 function ctools_export_ui_context_cache_get($plugin_name, $key) {
-  ctools_include('export-ui');
-  $plugin = ctools_get_export_ui($plugin_name);
-  $handler = ctools_export_ui_get_handler($plugin);
-  if ($handler) {
-    $item = $handler->edit_cache_get($key);
-    if (!$item) {
-      $item = ctools_export_crud_load($handler->plugin['schema'], $key);
-    }
-    return $item;
-  }
+  dsm('should not be called!');
+  return;
 }
 
 /**
  * Cache callback on behalf of ctools_export_ui.
  */
 function ctools_export_ui_context_cache_set($plugin_name, $key, $item) {
-  ctools_include('export-ui');
-  $plugin = ctools_get_export_ui($plugin_name);
-  $handler = ctools_export_ui_get_handler($plugin);
-  if ($handler) {
-    return $handler->edit_cache_set_key($item, $key);
-  }
+  dsm('should not be called!');
+  return;
 }
 
 /**
@@ -702,7 +653,7 @@ function ctools_export_ui_context_cache_set($plugin_name, $key, $item) {
  */
 function ctools_export_ui_ctools_access_get($argument) {
   ctools_include('export-ui');
-  list($plugin_name, $key) = explode(':', $argument);
+  list($plugin_name, $key) = explode(':', $argument, 2);
 
   $plugin = ctools_get_export_ui($plugin_name);
   $handler = ctools_export_ui_get_handler($plugin);
@@ -728,7 +679,7 @@ function ctools_export_ui_ctools_access_get($argument) {
  */
 function ctools_export_ui_ctools_access_set($argument, $access) {
   ctools_include('export-ui');
-  list($plugin_name, $key) = explode(':', $argument);
+  list($plugin_name, $key) = explode(':', $argument, 2);
 
   $plugin = ctools_get_export_ui($plugin_name);
   $handler = ctools_export_ui_get_handler($plugin);
@@ -742,4 +693,12 @@ function ctools_export_ui_ctools_access_set($argument, $access) {
     $item->access = $access;
     return $handler->edit_cache_set_key($item, $key);
   }
+}
+
+/**
+ * Implements hook_menu_local_tasks_alter().
+ */
+function ctools_menu_local_tasks_alter(&$data, $router_item, $root_path) {
+  ctools_include('menu');
+  _ctools_menu_add_dynamic_items($data, $router_item, $root_path);
 }

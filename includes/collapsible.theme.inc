@@ -15,11 +15,11 @@
  */
 function ctools_collapsible_theme(&$items) {
   $items['ctools_collapsible'] = array(
-    'arguments' => array('handle' => NULL, 'content' => NULL, 'collapsed' => FALSE),
+    'variables' => array('handle' => NULL, 'content' => NULL, 'collapsed' => FALSE),
     'file' => 'includes/collapsible.theme.inc',
   );
   $items['ctools_collapsible_remembered'] = array(
-    'arguments' => array('id' => NULL, 'handle' => NULL, 'content' => NULL, 'collapsed' => FALSE),
+    'variables' => array('id' => NULL, 'handle' => NULL, 'content' => NULL, 'collapsed' => FALSE),
     'file' => 'includes/collapsible.theme.inc',
   );
 }
@@ -35,14 +35,14 @@ function ctools_collapsible_theme(&$items) {
  * @param $collapsed = FALSE
  *   If true, this div will start out collapsed.
  */
-function theme_ctools_collapsible($handle, $content, $collapsed = FALSE) {
+function theme_ctools_collapsible($vars) {
   ctools_add_js('collapsible-div');
   ctools_add_css('collapsible-div');
 
-  $class = $collapsed ? ' ctools-collapsed' : '';
+  $class = $vars['collapsed'] ? ' ctools-collapsed' : '';
   $output = '<div class="ctools-collapsible-container' . $class . '">';
-  $output .= '<div class="ctools-collapsible-handle">' . $handle . '</div>';
-  $output .= '<div class="ctools-collapsible-content">' . $content . '</div>';
+  $output .= '<div class="ctools-collapsible-handle">' . $vars['handle'] . '</div>';
+  $output .= '<div class="ctools-collapsible-content">' . $vars['content'] . '</div>';
   $output .= '</div>';
 
   return $output;
@@ -61,7 +61,11 @@ function theme_ctools_collapsible($handle, $content, $collapsed = FALSE) {
  * @param $collapsed = FALSE
  *   If true, this div will start out collapsed.
  */
-function theme_ctools_collapsible_remembered($id, $handle, $content, $collapsed = FALSE) {
+function theme_ctools_collapsible_remembered($vars) {
+  $id = $vars['id'];
+  $handle = $vars['handle'];
+  $content = $vars['content'];
+  $collapsed = $vars['collapsed'];
   ctools_add_js('collapsible-div');
   ctools_add_css('collapsible-div');
 

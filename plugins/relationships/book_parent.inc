@@ -16,8 +16,7 @@ $plugin = array(
   'description' => t('Adds a book parent from a node context.'),
   'required context' => new ctools_context_required(t('Node'), 'node'),
   'context' => 'ctools_book_parent_context',
-  'settings form' => 'ctools_book_parent_settings_form',
-  'settings form validate' => 'ctools_book_parent_settings_form_validate',
+  'edit form' => 'ctools_book_parent_settings_form',
   'defaults' => array('type' => 'top'),
 );
 
@@ -47,12 +46,16 @@ function ctools_book_parent_context($context, $conf) {
       return ctools_context_create('node', $node);
     }
   }
+  else {
+    return ctools_context_create_empty('node');
+  }
 }
 
 /**
  * Settings form for the relationship.
  */
-function ctools_book_parent_settings_form($conf) {
+function ctools_book_parent_settings_form($form, &$form_state) {
+  $conf = $form_state['conf'];
   $form['type'] = array(
     '#type' => 'select',
     '#title' => t('Relationship type'),
