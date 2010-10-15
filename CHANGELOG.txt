@@ -10,3 +10,4 @@ Changelog reset for 7.x
 #931434 by EclipseGc: Argument plugin for node revision ID.
 #910656: CTools AJAX sample wizard demo "domesticated" checkbox value not stored.
 #922442 by EugenMayer, neclimdul and voxpelli: Make sure ctools_include can handle '' or NULL directory.
+#919956 by traviss359: Correct example in wizard advanced help.
