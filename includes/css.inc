@@ -307,13 +307,7 @@ function ctools_css_disassemble($css) {
       }
 
       // Disassemble the declaration, check it and tuck it into an array.
-      $declarations = _ctools_css_disassemble_declaration($declaration);
-      if (!isset($disassembled_css[$selector_str])) {
-        $disassembled_css[$selector_str] = $declarations;
-      }
-      else {
-        $disassembled_css[$selector_str] += $declarations;
-      }
+      $disassembled_css[$selector_str] = _ctools_css_disassemble_declaration($declaration);
     }
   }
   return $disassembled_css;
