@@ -37,6 +37,7 @@ Add documentation for the modal.
 #867120: %title was not being properly honored in keyword substitutions.
 #856050 by Itangalo: Improve help text regarding tokens and substitutions.
 #908104 by naxoc: Provide an option the comments anchor like theme_comment_wrapper does.
+#911396 by alex_b: Prevent notices in export UI.
 
 ctools 6.x-1.7 (2010-Jul-26)
 ==============
