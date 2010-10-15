@@ -113,7 +113,7 @@ function ctools_term_ctools_access_check($conf, $context) {
   $return = FALSE;
   // Tags get saved as an imploded array of strings.
   if (!is_array($terms)) {
-    $terms = expand(', ', $terms);
+    $terms = explode(', ', $terms);
     // For multi-term with names, we'll only accept the first term because
     // that is the name we have.
     return in_array($context->data->name, $terms);
