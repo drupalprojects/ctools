@@ -690,6 +690,7 @@ function ctools_ajax_sample_configure_raptor($form, &$form_state) {
 function ctools_ajax_sample_configure_raptor_submit(&$form, &$form_state) {
   $form_state['object']->name = $form_state['values']['name'];
   $form_state['object']->raptor = $form_state['values']['raptor'];
+  $form_state['object']->domesticated = $form_state['values']['domesticated'];
 }
 
 /**

@@ -8,3 +8,4 @@ Changelog reset for 7.x
 #919768 by mikey_p: Allow url options to be sent to ctools_ajax_command_url().
 #358953 by cedarm: Allow term context to return lowercase, spaces to dashes versions of terms.
 #931434 by EclipseGc: Argument plugin for node revision ID.
+#910656: CTools AJAX sample wizard demo "domesticated" checkbox value not stored.
