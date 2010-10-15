@@ -28,10 +28,6 @@ function ctools_node_add_context($arg = NULL, $conf = NULL, $empty = FALSE) {
     return ctools_context_create_empty('node_add_form');
   }
 
-  if (array_filter($conf['types']) && empty($conf['types'][$arg])) {
-    return NULL;
-  }
-
   return ctools_context_create('node_add_form', $arg);
 }
 
