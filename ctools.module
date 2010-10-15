@@ -174,7 +174,7 @@ function ctools_add_js($file, $module = 'ctools', $dir = 'js') {
  *   distinguishing suffix to the function name for each one.
  * @param $default_value
  *   Optional default value.
- * @return $reset
+ * @param $reset
  *   TRUE to reset a specific named variable, or all variables if $name is NULL.
  *   Resetting every variable should only be used, for example, for running unit
  *   tests with a clean environment. Should be used only though via function

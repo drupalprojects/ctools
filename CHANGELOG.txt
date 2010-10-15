@@ -46,6 +46,7 @@ Add documentation for the modal.
 #916796 by swentel: CSS properties with : in them could be destroyed by CSS filter.
 #931434 by EclipseGc: Argument plugin for node revision ID.
 #910656: CTools AJAX sample wizard demo "domesticated" checkbox value not stored.
+#913640 by mavimo: Correct documentation error on ctools_static()
 
 ctools 6.x-1.7 (2010-Jul-26)
 ==============
