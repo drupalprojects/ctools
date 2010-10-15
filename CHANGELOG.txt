@@ -45,6 +45,7 @@ Add documentation for the modal.
 #358953 by cedarm: Allow term context to return lowercase, spaces to dashes versions of terms.
 #916796 by swentel: CSS properties with : in them could be destroyed by CSS filter.
 #931434 by EclipseGc: Argument plugin for node revision ID.
+#910656: CTools AJAX sample wizard demo "domesticated" checkbox value not stored.
 
 ctools 6.x-1.7 (2010-Jul-26)
 ==============
