@@ -5,3 +5,4 @@ ctools 7.x-1.x-dev
 
 Changelog reset for 7.x
 #911396 by alex_b: Prevent notices in export UI.
+#919768 by mikey_p: Allow url options to be sent to ctools_ajax_command_url().
