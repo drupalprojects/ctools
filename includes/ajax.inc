@@ -413,11 +413,13 @@ function ctools_ajax_command_restripe($selector) {
  *   Drupal path.
  * @param $delay
  *   A delay before applying the redirection, in milliseconds.
+ * @param $options
+ *   An array of options to pass to the url() function.
  */
-function ctools_ajax_command_redirect($url, $delay = 0) {
+function ctools_ajax_command_redirect($url, $delay = 0, $options = array()) {
   return array(
     'command' => 'redirect',
-    'url' => url($url),
+    'url' => url($url, $options),
     'delay' => $delay,
   );
 }

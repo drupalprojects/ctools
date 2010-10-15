@@ -39,6 +39,8 @@ Add documentation for the modal.
 #908104 by naxoc: Provide an option the comments anchor like theme_comment_wrapper does.
 #911396 by alex_b: Prevent notices in export UI.
 #883902 by hefox: Remove dependency on color.module.
+#916532 by swentel: Fix css.inc to not overwrite selectors when used multiple times.
+#919768 by mikey_p: Allow url options to be sent to ctools_ajax_command_url().
 
 ctools 6.x-1.7 (2010-Jul-26)
 ==============
