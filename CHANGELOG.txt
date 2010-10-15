@@ -47,6 +47,7 @@ Add documentation for the modal.
 #931434 by EclipseGc: Argument plugin for node revision ID.
 #910656: CTools AJAX sample wizard demo "domesticated" checkbox value not stored.
 #913640 by mavimo: Correct documentation error on ctools_static()
+#922442 by EugenMayer, neclimdul and voxpelli: Make sure ctools_include can handle '' or NULL directory.
 
 ctools 6.x-1.7 (2010-Jul-26)
 ==============
