@@ -107,8 +107,11 @@ function ctools_api_version($minimum, $maximum = NULL) {
  */
 function ctools_include($file, $module = 'ctools', $dir = 'includes') {
   static $used = array();
+
+  $dir = '/' . ($dir ? $dir . '/' : '');
+
   if (!isset($used[$module][$dir][$file])) {
-    require_once DRUPAL_ROOT . '/' . drupal_get_path('module', $module) . "/$dir/$file.inc";
+    require_once DRUPAL_ROOT . '/' . drupal_get_path('module', $module) . "$dir$file.inc";
     $used[$module][$dir][$file] = true;
   }
 }
