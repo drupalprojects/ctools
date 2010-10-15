@@ -38,6 +38,25 @@ class ctools_export_ui {
     return $title;
   }
 
+  /**
+   * Add text on the top of the page.
+   */
+  function help_area($form_state) {
+      // If needed add advanced help strings.
+    $output = '';
+    if (!empty($this->plugin['use advanced help'])) {
+      $config = $this->plugin['advanced help'];
+      if ($config['enabled']) {
+        $output = theme('advanced_help_topic', $config['module'], $config['topic']);
+        $output .= '&nbsp;' . $this->plugin['strings']['advanced help']['enabled'];
+      }
+      else {
+        $output = $this->plugin['strings']['advanced help']['disabled'];
+      }
+    }
+    return $output;
+  }
+
   // ------------------------------------------------------------------------
   // Menu item manipulation
 
@@ -178,6 +197,8 @@ class ctools_export_ui {
       'object' => &$this,
     );
 
+    $help_area = $this->help_area($form_state);
+
     ctools_include('form');
     $form = ctools_build_form('ctools_export_ui_list_form', $form_state);
 
@@ -185,7 +206,7 @@ class ctools_export_ui {
 
     if (!$js) {
       $this->list_css();
-      return $form . $output;
+      return $help_area . $form . $output;
     }
 
     ctools_include('ajax');

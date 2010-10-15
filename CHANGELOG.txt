@@ -41,6 +41,7 @@ Add documentation for the modal.
 #883902 by hefox: Remove dependency on color.module.
 #916532 by swentel: Fix css.inc to not overwrite selectors when used multiple times.
 #919768 by mikey_p: Allow url options to be sent to ctools_ajax_command_url().
+#926972 by Amitaibu: Provide automated integration with Advanced Help.
 
 ctools 6.x-1.7 (2010-Jul-26)
 ==============
