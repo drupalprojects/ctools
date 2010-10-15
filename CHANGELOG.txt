@@ -43,6 +43,7 @@ Add documentation for the modal.
 #919768 by mikey_p: Allow url options to be sent to ctools_ajax_command_url().
 #926972 by Amitaibu: Provide automated integration with Advanced Help.
 #358953 by cedarm: Allow term context to return lowercase, spaces to dashes versions of terms.
+#916796 by swentel: CSS properties with : in them could be destroyed by CSS filter.
 
 ctools 6.x-1.7 (2010-Jul-26)
 ==============
