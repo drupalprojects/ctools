@@ -57,20 +57,21 @@ class ctools_export_ui {
 
     $prefix = ctools_export_ui_plugin_base_path($this->plugin);
 
-    $my_items = array();
-    foreach ($this->plugin['menu']['items'] as $item) {
-      // Add menu item defaults.
-      $item += array(
-        'file' => 'export-ui.inc',
-        'file path' => drupal_get_path('module', 'ctools') . '/includes',
-      );
+    if (isset($this->plugin['menu']['items']) && is_array($this->plugin['menu']['items'])) {
+      $my_items = array();
+      foreach ($this->plugin['menu']['items'] as $item) {
+        // Add menu item defaults.
+        $item += array(
+          'file' => 'export-ui.inc',
+          'file path' => drupal_get_path('module', 'ctools') . '/includes',
+        );
 
-      $path = !empty($item['path']) ? $prefix . '/' . $item['path'] : $prefix;
-      unset($item['path']);
-      $my_items[$path] = $item;
+        $path = !empty($item['path']) ? $prefix . '/' . $item['path'] : $prefix;
+        unset($item['path']);
+        $my_items[$path] = $item;
+      }
+      $items += $my_items;
     }
-
-    $items += $my_items;
   }
 
   /**
