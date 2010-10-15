@@ -48,6 +48,7 @@ Add documentation for the modal.
 #910656: CTools AJAX sample wizard demo "domesticated" checkbox value not stored.
 #913640 by mavimo: Correct documentation error on ctools_static()
 #922442 by EugenMayer, neclimdul and voxpelli: Make sure ctools_include can handle '' or NULL directory.
+#919956 by traviss359: Correct example in wizard advanced help.
 
 ctools 6.x-1.7 (2010-Jul-26)
 ==============

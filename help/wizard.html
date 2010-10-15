@@ -192,7 +192,7 @@ function delegator_page_add_subtask_finish(&$form_state) {
  */
 function delegator_page_add_subtask_next(&$form_state) {
   // Update the cache with changes.
-  delegator_page_set_page_cache($form_state['page']);
+  delegator_page_set_page_cache($form_state['cache name'], $form_state['page']);
 }
 
 /**
