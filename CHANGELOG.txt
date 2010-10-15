@@ -38,6 +38,7 @@ Add documentation for the modal.
 #856050 by Itangalo: Improve help text regarding tokens and substitutions.
 #908104 by naxoc: Provide an option the comments anchor like theme_comment_wrapper does.
 #911396 by alex_b: Prevent notices in export UI.
+#883902 by hefox: Remove dependency on color.module.
 
 ctools 6.x-1.7 (2010-Jul-26)
 ==============

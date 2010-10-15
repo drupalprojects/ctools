@@ -422,7 +422,7 @@ class ctools_stylizer_image_processor {
 
   function command_fill($color, $x, $y, $width, $height) {
     $this->log("Fill: $color ($x, $y, $width, $height)");
-    imagefilledrectangle($this->workspace, $x, $y, $x + $width, $y + $height, _color_gd($this->workspace, $this->palette[$color]));
+    imagefilledrectangle($this->workspace, $x, $y, $x + $width, $y + $height, ctools_color_gd($this->workspace, $this->palette[$color]));
   }
 
   function command_gradient($from, $to, $x, $y, $width, $height, $direction = 'down') {
@@ -430,13 +430,13 @@ class ctools_stylizer_image_processor {
 
     if ($direction == 'down') {
       for ($i = 0; $i < $height; ++$i) {
-        $color = _color_blend($this->workspace, $this->palette[$from], $this->palette[$to], $i / ($height - 1));
+        $color = ctools_color_blend($this->workspace, $this->palette[$from], $this->palette[$to], $i / ($height - 1));
         imagefilledrectangle($this->workspace, $x, $y + $i, $x + $width, $y + $i + 1, $color);
       }
     }
     else {
       for ($i = 0; $i < $width; ++$i) {
-        $color = _color_blend($this->workspace, $this->palette[$from], $this->palette[$to], $i / ($width - 1));
+        $color = ctools_color_blend($this->workspace, $this->palette[$from], $this->palette[$to], $i / ($width - 1));
         imagefilledrectangle($this->workspace, $x + $i, $y, $x + $i + 1, $y + $height, $color);
       }
     }
@@ -459,7 +459,7 @@ class ctools_stylizer_image_processor {
     }
     $this->log("Colorize: $color ($x, $y, $width, $height)");
 
-    $c = _color_unpack($this->palette[$color]);
+    $c = ctools_color_unpack($this->palette[$color]);
 
     imagealphablending($this->workspace, FALSE);
     imagesavealpha($this->workspace, TRUE);
@@ -495,7 +495,7 @@ class ctools_stylizer_image_processor {
     }
     $this->log("Hue: $color ($x, $y, $width, $height)");
 
-    list($red, $green, $blue) = _color_unpack($this->palette[$color]);
+    list($red, $green, $blue) = ctools_color_unpack($this->palette[$color]);
 
     // We will create a monochromatic palette based on the input color
     // which will go from black to white.
@@ -1702,3 +1702,39 @@ function ctools_file_check_directory(&$directory, $mode = 0, $form_item = NULL) 
 
   return TRUE;
 }
+
+/**
+ * Blend two hex colors and return the GD color.
+ */
+function ctools_color_blend($img, $hex1, $hex2, $alpha) {
+  $in1 = ctools_color_unpack($hex1);
+  $in2 = ctools_color_unpack($hex2);
+  $out = array($img);
+  for ($i = 0; $i < 3; ++$i) {
+    $out[] = $in1[$i] + ($in2[$i] - $in1[$i]) * $alpha;
+  }
+  return call_user_func_array('imagecolorallocate', $out);
+}
+
+/**
+ * Convert a hex color into an RGB triplet.
+ */
+function ctools_color_unpack($hex, $normalize = false) {
+  if (strlen($hex) == 4) {
+    $hex = $hex[1] . $hex[1] . $hex[2] . $hex[2] . $hex[3] . $hex[3];
+  }
+  $c = hexdec($hex);
+  for ($i = 16; $i >= 0; $i -= 8) {
+    $out[] = (($c >> $i) & 0xFF) / ($normalize ? 255 : 1);
+  }
+  return $out;
+}
+
+/**
+ * Convert a hex triplet into a GD color.
+ */
+function ctools_color_gd($img, $hex) {
+  $c = array_merge(array($img), ctools_color_unpack($hex));
+  return call_user_func_array('imagecolorallocate', $c);
+}
+
