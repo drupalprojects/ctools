@@ -13,3 +13,4 @@ Changelog reset for 7.x
 #919956 by traviss359: Correct example in wizard advanced help.
 #942968: Fix taxonomy term access rule with tag term vocabs.
 #840344: node add argument had crufty code causing notices.
+#944462 by longhairedgit: Invalid character in regex causes rare notice.
