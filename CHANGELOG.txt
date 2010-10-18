@@ -14,3 +14,4 @@ Changelog reset for 7.x
 #942968: Fix taxonomy term access rule with tag term vocabs.
 #840344: node add argument had crufty code causing notices.
 #944462 by longhairedgit: Invalid character in regex causes rare notice.
+#938778 by dereine: Fix profile content type for D7 updates.
