@@ -15,6 +15,7 @@
  * by the system that includes this file.
  */
 $plugin = array(
+  'title' => t('Custom content'),
   'no title override' => TRUE,
   'defaults' => array('admin_title' => '', 'title' => '', 'body' => '', 'format' => filter_fallback_format(), 'substitute' => TRUE),
   'js' => array('misc/autocomplete.js', 'misc/textarea.js', 'misc/collapse.js'),
