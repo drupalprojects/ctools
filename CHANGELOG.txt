@@ -15,3 +15,4 @@ Changelog reset for 7.x
 #840344: node add argument had crufty code causing notices.
 #944462 by longhairedgit: Invalid character in regex causes rare notice.
 #938778 by dereine: Fix profile content type for D7 updates.
+Add detach event to modal close so that wysiwyg can detach the editor.
