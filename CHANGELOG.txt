@@ -52,6 +52,7 @@ Add documentation for the modal.
 #942968: Fix taxonomy term access rule with tag term vocabs.
 #840344: node add argument had crufty code causing notices.
 #944462 by longhairedgit: Invalid character in regex causes rare notice.
+Add detach event to modal close so that wysiwyg can detach the editor.
 
 ctools 6.x-1.7 (2010-Jul-26)
 ==============
