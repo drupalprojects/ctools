@@ -1193,7 +1193,7 @@ function page_manager_render_operations(&$page, $operations, $active_trail, $att
       $title = '<div class="page-manager-group-title' . $class . '">' . $attributes['title'] . '</div>';
 
       if (!empty($attributes['collapsible'])) {
-        $output[$location] = theme('ctools_collapsible', array('handler' => $title, 'content' => $output[$location], 'collapsed' => empty($active_trail)));
+        $output[$location] = theme('ctools_collapsible', array('handle' => $title, 'content' => $output[$location], 'collapsed' => empty($active_trail)));
       }
       else {
         $output[$location] = $title . $output[$location];

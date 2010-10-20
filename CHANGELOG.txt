@@ -16,3 +16,4 @@ Changelog reset for 7.x
 #944462 by longhairedgit: Invalid character in regex causes rare notice.
 #938778 by dereine: Fix profile content type for D7 updates.
 Add detach event to modal close so that wysiwyg can detach the editor.
+Variant titles showing up as blank if more than one variant on a page.
