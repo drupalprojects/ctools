@@ -17,3 +17,4 @@ Changelog reset for 7.x
 #938778 by dereine: Fix profile content type for D7 updates.
 Add detach event to modal close so that wysiwyg can detach the editor.
 Variant titles showing up as blank if more than one variant on a page.
+#940016: token support was not yet updated for D7.
