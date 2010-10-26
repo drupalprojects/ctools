@@ -18,3 +18,4 @@ Changelog reset for 7.x
 Add detach event to modal close so that wysiwyg can detach the editor.
 Variant titles showing up as blank if more than one variant on a page.
 #940016: token support was not yet updated for D7.
+#940446: Skip validation on back and cancel buttons in all wizards.

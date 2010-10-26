@@ -297,7 +297,7 @@ function ctools_wizard_wrapper($form, &$form_state) {
         '#next' => $form_state['previous'],
         '#wizard type' => 'next',
         '#weight' => -2000,
-        '#skip validation' => TRUE,
+        '#limit_validation_errors' => array(),
         // hardcode the submit so that it doesn't try to save data.
         '#submit' => array('ctools_wizard_submit'),
         '#attributes' => $button_attributes,
@@ -352,7 +352,7 @@ function ctools_wizard_wrapper($form, &$form_state) {
         '#value' => $form_info['cancel text'],
         '#wizard type' => 'cancel',
         // hardcode the submit so that it doesn't try to save data.
-        '#skip validation' => TRUE,
+        '#limit_validation_errors' => array(),
         '#submit' => array('ctools_wizard_submit'),
         '#attributes' => $button_attributes,
       );
