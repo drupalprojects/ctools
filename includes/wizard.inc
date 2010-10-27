@@ -191,7 +191,12 @@ function ctools_wizard_multistep_form($form_info, $step, &$form_state) {
     if (empty($form_state['ajax'])) {
       // redirect, if one is set.
       if ($form_state['redirect']) {
-        call_user_func_array('drupal_goto', $form_state['redirect']);
+        if (is_array($form_state['redirect'])) {
+          call_user_func_array('drupal_goto', $form_state['redirect']);
+        }
+        else {
+          drupal_goto($form_state['redirect']);
+        }
       }
     }
     else if (isset($form_state['ajax next'])) {
