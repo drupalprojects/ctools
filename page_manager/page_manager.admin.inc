@@ -555,6 +555,7 @@ function page_manager_get_operations($page, $operations = NULL) {
     'form' => 'page_manager_handler_add',
     'ajax' => FALSE,
     'silent' => TRUE, // prevents a message about updating and prevents this item from showing as changed.
+    'no update and save' => TRUE, // get rid of update and save button which is bad here.
     'form info' => array(
       'finish text' => t('Create variant'),
     ),
@@ -586,6 +587,7 @@ function page_manager_get_operations($page, $operations = NULL) {
       'title' => t('Configure'),
       'description' => t('Configure a newly created variant prior to actually adding it to the page.'),
       'ajax' => FALSE,
+      'no update and save' => TRUE, // get rid of update and save button which is bad here.
       'form info' => array(
         // We use our own cancel and finish callback to handle the fun stuff.
         'finish callback' => 'page_manager_handler_add_finish',
@@ -950,7 +952,7 @@ function _page_manager_get_operation_content($js, &$page, $active, $operation, $
 }
 
 function page_manager_operation_wrapper(&$form, &$form_state) {
-  if (!empty($form['buttons']['return']['#wizard type']) && $form['buttons']['return']['#wizard type']) {
+  if (empty($form_state['operation']['no update and save']) && !empty($form['buttons']['return']['#wizard type']) && $form['buttons']['return']['#wizard type']) {
     $form['buttons']['save'] = array(
       '#type' => 'submit',
       '#value' => t('Update and save'),

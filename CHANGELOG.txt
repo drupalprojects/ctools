@@ -54,6 +54,7 @@ Add documentation for the modal.
 #944462 by longhairedgit: Invalid character in regex causes rare notice.
 Add detach event to modal close so that wysiwyg can detach the editor.
 #955348: Lack of redirect on "Update" button in Page Manager causing data loss sometimes.
+#941778: Update and save button should not appear in the "Add variant" path.
 
 ctools 6.x-1.7 (2010-Jul-26)
 ==============
