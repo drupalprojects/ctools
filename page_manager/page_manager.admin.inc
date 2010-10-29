@@ -529,6 +529,7 @@ function page_manager_get_operations($page, $operations = NULL) {
       'form' => 'page_manager_enable_form',
       'ajax' => FALSE,
       'silent' => TRUE,
+      'no update and save' => TRUE,
       'form info' => array(
         'finish text' => t('Enable'),
       ),
@@ -542,6 +543,7 @@ function page_manager_get_operations($page, $operations = NULL) {
       'form' => 'page_manager_disable_form',
       'ajax' => FALSE,
       'silent' => TRUE,
+      'no update and save' => TRUE,
       'form info' => array(
         'finish text' => t('Disable'),
       ),
@@ -616,6 +618,7 @@ function page_manager_get_operations($page, $operations = NULL) {
       'description' => t('Break the lock on this page so that you can edit it.'),
       'form' => 'page_manager_break_lock',
       'ajax' => FALSE,
+      'no update and save' => TRUE, // get rid of update and save button which is bad here.
       'form info' => array(
         'finish text' => t('Break lock'),
        ),
@@ -698,6 +701,7 @@ function page_manager_get_handler_operations(&$page) {
         'title' => t('Revert'),
         'description' => t('Remove all changes to this variant and revert to the version in code.'),
         'form' => 'page_manager_handler_delete',
+        'no update and save' => TRUE,
         'form info' => array(
           'finish text' => t('Revert'),
         ),
@@ -710,6 +714,7 @@ function page_manager_get_handler_operations(&$page) {
         'form' => 'page_manager_handler_delete',
         'form info' => array(
           'finish text' => t('Delete'),
+          'save text' => t('Delete and save'),
         ),
       );
     }
@@ -721,6 +726,7 @@ function page_manager_get_handler_operations(&$page) {
         'silent' => TRUE,
         'form info' => array(
           'finish text' => t('Enable'),
+          'save text' => t('Enable and save'),
         ),
       );
     }
@@ -732,6 +738,7 @@ function page_manager_get_handler_operations(&$page) {
         'silent' => TRUE,
         'form info' => array(
           'finish text' => t('Disable'),
+          'save text' => t('Disable and save'),
         ),
       );
     }
@@ -947,7 +954,7 @@ function page_manager_operation_wrapper($form, &$form_state) {
   if (empty($form_state['operation']['no update and save']) && !empty($form['buttons']['return']['#wizard type']) && $form['buttons']['return']['#wizard type']) {
     $form['buttons']['save'] = array(
       '#type' => 'submit',
-      '#value' => t('Update and save'),
+      '#value' => !empty($form_state['form_info']['save text']) ? $form_state['form_info']['save text'] : t('Update and save'),
       '#wizard type' => 'finish',
       '#attributes' => $form['buttons']['return']['#attributes'],
       '#save' => TRUE,
@@ -1693,6 +1700,8 @@ function page_manager_break_lock_submit(&$form, &$form_state) {
   ctools_object_cache_clear_all('page_manager_page', $page->task_name);
   $form_state['do not cache'] = TRUE;
   drupal_set_message(t('The lock has been cleared and all changes discarded. You may now make changes to this page.'));
+
+  $form_state['new trail'] = array('summary');
 }
 
 /**
