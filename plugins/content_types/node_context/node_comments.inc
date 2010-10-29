@@ -184,7 +184,7 @@ function ctools_comment_render($node, $conf) {
   }
   $output .= theme('pager', NULL, $comments_per_page, 0);
 
-  if ($conf['anchor']) {
+  if (!empty($conf['anchor'])) {
     $output = '<div id="comments">' . $output . '</div>';
   }
   return $output;
