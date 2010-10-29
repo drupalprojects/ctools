@@ -20,3 +20,4 @@ Variant titles showing up as blank if more than one variant on a page.
 #940016: token support was not yet updated for D7.
 #940446: Skip validation on back and cancel buttons in all wizards.
 #954492: Redirect not always working in wizard.inc
+#955348: Lack of redirect on "Update" button in Page Manager causing data loss sometimes.
