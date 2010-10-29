@@ -884,7 +884,6 @@ function _page_manager_get_operation_content($js, &$page, $active, $operation, $
       'type' => 'edit',
       'ajax' => $js && (!isset($operation['ajax']) || !empty($operation['ajax'])),
       'rerender' => TRUE,
-      'no_redirect' => $js,
       'trail' => $active,
       'task_name' => $page->task_name,
       'task_id' => $page->task_id,
@@ -963,7 +962,7 @@ function page_manager_operation_wrapper(&$form, &$form_state) {
 }
 
 /**
- * Callback generated when the add page process is finished.
+ * Callback generated when the an operation edit finished.
  */
 function page_manager_edit_page_finish(&$form_state) {
   if (empty($form_state['operation']['silent'])) {
@@ -997,11 +996,6 @@ function page_manager_edit_page_finish(&$form_state) {
     page_manager_save_page_cache($form_state['page']);
     page_manager_clear_page_cache($form_state['page']->task_name);
     $form_state['page'] = page_manager_get_page_cache($form_state['page']->task_name);
-    if (empty($form_state['new trail'])) {
-      // force a rerender to get rid of old form items that may have changed
-      // during save.
-      $form_state['new trail'] = $form_state['trail'];
-    }
   }
   else {
     if (empty($form_state['do not cache'])) {
@@ -1009,9 +1003,19 @@ function page_manager_edit_page_finish(&$form_state) {
     }
   }
 
+  // We basically always want to force a rerender when the forms
+  // are finished, so make sure there is a new trail.
+  if (empty($form_state['new trail'])) {
+    // force a rerender to get rid of old form items that may have changed
+    // during save.
+    $form_state['new trail'] = $form_state['trail'];
+  }
+
   if (isset($form_state['new trail']) && empty($form_state['ajax'])) {
     $form_state['redirect'] = page_manager_edit_url($form_state['page']->task_name, $form_state['new trail']);
   }
+
+  $form_state['complete'] = TRUE;
 }
 
 /**
