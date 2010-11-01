@@ -22,5 +22,6 @@ Variant titles showing up as blank if more than one variant on a page.
 #954492: Redirect not always working in wizard.inc
 #955348: Lack of redirect on "Update" button in Page Manager causing data loss sometimes.
 #941778: Update and save button should not appear in the "Add variant" path.
-#955070: Update ctools internal page tokens to work properly on content all content.
-#956890: Update views_content to not use views dependency since that is gone.
+#955070 by EclipseGc: Update ctools internal page tokens to work properly on content all content.
+#956890 by EclipseGc: Update views_content to not use views dependency since that is gone.
+#954728 by EclipseGc: Update node template page function name to not collide with new hook_node_view().

@@ -55,7 +55,7 @@ function page_manager_node_view_menu_alter(&$items, $task) {
   // Override the node view handler for our purpose.
   $callback = $items['node/%node']['page callback'];
   if ($callback == 'node_page_view' || variable_get('page_manager_override_anyway', FALSE)) {
-    $items['node/%node']['page callback'] = 'page_manager_node_view';
+    $items['node/%node']['page callback'] = 'page_manager_node_view_page';
     $items['node/%node']['file path'] = $task['path'];
     $items['node/%node']['file'] = $task['file'];
   }
@@ -77,7 +77,7 @@ function page_manager_node_view_menu_alter(&$items, $task) {
  * to run with it. If no one does, it passes through to Drupal core's
  * node view, which is node_page_view().
  */
-function page_manager_node_view($node) {
+function page_manager_node_view_page($node) {
   // Load my task plugin
   $task = page_manager_get_task('node_view');
 
