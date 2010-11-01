@@ -27,4 +27,4 @@ Variant titles showing up as blank if more than one variant on a page.
 #954728 by EclipseGc: Update node template page function name to not collide with new hook_node_view().
 #946534 by EclipseGc: Add support for field content on all entitities.
 #952586 by EclipseGc: Fix node_author content type.
-
+#959206: If a context is not set when rendering content, attempt to guess the context (fixes Views panes where "From context" was added but pane was never edited.)
