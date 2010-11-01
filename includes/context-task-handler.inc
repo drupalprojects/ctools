@@ -413,7 +413,6 @@ function ctools_context_handler_edit_context($form, &$form_state) {
   $theme_vars = array();
   $theme_vars['object'] = $cache;
   $theme_vars['header'] = t('Summary of contexts');
-  $theme_vars['description'] = $description;
   $form['left']['summary'] = array(
     '#prefix' => '<div class="page-manager-contexts">',
     '#suffix' => '</div>',
