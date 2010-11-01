@@ -171,9 +171,15 @@ function ctools_plugins_default_form_wrapper($form, &$form_state) {
   }
 
   if (isset($form['buttons']['next'])) {
+    if (empty($form['buttons']['next']['#submit'])) {
+      $form['buttons']['next']['#submit'] = $form['#submit'];
+    }
     $form['buttons']['next']['#submit'][] = 'ctools_plugins_default_form_wrapper_submit';
   }
   if (isset($form['buttons']['return'])) {
+    if (empty($form['buttons']['return']['#submit'])) {
+      $form['buttons']['return']['#submit'] = $form['#submit'];
+    }
     $form['buttons']['return']['#submit'][] = 'ctools_plugins_default_form_wrapper_submit';
   }
   return $form;
