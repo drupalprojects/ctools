@@ -476,12 +476,16 @@ function ctools_preprocess_node(&$vars) {
   }
 }
 
+function ctools_page_alter(&$page) {
+  $page['#post_render'][] = 'ctools_page_token_processing';
+}
+
 /**
- * A theme preprocess function to allow content type plugins to use page
+ * A theme post_render callback to allow content type plugins to use page
  * template variables which are not yet available when the content type is
  * rendered.
  */
-function ctools_preprocess_page(&$variables) {
+function ctools_page_token_processing($children, $elements) {
   $tokens = ctools_set_page_token();
   if (!empty($tokens)) {
     foreach ($tokens as $token => $key) {
@@ -502,8 +506,9 @@ function ctools_preprocess_page(&$variables) {
           break;
       }
     }
-    $variables['content'] = strtr($variables['content'], $tokens);
+    $children = strtr($children, $tokens);
   }
+  return $children;
 }
 
 // -----------------------------------------------------------------------
