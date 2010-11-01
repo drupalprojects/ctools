@@ -25,3 +25,4 @@ Variant titles showing up as blank if more than one variant on a page.
 #955070 by EclipseGc: Update ctools internal page tokens to work properly on content all content.
 #956890 by EclipseGc: Update views_content to not use views dependency since that is gone.
 #954728 by EclipseGc: Update node template page function name to not collide with new hook_node_view().
+#946534 by EclipseGc: Add support for field content on all entitities.
