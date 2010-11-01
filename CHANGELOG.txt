@@ -23,3 +23,4 @@ Variant titles showing up as blank if more than one variant on a page.
 #955348: Lack of redirect on "Update" button in Page Manager causing data loss sometimes.
 #941778: Update and save button should not appear in the "Add variant" path.
 #955070: Update ctools internal page tokens to work properly on content all content.
+#956890: Update views_content to not use views dependency since that is gone.
