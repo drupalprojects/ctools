@@ -206,7 +206,7 @@ function page_manager_theme() {
 
   $items = array(
     'page_manager_handler_rearrange' => array(
-      'variables' => array('form' => NULL),
+      'render element' => 'form',
     ) + $base,
     'page_manager_edit_page' => array(
       'template' => 'page-manager-edit-page',
