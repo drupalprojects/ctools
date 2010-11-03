@@ -1500,7 +1500,7 @@ function page_manager_handler_rearrange($form, &$form_state) {
     $plugin = page_manager_get_task_handler($handler->handler);
 
     $form['handlers'][$id]['title'] = array(
-      '#value' => page_manager_get_handler_title($plugin, $handler, $page->task, $page->subtask_id),
+      '#markup' => page_manager_get_handler_title($plugin, $handler, $page->task, $page->subtask_id),
     );
 
     $form['handlers'][$id]['weight'] = array(
