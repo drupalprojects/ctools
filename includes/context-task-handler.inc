@@ -104,7 +104,15 @@ function ctools_context_handler_render_handler($task, $subtask, $handler, $conte
     return NULL;
   }
 
-  drupal_alter('ctools_render', $info, $page, $args, $contexts, $task, $subtask, $handler);
+  $context = array(
+    'args' => $args,
+    'contexts' => $contexts,
+    'task' => $task,
+    'subtask' => $subtask,
+    'handler' => $handler
+  );
+  drupal_alter('ctools_render', $info, $page, $context);
+
   // If we don't own the page, let the caller deal with rendering.
   if (!$page) {
     return $info;
