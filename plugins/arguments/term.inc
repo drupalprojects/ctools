@@ -38,7 +38,7 @@ function ctools_term_context($arg = NULL, $conf = NULL, $empty = FALSE) {
       if (!is_numeric($arg)) {
         return FALSE;
       }
-      $term = taxonomy_get_term($arg);
+      $term = taxonomy_term_load($arg);
       break;
 
     case 'term':
