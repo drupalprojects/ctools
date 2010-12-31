@@ -47,3 +47,4 @@ Variant titles showing up as blank if more than one variant on a page.
 #989484 by Amitaibu: Fix notice in views plugin.
 #982496: Fix token context.
 #995026: Fix export UI during enable/disable which would throw notices and not properly set/unset menu items.
+#998870 by Amitaibu: Fix notice when content has no icon by using function already designed for that.
