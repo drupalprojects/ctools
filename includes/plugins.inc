@@ -129,18 +129,14 @@ function ctools_plugin_api_include($owner, $api, $minimum_version, $current_vers
   static $already_done = array();
 
   $info = ctools_plugin_api_info($owner, $api, $minimum_version, $current_version);
-  if (!isset($already_done[$owner][$api])) {
-    foreach ($info as $module => $plugin_info) {
-      if (!isset($plugin_info['file'])) {
-        $plugin_info['file'] = "$module.$api.inc";
+  foreach ($info as $module => $plugin_info) {
+    if (!isset($already_done[$owner][$api][$module])) {
+      $file = isset($plugin_info['file']) ? $plugin_info['file'] : "$module.$api.inc";
+      if (file_exists("./$plugin_info[path]/$file")) {
+        require_once "./$plugin_info[path]/$file";
       }
-      if (file_exists("./$plugin_info[path]/$plugin_info[file]")) {
-        $plugin_info[$module]['included'] = TRUE;
-        require_once "./$plugin_info[path]/$plugin_info[file]";
-      }
-      $info[$module] = $plugin_info;
+      $already_done[$owner][$api][$module] = TRUE;
     }
-    $already_done[$owner][$api] = TRUE;
   }
 
   return $info;
@@ -336,6 +332,14 @@ function ctools_plugin_get_plugin_type_info($flush = FALSE) {
   }
 
   return $all_type_info;
+}
+
+/**
+ * Reset all static caches that affect the result of ctools_get_plugins().
+ */
+function ctools_get_plugins_reset() {
+  drupal_static_reset('ctools_plugin_load_includes');
+  drupal_static_reset('ctools_plugin_api_info');
 }
 
 /**
