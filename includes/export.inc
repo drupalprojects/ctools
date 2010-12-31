@@ -468,11 +468,13 @@ function ctools_export_load_object($table, $type = 'all', $args = array()) {
  *   ctools_export_load_object() will be reset.
  */
 function ctools_export_load_object_reset($table = NULL) {
+  // Reset plugin cache to make sure new include files are picked up.
+  ctools_include('plugins');
+  ctools_get_plugins_reset();
   if (empty($table)) {
     ctools_static_reset('ctools_export_load_object');
     ctools_static_reset('ctools_export_load_object_all');
     ctools_static_reset('_ctools_export_get_defaults');
-    ctools_static_reset('ctools_plugin_api_info');
   }
   else {
     $cache = &ctools_static('ctools_export_load_object');
@@ -481,7 +483,6 @@ function ctools_export_load_object_reset($table = NULL) {
     unset($cache[$table]);
     unset($cached_database[$table]);
     unset($cached_defaults[$table]);
-    ctools_static_reset('ctools_plugin_api_info');
   }
 }
 
