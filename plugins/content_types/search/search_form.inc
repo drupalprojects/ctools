@@ -60,7 +60,7 @@ function ctools_search_form_content_type_render($subtype, $conf, $panel_args, $c
   $form_state = array(
     'no_redirect' => TRUE,
     'build_info' => array(
-      'args' => array(url($path), $keys, $conf['type'], $prompt),
+      'args' => array($path, $keys, $conf['type'], $prompt),
     ),
   );
 
