@@ -37,3 +37,4 @@ Variant titles showing up as blank if more than one variant on a page.
 #954772 by EclipseGc: Fix node build mode selection in node content type.
 #954762 by EclipseGc: Fix comment forbidden theme call.
 #954894 by EclipseGc: Fix breadcrumb content type.
+#955180 by EclipseGc: Fix page primary navigation type.
