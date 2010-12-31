@@ -118,10 +118,13 @@ function ctools_comment_render($node, $conf) {
 
   $comments = comment_load_multiple($cids);
 
-  drupal_add_css(drupal_get_path('module', 'comment') .'/comment.css');
-  comment_prepare_thread($comments);
-  $build = comment_view_multiple($comments, $node);
-  $build['pager']['#theme'] = 'pager';
-  return drupal_render($build);
+  if ($comments) {
+    drupal_add_css(drupal_get_path('module', 'comment') .'/comment.css');
+    comment_prepare_thread($comments);
+    $build = comment_view_multiple($comments, $node);
+    $build['pager']['#theme'] = 'pager';
+    return drupal_render($build);
+  }
+  return;
 }
 

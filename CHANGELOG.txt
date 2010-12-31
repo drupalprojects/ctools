@@ -31,3 +31,4 @@ Variant titles showing up as blank if more than one variant on a page.
 #961654 by benshell: drupal_alter() only supports 4 arguments.
 #911362 by alex_b: Facilitate plugin cache resets for tests.
 #945360 by naxoc: node_tag_new() not updated to D7.
+#953804 by EclipseGc: Fix node comment rendering.
