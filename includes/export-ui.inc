@@ -58,10 +58,6 @@ function ctools_export_ui_process(&$plugin, $info) {
   // out. This is a HACK but it should work:
   $schema = ctools_export_get_schema($plugin['schema']);
 
-  if (!$schema && $_GET['q'] == 'admin/modules/list/confirm') {
-    $schema = ctools_export_get_schema($plugin['schema'], TRUE);
-  }
-
   if (empty($schema)) {
     // If we're updating the schema may not have been read yet, so don't report this error in that case.
     if (!defined('MAINTENANCE_MODE')) {
