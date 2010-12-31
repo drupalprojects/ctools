@@ -33,3 +33,4 @@ Variant titles showing up as blank if more than one variant on a page.
 #945360 by naxoc: node_tag_new() not updated to D7.
 #953804 by EclipseGc: Fix node comment rendering.
 #953542 by EclipseGc: Fix node rendering.
+#953776 by EclipseGc: Fix node link rendering.
