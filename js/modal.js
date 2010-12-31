@@ -270,7 +270,6 @@
   Drupal.CTools.Modal.modal_display = function(ajax, response, status) {
     $('#modal-title').html(response.title);
     $('#modal-content').html(response.output);
-    Drupal.attachBehaviors();
   }
 
   /**
