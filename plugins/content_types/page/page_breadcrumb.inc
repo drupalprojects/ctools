@@ -27,7 +27,7 @@ $plugin = array(
  */
 function ctools_page_breadcrumb_content_type_render($subtype, $conf, $panel_args) {
   $block = new stdClass();
-  $block->content = theme('breadcrumb', drupal_get_breadcrumb());
+  $block->content = theme('breadcrumb', array('breadcrumb' => drupal_get_breadcrumb()));
 
   return $block;
 }
