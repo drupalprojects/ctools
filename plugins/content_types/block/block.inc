@@ -107,7 +107,13 @@ function ctools_block_content_type_render($subtype, $conf) {
   // placeholder.
   if ($module == 'block' && (empty($conf['override_title']) || strpos($conf['override_title_text'], '%title') !== FALSE)) {
     // {block}.title is plain text, but this hook should return an HTML title.
-    $block->subject = check_plain(db_result(db_query("SELECT title FROM {blocks} WHERE module = '%s' AND delta = '%s'", 'block', $delta)));
+    global $theme_key;
+    $result = db_query("SELECT title FROM {block} 
+      WHERE module = :module AND delta = :delta AND theme = :theme", array(
+          ':module' => 'block', ':delta' => $delta, ':theme' => $theme_key
+      )
+    );
+    $block->subject = check_plain($result->fetchObject()->title);
   }
 
   if (isset($block->subject)) {

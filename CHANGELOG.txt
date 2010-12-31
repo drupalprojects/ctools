@@ -42,3 +42,4 @@ Variant titles showing up as blank if more than one variant on a page.
 #957194 by EclipseGc: Remove mission content type, since D7 no longer has a site mission.
 #957348 by EclipseGc: Fix search form URL path.
 #952586 by andypost: Use format_username for displaying unlinked usernames.
+#963800 by benshell: Fix query to fetch custom block title.
