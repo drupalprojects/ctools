@@ -9,7 +9,6 @@
 $plugin = array(
   'title' => t('Token'),
   'description' => t('A context that contains token replacements from token.module.'),
-  'no ui' => TRUE,
   'context' => 'ctools_context_create_token',  // func to create context
   'context name' => 'token',
   'keyword' => 'token',
@@ -32,17 +31,32 @@ function ctools_context_create_token($empty, $data = NULL, $conf = FALSE) {
  */
 function ctools_context_token_convert_list() {
   $tokens = token_info();
-  // Pass everything through to token_get_list().
-  return reset(token_get_list(array('global')));
+  foreach ($tokens['types'] as $type => $type_info) {
+    if (empty($type_info['needs-data'])) {
+      $real_type = isset($type_info['type']) ? $type_info['type'] : $type;
+      foreach ($tokens['tokens'][$real_type] as $id => $info) {
+        $key = "$type:$id";
+        if (!isset($list[$key])) {
+          $list[$key] = $type_info['name'] . ': ' . $info['name'];
+        }
+      }
+    }
+  }
+
+  return $list;
 }
 
 /**
  * Implementation of hook_ctools_context_converter_alter().
  */
 function ctools_context_token_convert($context, $token) {
-  $values = token_get_values();
-  $key = array_search($token, $values->tokens);
-  if ($key !== FALSE) {
-    return $values->values[$key];
+  $tokens = token_info();
+  list($type, $token) = explode(':', $token, 2);
+  $real_type = isset($tokens['types'][$type]['type']) ? $tokens['types'][$type]['type'] : $type;
+  if (isset($tokens['tokens'][$real_type][$token])) {
+    $values = token_generate($type, array($token => $token));
+    if (isset($values[$token])) {
+      return $values[$token];
+    }
   }
 }

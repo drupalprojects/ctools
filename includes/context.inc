@@ -616,7 +616,7 @@ function ctools_context_keyword_substitute($string, $keywords, $contexts) {
 
       // Figure out our keyword and converter, if specified.
       if (strpos($keyword, ':')) {
-        list($context, $converter) = explode(':', $keyword);
+        list($context, $converter) = explode(':', $keyword, 2);
       }
       else {
         $context = $keyword;

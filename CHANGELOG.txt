@@ -45,3 +45,4 @@ Variant titles showing up as blank if more than one variant on a page.
 #963800 by benshell: Fix query to fetch custom block title.
 #983496 by Amitaibu: Fix term argument to use proper load function.
 #989484 by Amitaibu: Fix notice in views plugin.
+#982496: Fix token context.
