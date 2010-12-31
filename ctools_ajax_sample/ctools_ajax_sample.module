@@ -129,7 +129,7 @@ function ctools_ajax_sample_page() {
       ),
       'animation' => 'fadeIn',
       'modalTheme' => 'CToolsSampleModal',
-      'throbber' => theme('image', ctools_image_path('ajax-loader.gif', 'ctools_ajax_sample'), t('Loading...'), t('Loading')),
+      'throbber' => theme('image', array('path' => ctools_image_path('ajax-loader.gif', 'ctools_ajax_sample'), 'alt' => t('Loading...'), 'title' => t('Loading'))),
     ),
   );
 

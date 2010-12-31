@@ -49,3 +49,4 @@ Variant titles showing up as blank if more than one variant on a page.
 #995026: Fix export UI during enable/disable which would throw notices and not properly set/unset menu items.
 #998870 by Amitaibu: Fix notice when content has no icon by using function already designed for that.
 #983576 by Amitaibu: Node view fallback task showed white screen.
+#1004644 by pillarsdotnet: Update a missed theme() call to D7.

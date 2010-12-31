@@ -33,8 +33,8 @@ function ctools_ajax_image_button($image, $dest, $alt, $class = '') {
  * Note: 'html' => true so be sure any text is vetted! Chances are these kinds of buttons will
  * not use user input so this is a very minor concern.
  *
- * @param $image
- *   The path to an image to use that will be sent to theme('image') for rendering.
+ * @param $text
+ *   The text that will be displayed as the link.
  * @param $dest
  *   The destination of the link.
  * @param $alt
