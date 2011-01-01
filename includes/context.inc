@@ -491,6 +491,11 @@ function ctools_context_get_all_converters() {
  * Let the context convert an argument based upon the converter that was given.
  */
 function ctools_context_convert_context($context, $converter) {
+  // Contexts without plugins might be optional placeholders.
+  if (empty($context->plugin)) {
+    return;
+  }
+
   $value = $context->argument;
   if ($function = ctools_plugin_load_function('ctools', 'contexts', $context->plugin, 'convert')) {
     $value = $function($context, $converter);
