@@ -126,7 +126,7 @@ function ctools_context_term_settings_form_validate($form, &$form_state) {
     return;
   }
 
-  $term = db_query('SELECT tid FROM {taxonomy_term_data} WHERE LOWER(name) = LOWER(:name) AND t.vid = :vid', array(':name' => $form_state['values']['taxonomy'][$vid], ':vid' => $vid))->fetchObject();
+  $term = db_query('SELECT tid FROM {taxonomy_term_data} WHERE LOWER(name) = LOWER(:name) AND vid = :vid', array(':name' => $form_state['values']['taxonomy'][$vid], ':vid' => $vid))->fetchObject();
 
   if (!$term) {
     form_error($form['taxonomy'][$vid], t('Invalid term selected.'));

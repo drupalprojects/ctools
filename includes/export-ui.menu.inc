@@ -9,6 +9,7 @@ function ctools_export_ui_menu(&$items) {
 
   // If a menu rebuild is triggered because of module enable/disable,
   // this might be out of date. Reset the cache.
+  ctools_include('plugins');
   ctools_get_plugins_reset();
 
   foreach (ctools_get_export_uis() as $plugin) {
