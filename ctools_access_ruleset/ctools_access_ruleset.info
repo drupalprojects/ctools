@@ -4,4 +4,3 @@ description = Create custom, exportable, reusable access rulesets for applicatio
 core = 7.x
 package = Chaos tool suite
 dependencies[] = ctools
-files[] = ctools_access_ruleset.module

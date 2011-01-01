@@ -7,4 +7,3 @@ dependencies[] = panels
 dependencies[] = page_manager
 dependencies[] = advanced_help
 core = 7.x
-files[] = ctools_plugin_example.module

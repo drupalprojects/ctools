@@ -4,5 +4,6 @@ description = Provides hooks for testing ctools plugins.
 package = Chaos tool suite
 core = 7.x
 dependencies[] = ctools
+files[] = ctools.plugins.test
+files[] = object_cache.test
 hidden = TRUE
-files[] = ctools_plugin_test.module

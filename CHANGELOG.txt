@@ -50,3 +50,4 @@ Variant titles showing up as blank if more than one variant on a page.
 #998870 by Amitaibu: Fix notice when content has no icon by using function already designed for that.
 #983576 by Amitaibu: Node view fallback task showed white screen.
 #1004644 by pillarsdotnet: Update a missed theme() call to D7.
+#1006162 by aspilicious: .info file cleanup.
