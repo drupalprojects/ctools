@@ -51,3 +51,4 @@ Variant titles showing up as blank if more than one variant on a page.
 #983576 by Amitaibu: Node view fallback task showed white screen.
 #1004644 by pillarsdotnet: Update a missed theme() call to D7.
 #1006162 by aspilicious: .info file cleanup.
+#998312 by dereine: Support the expanded/hidden options that Views did for dependent.js
