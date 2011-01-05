@@ -56,3 +56,4 @@ Variant titles showing up as blank if more than one variant on a page.
 Fix broken query in term context config.
 #992022 by pcambra: Fix node autocomplete.
 #946302 by BerdArt and arywyr: Fix PHP 5.3 reference error.
+#980528 by das-peter: Notice fix with entity settings.

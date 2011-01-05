@@ -153,9 +153,11 @@ function ctools_entity_field_content_type_formatter_styles_submit($form, &$form_
   $fields = $form_state['values']['ctools_field_list'];
   $formatter_info = ctools_fields_get_field_formatter_info($fields);
   foreach ($formatter_info as $info) {
-    foreach ($info['settings'] as $field_name => $value) {
-      if (isset($form_state['values'][$field_name])) {
-        $form_state['conf']['formatter_settings'][$field_name] = $form_state['values'][$field_name];
+    if (!empty($info['settings'])) {
+      foreach ($info['settings'] as $field_name => $value) {
+        if (!empty($form_state['values'][$field_name])) {
+          $form_state['conf']['formatter_settings'][$field_name] = $form_state['values'][$field_name];
+        }
       }
     }
   }
