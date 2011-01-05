@@ -65,3 +65,4 @@ Fix broken query in term context config.
 #941780 by EclipseGc: Restore the "No blocks" functionality.
 #951048 by EclipseGc: Tighter entity integration so that new entities are automatic contexts and relationships.
 #941800 by me and aspilicious: Use Drupal 7 #machine_name automation on page manager pages and all export_ui defaults.
+Disabled exportables and pages not properly greyed out.

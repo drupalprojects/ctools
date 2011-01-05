@@ -23,7 +23,7 @@ body form#ctools-export-ui-list-form {
   float: left; /* LTR */
 }
 
-tr.ctools-export-ui-disabled {
+tr.ctools-export-ui-disabled td {
   color: #999;
 }
 

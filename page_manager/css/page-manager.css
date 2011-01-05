@@ -36,7 +36,7 @@ body form#page-manager-list-pages-form {
   background-color: #fafafa;
 }
 
-#page-manager-list-pages tr.page-manager-disabled {
+#page-manager-list-pages tr.page-manager-disabled td {
   color: #999;
 }
 
