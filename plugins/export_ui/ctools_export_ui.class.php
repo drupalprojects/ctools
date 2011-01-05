@@ -1365,7 +1365,7 @@ function ctools_export_ui_delete_confirm_form($form, &$form_state) {
  *
  * This simply loads the object defined in the plugin and hands it off.
  */
-function ctools_export_ui_edit_item_wizard_form(&$form, &$form_state) {
+function ctools_export_ui_edit_item_wizard_form($form, &$form_state) {
   $method = 'edit_form_' . $form_state['step'];
   if (!method_exists($form_state['object'], $method)) {
     $method = 'edit_form';
