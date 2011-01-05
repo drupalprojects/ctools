@@ -221,7 +221,8 @@ function ctools_custom_content_type_admin_info($subtype, $conf) {
   // If a php filter is active, just print the source, but only if the current
   // user has access to the actual filter.
   if ($php_filter) {
-    if (!filter_access($settings['format'])) {
+    $filter = filter_format_load($settings['format']);
+    if (!filter_access($filter)) {
       return NULL;
     }
     $block->content = '<pre>'. check_plain($settings['body']) .'</pre>';

@@ -62,7 +62,7 @@ function ctools_plugin_configure_form($form_info, &$form_state) {
   }
 
   ctools_include('wizard');
-  return ctools_wizard_multistep_form($form_info, $step, $form_state);
+  return ctools_wizard_multistep_form($form_info, $form_state['step'], $form_state);
 }
 
 function _ctools_plugin_configure_create_form_info(&$form_info, $plugin_definition, $op) {

@@ -104,7 +104,7 @@ function ctools_entity_field_content_type_render($subtype, $conf, $panel_args, $
 * Returns an edit form for custom type settings.
 */
 function ctools_entity_field_content_type_formatter_options($form, &$form_state) {
-  if (!$form_state['conf']['formatter_settings']) {
+  if (empty($form_state['conf']['formatter_settings'])) {
     $form_state['conf']['formatter_settings'] = array();
   }
   $conf = $form_state['conf'];
