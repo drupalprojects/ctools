@@ -61,4 +61,4 @@ Fix broken query in term context config.
 #964174: stylizer plugin theme delegation was in the wrong place, causing errors.
 #991658 by burlap: Fully load the "user" context for the logged in user because not all fields are in $user.
 #1014866 by das-peter: Smarter title panes, notice fix on access plugin descriptions.
-
+#1015662 by troky: plugin .info files were not using correct filepaths.
