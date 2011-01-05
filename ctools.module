@@ -302,6 +302,18 @@ function ctools_set_callback_token($token, $callback) {
   return $string;
 }
 
+/**
+ * Tell CTools that sidebar blocks should not be rendered.
+ *
+ * It is often desirable to not display sidebars when rendering a page,
+ * particularly when using Panels. This informs CTools to alter out any
+ * sidebar regions during block render.
+ */
+function ctools_set_no_blocks($blocks = FALSE) {
+  $status = &drupal_static(__FUNCTION__, TRUE);
+  $status = $blocks;
+}
+
 // -----------------------------------------------------------------------
 // Drupal core hooks
 
@@ -710,3 +722,22 @@ function ctools_menu_local_tasks_alter(&$data, $router_item, $root_path) {
   ctools_include('menu');
   _ctools_menu_add_dynamic_items($data, $router_item, $root_path);
 }
+
+/**
+ * Implement hook_block_list_alter() to potentially remove blocks.
+ *
+ * This exists in order to replicate Drupal 6's "no blocks" functionality.
+ */
+function ctools_block_list_alter(&$blocks) {
+  $check = drupal_static('ctools_set_no_blocks', TRUE);
+  if (!$check) {
+    foreach ($blocks as $block_id => $block) {
+      // @todo -- possibly we can set configuration for this so that users can
+      // specify which blocks will not get rendered.
+      if (substr_compare($block->region, 'sidebar', 0)) {
+        unset($blocks[$block_id]);
+      }
+    }
+  }
+}
+

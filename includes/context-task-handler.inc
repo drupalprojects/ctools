@@ -173,13 +173,9 @@ function ctools_context_handler_render_handler($task, $subtask, $handler, $conte
 
   // Only directly output if $page was set to true.
   if (!empty($info['no_blocks'])) {
-    /*print theme('page', $info['content'], FALSE);
-    return;*/
-    return $info['content'];
+    ctools_set_no_blocks(FALSE);
   }
-  else {
-    return $info['content'];
-  }
+  return $info['content'];
 }
 
 /**
