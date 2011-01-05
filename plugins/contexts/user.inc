@@ -40,7 +40,7 @@ function ctools_context_create_user($empty, $data = NULL, $conf = FALSE) {
   if ($conf) {
     if ($data['type'] == 'current') {
       global $user;
-      $data = $user;
+      $data = user_load($user->uid);
       $data->logged_in_user = TRUE;
     }
     else {
