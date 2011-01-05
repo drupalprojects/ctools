@@ -90,7 +90,7 @@ function _views_content_panes_content_type($view, $display) {
 
   $title = $display->handler->get_option('pane_title');
   if (!$title) {
-    $title = $view->name;
+    $title = t('@view: @display', array('@view' => $view->name, '@display' => $display->display_title));
   }
 
   $description = $display->handler->get_option('pane_description');
