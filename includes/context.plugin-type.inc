@@ -10,9 +10,15 @@
  */
 
 function ctools_context_plugin_type(&$items) {
-  $items['contexts'] = array();
-  $items['arguments'] = array();
-  $items['relationships'] = array();
+  $items['contexts'] = array(
+    'child plugins' => TRUE,
+  );
+  $items['arguments'] = array(
+    'child plugins' => TRUE,
+  );
+  $items['relationships'] = array(
+    'child plugins' => TRUE,
+  );
   $items['access'] = array(
     'child plugins' => TRUE,
   );

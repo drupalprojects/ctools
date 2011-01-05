@@ -63,3 +63,4 @@ Fix broken query in term context config.
 #1014866 by das-peter: Smarter title panes, notice fix on access plugin descriptions.
 #1015662 by troky: plugin .info files were not using correct filepaths.
 #941780 by EclipseGc: Restore the "No blocks" functionality.
+#951048 by EclipseGc: Tighter entity integration so that new entities are automatic contexts and relationships.

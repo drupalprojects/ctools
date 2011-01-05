@@ -18,7 +18,7 @@ $plugin = array(
   'settings form' => 'ctools_term_vocabulary_ctools_access_settings',
   'settings form submit' => 'ctools_term_vocabulary_ctools_access_settings_submit',
   'summary' => 'ctools_term_vocabulary_ctools_access_summary',
-  'required context' => new ctools_context_required(t('Vocabulary'), array('term', 'terms', 'vocabulary')),
+  'required context' => new ctools_context_required(t('Vocabulary'), array('taxonomy_term', 'terms', 'taxonomy_vocabulary')),
 );
 
 /**
