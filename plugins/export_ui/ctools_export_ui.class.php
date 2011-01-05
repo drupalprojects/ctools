@@ -992,12 +992,17 @@ class ctools_export_ui {
       '#maxlength' => 255,
     );
 
+    if (!empty($this->plugin['export']['admin_title'])) {
+      $form['info'][$export_key]['#type'] = 'machine_name';
+      $form['info'][$export_key]['#machine_name'] = array(
+        'exists' => 'ctools_export_ui_edit_name_exists',
+        'source' => array('info', $this->plugin['export']['admin_title']),
+      );
+    }
+
     if ($form_state['op'] === 'edit') {
       $form['info'][$export_key]['#disabled'] = TRUE;
       $form['info'][$export_key]['#value'] = $item->{$export_key};
-    }
-    else {
-      $form['info'][$export_key]['#element_validate'] = array('ctools_export_ui_edit_name_validate');
     }
 
     if (!empty($this->plugin['export']['admin_description'])) {
@@ -1331,6 +1336,15 @@ function ctools_export_ui_edit_name_validate($element, &$form_state) {
   if (empty($form_state['item']->export_ui_allow_overwrite) && $exists = ctools_export_crud_load($plugin['schema'], $element['#value'])) {
     form_error($element, t('A @plugin with this name already exists. Please choose another name or delete the existing item before creating a new one.', array('@plugin' => $plugin['title singular'])));
   }
+}
+
+/**
+ * Test for #machine_name type to see if an export exists.
+ */
+function ctools_export_ui_edit_name_exists($name, $element, &$form_state) {
+  $plugin = $form_state['plugin'];
+
+  return (empty($form_state['item']->export_ui_allow_overwrite) && ctools_export_crud_load($plugin['schema'], $name));
 }
 
 /**

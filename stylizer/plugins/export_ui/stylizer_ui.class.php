@@ -207,7 +207,7 @@ class stylizer_ui extends ctools_export_ui {
       $form_state['type'] = $form_state['item']->style_type;
     }
 
-    $form_state['plugin'] = $plugin;
+    $form_state['base_style_plugin'] = $plugin;
     $form_state['settings'] = $form_state['item']->settings;
     return $form_info;
   }
