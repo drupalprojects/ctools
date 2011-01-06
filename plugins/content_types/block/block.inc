@@ -108,7 +108,7 @@ function ctools_block_content_type_render($subtype, $conf) {
   if ($module == 'block' && (empty($conf['override_title']) || strpos($conf['override_title_text'], '%title') !== FALSE)) {
     // {block}.title is plain text, but this hook should return an HTML title.
     global $theme_key;
-    $result = db_query("SELECT title FROM {block} 
+    $result = db_query("SELECT title FROM {block}
       WHERE module = :module AND delta = :delta AND theme = :theme", array(
           ':module' => 'block', ':delta' => $delta, ':theme' => $theme_key
       )
@@ -293,11 +293,11 @@ function menu_ctools_block_info($module, $delta, &$info) {
 function forum_ctools_block_info($module, $delta, &$info) {
   $info['category'] = t('Activity');
   switch ($delta) {
-    case '0':
+    case 'active':
       $info['icon'] = 'icon_core_activeforumtopics.png';
       break;
 
-    case '1':
+    case 'new':
       $info['icon'] = 'icon_core_newforumtopics.png';
       break;
 
@@ -351,27 +351,22 @@ function aggregator_ctools_block_info($module, $delta, &$info) {
 
 function block_ctools_block_info($module, $delta, &$info) {
   $info['icon'] = 'icon_core_block_empty.png';
-  $info['category'] = t('Miscellaneous');
+  $info['category'] = t('Custom blocks');
 }
 
 function user_ctools_block_info($module, $delta, &$info) {
   $info['category'] = t('Activity');
   switch ($delta) {
-    case '0':
+    case 'login':
       $info['icon'] = 'icon_core_userlogin.png';
       $info['category'] = t('Widgets');
       break;
 
-    case '1':
-      $info['icon'] = 'icon_core_navigation.png';
-      $info['category'] = t('Menus');
-      break;
-
-    case '2':
+    case 'new':
       $info['icon'] = 'icon_core_whosnew.png';
       break;
 
-    case '3':
+    case 'online':
       $info['icon'] = 'icon_core_whosonline.png';
       break;
 
@@ -392,6 +387,30 @@ function statistics_ctools_block_info($module, $delta, &$info) {
 }
 
 function system_ctools_block_info($module, $delta, &$info) {
+  // Remove the main content fake block.
+  if ($delta == 'main') {
+    $info = NULL;
+    return;
+  }
+
+  $menus = array('main-menu', 'management', 'navigation', 'user-menu');
+
+  if (in_array($delta, $menus)) {
+    $info['icon'] = 'icon_core_block_menu.png';
+    $info['category'] = t('Menus');
+
+    if ($delta == 'navigation') {
+      $info['icon'] = 'icon_core_navigation.png';
+    }
+
+    return;
+  }
+
   $info['icon'] = 'icon_core_drupal.png';
+  if ($delta == 'help') {
+    $info['category'] = t('Page elements');
+    return;
+  }
+
   $info['category'] = t('Widgets');
 }

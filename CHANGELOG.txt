@@ -67,3 +67,4 @@ Fix broken query in term context config.
 #941800 by me and aspilicious: Use Drupal 7 #machine_name automation on page manager pages and all export_ui defaults.
 Disabled exportables and pages not properly greyed out.
 #969208 by me and benshell: Get user_view and user profile working.
+#941796: Recategorize blocks
