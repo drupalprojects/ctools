@@ -1,9 +1,8 @@
 Current API VERSION: 2.0. See API.txt for more information.
 
-ctools 7.x-1.x-dev
-==================
+ctools 7.x-1.x-alpha2
+=====================
 
-Changelog reset for 7.x
 #911396 by alex_b: Prevent notices in export UI.
 #919768 by mikey_p: Allow url options to be sent to ctools_ajax_command_url().
 #358953 by cedarm: Allow term context to return lowercase, spaces to dashes versions of terms.
@@ -68,3 +67,9 @@ Fix broken query in term context config.
 Disabled exportables and pages not properly greyed out.
 #969208 by me and benshell: Get user_view and user profile working.
 #941796: Recategorize blocks
+
+ctools 7.x-1.x-alpha1
+=====================
+
+Changelog reset for 7.x
+Basic conversion done during sprint.
