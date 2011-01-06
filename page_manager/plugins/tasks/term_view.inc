@@ -73,7 +73,7 @@ function page_manager_term_view_menu_alter(&$items, $task) {
 
   // @todo --fix.
   variable_set('page_manager_term_view_disabled', TRUE);
-  drupal_set_message(t('Due to changes in taxonomy, the taxonomy integration with Page Manager is currently not implemented. See <a href="http://drupal.org/node/1016510">.', array('%callback' => $items['taxonomy/term/%taxonomy_term']['page callback'])), 'error');
+  drupal_set_message(t('Due to changes in taxonomy, the taxonomy integration with Page Manager is currently not implemented. See <a href="http://drupal.org/node/1016510">.'), 'error');
   return;
 
   // Override the term view handler for our purpose, but only if someone else
