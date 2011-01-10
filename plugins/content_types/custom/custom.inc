@@ -243,7 +243,7 @@ function ctools_custom_content_type_edit_form($form, &$form_state) {
   $form_state['settings'] = $settings;
 
   if ($settings['custom_type'] == 'fixed') {
-    return; // no form for this case.
+    return $form; // no form for this case.
   }
 
   $form['admin_title'] = array(
@@ -303,7 +303,7 @@ function ctools_custom_content_type_edit_form($form, &$form_state) {
   }
 
   if (!user_access('administer custom content') || !module_exists('ctools_custom_content')) {
-    return;
+    return $form;
   }
 
   // Make the other form items dependent upon it.
