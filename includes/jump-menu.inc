@@ -44,7 +44,7 @@
  *     set to this.
  *   - 'inline': If set to TRUE (default) the display will be forced inline.
  */
-function ctools_jump_menu($form_state, $select, $options = array()) {
+function ctools_jump_menu($form, &$form_state, $select, $options = array()) {
   $options += array(
     'button' => t('Go'),
     'choose' => t('- Choose -'),
