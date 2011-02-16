@@ -59,15 +59,35 @@ function ctools_plugin_api_info($owner, $api, $minimum_version, $current_version
   $cache = &drupal_static(__FUNCTION__, array());
   if (!isset($cache[$owner][$api])) {
     $cache[$owner][$api] = array();
-    foreach (module_implements('ctools_plugin_api') as $module) {
-      $function = $module . '_ctools_plugin_api';
+
+    // Allow modules to use their own hook for this. The only easy way to do
+    // this right now is with a magically named function.
+    if (function_exists($function = $owner . '_' . $api . '_hook_name')) {
+      $hook = $function();
+    }
+
+    if (empty($hook)) {
+      $hook = 'ctools_plugin_api';
+    }
+
+    foreach (module_implements($hook) as $module) {
+      $function = $module . '_' . $hook;
       $info = $function($owner, $api);
-      if (!isset($info['version'])) {
+      // This is added to make hook_views_api() compatible with this, since
+      // views used a different version key.
+      if (isset($info['version'])) {
+        $version = $info['version'];
+      }
+      else if (isset($info['api'])) {
+        $version = $info['api'];
+      }
+
+      if (!isset($version)) {
         continue;
       }
 
       // Only process if version is between minimum and current, inclusive.
-      if ($info['version'] >= $minimum_version && $info['version'] <= $current_version) {
+      if (version_compare($version, $minimum_version, '>=') && version_compare($version, $current_version, '<=')) {
         if (!isset($info['path'])) {
           $info['path'] = drupal_get_path('module', $module);
         }
@@ -85,7 +105,7 @@ function ctools_plugin_api_info($owner, $api, $minimum_version, $current_version
         }
 
         // Only process if version is between minimum and current, inclusive.
-        if ($info['version'] >= $minimum_version && $info['version'] <= $current_version) {
+      if (version_compare($info['version'], $minimum_version, '>=') && version_compare($info['version'], $current_version, '<=')) {
           if (!isset($info['path'])) {
             $info['path'] = '';
           }
