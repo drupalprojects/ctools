@@ -65,6 +65,9 @@ function ctools_plugin_api_info($owner, $api, $minimum_version, $current_version
     if (function_exists($function = $owner . '_' . $api . '_hook_name')) {
       $hook = $function();
     }
+    else if (function_exists($function = $owner . '_ctools_plugin_api_hook_name')) {
+      $hook = $function();
+    }
 
     if (empty($hook)) {
       $hook = 'ctools_plugin_api';
@@ -151,9 +154,21 @@ function ctools_plugin_api_include($owner, $api, $minimum_version, $current_vers
   $info = ctools_plugin_api_info($owner, $api, $minimum_version, $current_version);
   foreach ($info as $module => $plugin_info) {
     if (!isset($already_done[$owner][$api][$module])) {
-      $file = isset($plugin_info['file']) ? $plugin_info['file'] : "$module.$api.inc";
-      if (file_exists("./$plugin_info[path]/$file")) {
-        require_once "./$plugin_info[path]/$file";
+      if (isset($plugin_info["$api file"])) {
+        $file = isset($plugin_info["$api file"]);
+      }
+      else if (isset($plugin_info['file'])) {
+        $file = isset($plugin_info['file']);
+      }
+      else {
+        $file = "$module.$api.inc";
+      }
+
+      if (file_exists(DRUPAL_ROOT . "/$plugin_info[path]/$file")) {
+        require_once DRUPAL_ROOT . "/$plugin_info[path]/$file";
+      }
+      else if (file_exists(DRUPAL_ROOT . "/$file")) {
+        require_once DRUPAL_ROOT . "/$plugin_info[path]/$file";
       }
       $already_done[$owner][$api][$module] = TRUE;
     }
