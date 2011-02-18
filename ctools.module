@@ -117,6 +117,17 @@ function ctools_include($file, $module = 'ctools', $dir = 'includes') {
 }
 
 /**
+ * Include .inc files in a form context.
+ *
+ * This is a variant of ctools_include that will save information in the
+ * the form_state so that cached forms will properly include things.
+ */
+function ctools_form_include(&$form_state, $file, $module = 'ctools', $dir = 'includes') {
+  $dir = '/' . ($dir ? $dir . '/' : '');
+  form_load_include($form_state, 'inc', $module, $dir . $file);
+}
+
+/**
  * Provide the proper path to an image as necessary.
  *
  * This helper function is used by ctools but can also be used in other
