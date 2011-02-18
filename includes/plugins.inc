@@ -373,6 +373,7 @@ function ctools_plugin_get_plugin_type_info($flush = FALSE) {
  * Reset all static caches that affect the result of ctools_get_plugins().
  */
 function ctools_get_plugins_reset() {
+  drupal_static_reset('ctools_plugin_setup');
   drupal_static_reset('ctools_plugin_load_includes');
   drupal_static_reset('ctools_plugin_api_info');
 }

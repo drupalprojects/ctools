@@ -741,3 +741,10 @@ function ctools_block_list_alter(&$blocks) {
   }
 }
 
+/**
+ * Implement hook_modules_enabled to clear static caches for detecting new plugins
+ */
+function ctools_modules_enabled($modules) {
+  ctools_include('plugins');
+  ctools_get_plugins_reset();
+}
