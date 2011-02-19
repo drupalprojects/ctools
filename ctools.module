@@ -162,6 +162,28 @@ function ctools_add_css($file, $module = 'ctools', $dir = 'css') {
 }
 
 /**
+ * Format a css file name for use with $form['#attached']['css'].
+ *
+ * This helper function is used by ctools but can also be used in other
+ * modules in the same way as explained in the comments of ctools_include.
+ *
+ * @code
+ *   $form['#attached']['css'] = array(ctools_attach_css('collapsible-div'));
+ *   $form['#attached']['css'][ctools_attach_css('collapsible-div')] = array('preprocess' => FALSE);
+ * @endcode
+ *
+ * @param $file
+ *   The base file name to be included.
+ * @param $module
+ *   Optional module containing the include.
+ * @param $dir
+ *   Optional subdirectory containing the include file.
+ */
+function ctools_attach_css($file, $module = 'ctools', $dir = 'css') {
+  return drupal_get_path('module', $module) . "/$dir/$file.css";
+}
+
+/**
  * Include js files as necessary.
  *
  * This helper function is used by ctools but can also be used in other
