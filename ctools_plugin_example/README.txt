@@ -1,4 +1,3 @@
-// $Id$
 
 The CTools Plugin Example is an example for developers of how to CTools
 access, argument, content type, context, and relationship plugins.

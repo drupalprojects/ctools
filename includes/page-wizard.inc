@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * Fetch metadata on a specific page_wizard plugin.

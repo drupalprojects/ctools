@@ -1,4 +1,3 @@
-// $Id$
 /**
  * @file
  * Javascript required for a simple collapsible div.

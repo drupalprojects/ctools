@@ -1,5 +1,4 @@
 <?php
-// $Id$
 /**
  * Define some plugin systems to test ctools plugin includes.
  */

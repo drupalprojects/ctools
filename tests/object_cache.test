@@ -1,5 +1,4 @@
 <?php
-// $Id$
 /**
  * @file
  * Tests for different parts of the ctools object caching system.

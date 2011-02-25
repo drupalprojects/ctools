@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 $plugin = array(
   'schema' => 'ctools_access_ruleset',

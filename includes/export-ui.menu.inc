@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * Delegated implementation of hook_menu().
