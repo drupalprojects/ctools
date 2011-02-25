@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 if (module_exists('profile') && !is_null(profile_categories())) {
   /**

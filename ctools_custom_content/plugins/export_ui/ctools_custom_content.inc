@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 $plugin = array(
   'schema' => 'ctools_custom_content',

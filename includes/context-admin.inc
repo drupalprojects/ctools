@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * @file includes/common-context.inc

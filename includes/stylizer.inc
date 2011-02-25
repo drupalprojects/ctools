@@ -1,5 +1,4 @@
 <?php
-// $Id$
 /**
  * @file
  * Create customized CSS and images from palettes created by user input.

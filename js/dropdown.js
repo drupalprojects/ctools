@@ -1,4 +1,3 @@
-// $Id$
 /**
  * @file
  * Implement a simple, clickable dropdown menu.

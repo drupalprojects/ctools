@@ -1,4 +1,3 @@
-; $Id$
 name = Views content panes
 description = Allows Views content to be used in Panels, Dashboard and other modules which use the CTools Content API.
 package = "Views"

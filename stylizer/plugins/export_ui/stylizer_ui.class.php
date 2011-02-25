@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * UI class for Stylizer.

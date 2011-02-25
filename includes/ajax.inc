@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 // Set this so we can tell that the file has been included at some point.
 define('CTOOLS_AJAX_INCLUDED', 1);

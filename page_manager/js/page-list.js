@@ -1,4 +1,3 @@
-// $Id$
 
 /**
  * Provide some extra responses for the page list so we can have automatic

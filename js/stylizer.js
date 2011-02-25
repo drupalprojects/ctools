@@ -1,4 +1,3 @@
-// $Id$
 
 (function ($) {
   Drupal.CTools = Drupal.CTools || {};

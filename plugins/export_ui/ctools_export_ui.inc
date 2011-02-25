@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * The default plugin exists only to provide the base class. Other plugins

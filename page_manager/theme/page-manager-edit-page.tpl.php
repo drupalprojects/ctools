@@ -1,5 +1,4 @@
 <?php
-// $Id$
 /**
  * @file
  * Template for the page manager page editor.

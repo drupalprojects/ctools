@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * @file relationships/term_parent.inc

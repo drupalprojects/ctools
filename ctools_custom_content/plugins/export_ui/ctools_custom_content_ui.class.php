@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 class ctools_custom_content_ui extends ctools_export_ui {
 

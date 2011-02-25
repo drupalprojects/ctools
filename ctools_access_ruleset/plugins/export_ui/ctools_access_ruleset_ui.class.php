@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 class ctools_access_ruleset_ui extends ctools_export_ui {
 
