@@ -47,6 +47,14 @@ function ctools_content_process(&$plugin, $info) {
     $plugin['add form'] = $function_base . 'edit_form';
   }
 
+  if (!isset($plugin['description'])) {
+    $plugin['description'] = '';
+  }
+
+  if (!isset($plugin['icon'])) {
+    $plugin['icon'] = ctools_content_admin_icon($plugin);
+  }
+
   // Another ease of use check:
   if (!isset($plugin['content types'])) {
     // If a subtype plugin exists, try to use it. Otherwise assume single.
