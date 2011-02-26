@@ -445,6 +445,12 @@ function page_manager_page_form_basic($form, &$form_state) {
       '#title' => t('Make this your site home page.'),
       '#description' => t('To set this panel as your home page you must create a unique path name with no % placeholders in the path. The site home page is currently set to %homepage on the !siteinfo configuration form.', array('!siteinfo' => l('Site Information', 'admin/settings/site-information'), '%homepage' => '/' . $frontpage)),
     );
+    $form['admin_paths'] = array(
+      '#type' => 'checkbox',
+      '#default_value' => !empty($page->conf['admin_paths']),
+      '#title' => t('Use this page in an admin overlay.'),
+      '#description' => t('Admin overlays are used in many places in Drupal 7 and administrative custom pages should probably utilize this feature.'),
+    );
   }
   else if ($path == $frontpage) {
     $form['frontpage_markup'] = array(
@@ -645,6 +651,7 @@ function page_manager_page_form_basic_submit(&$form, &$form_state) {
   }
 
   $page->make_frontpage = !empty($form_state['values']['frontpage']);
+  $page->conf['admin_paths'] = !empty($form_state['values']['admin_paths']);
 }
 
 /**
