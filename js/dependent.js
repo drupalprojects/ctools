@@ -30,12 +30,10 @@
 
   Drupal.CTools.dependent.inArray = function(array, search_term) {
     var i = array.length;
-    if (i > 0) {
-     do {
+    while (i--) {
       if (array[i] == search_term) {
          return true;
       }
-     } while (i--);
     }
     return false;
   }
