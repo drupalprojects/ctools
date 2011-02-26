@@ -16,9 +16,9 @@ $plugin = array(
   'description' => t('Loads a view result into a context that can then be displayed across a panel or turned into other contexts.'),
   'context' => 'views_content_context_view_create',
 
-  'settings form' => 'views_content_context_view_settings_form',
-  'settings form validate' => 'views_content_context_view_settings_form_validate',
-  'settings form submit' => 'views_content_context_view_settings_form_submit',
+  'edit form' => 'views_content_context_view_settings_form',
+  'edit form validate' => 'views_content_context_view_settings_form_validate',
+  'edit form submit' => 'views_content_context_view_settings_form_submit',
 
   'defaults' => array('view' => ''),
 
