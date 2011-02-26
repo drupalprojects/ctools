@@ -23,7 +23,7 @@ function ctools_user_picture_content_type_render($subtype, $conf, $panel_args, $
   }
 
   $block->title = check_plain($account->name);
-  $block->content = theme('user_picture', $account);
+  $block->content = theme('user_picture', array('account' => $account));
 
   return $block;
 }
