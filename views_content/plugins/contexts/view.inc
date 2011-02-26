@@ -62,6 +62,7 @@ function views_content_context_view_create($empty, $data = NULL, $conf = FALSE) 
     $context->data     = array(
       'name' => $data->name,
       'display' => $data->current_display,
+      'args' => $data->args,
     );
 
     // At runtime, this can get populated. Once it is populated this

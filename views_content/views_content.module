@@ -165,6 +165,7 @@ function views_content_context_get_view(&$context) {
     $context->view = views_get_view($context->data['name']);
     if ($context->view) {
       $context->view->set_display($context->data['display']);
+      $context->view->set_arguments($context->data['args']);
     }
   }
 

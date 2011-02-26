@@ -82,16 +82,22 @@ function views_content_views_row_content_type_edit_form_submit($form, &$form_sta
 
 function views_content_views_row_edit($form, &$form_state) {
   $conf = $form_state['conf'];
+  $contexts = $form_state['contexts'];
 
-  if (empty($form_state['contexts'][$conf['context']])) {
-    $form['markup'] = array('#value' => '<p>' . t('Invalid context selected.') . '</p>');
-    return;
+  if (empty($contexts[$conf['context']])) {
+    $form['markup'] = array('#markup' => '<p>' . t('Invalid context selected.') . '</p>');
+    return $form;
   }
 
-  $view = views_content_context_get_view($form_state['contexts'][$conf['context']]);
+  $name = $contexts[$conf['context']]->placeholder['conf']['name'];
+  list($plugin, $view_data) = explode(':', $name);
+  list($view_name, $display_id) = explode('-', $view_data);
+  $contexts[$conf['context']]->data['name'] = $view_name;
+  $contexts[$conf['context']]->data['display'] = $display_id;
+  $view = views_content_context_get_view($contexts[$conf['context']]);
   if (empty($view)) {
-    $form['markup'] = array('#value' => '<p>' . t('Context contains an invalid view.') . '</p>');
-    return;
+    $form['markup'] = array('#markup' => '<p>' . t('Context contains an invalid view.') . '</p>');
+    return $form;
   }
 
   // Support Views 2 and Views 3.
@@ -103,8 +109,8 @@ function views_content_views_row_edit($form, &$form_state) {
     $rows = $view->display_handler->get_option('items_per_page');
   }
   if (empty($rows)) {
-    $form['markup'] = array('#value' => '<p>' . t('The view must have a maximum number of items set to use this content type.') . '</p>');
-    return;
+    $form['markup'] = array('#markup' => '<p>' . t('The view must have a maximum number of items set to use this content type.') . '</p>');
+    return $form;
   }
 
   foreach (range(1, $rows) as $row) {

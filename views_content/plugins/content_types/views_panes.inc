@@ -107,19 +107,9 @@ function _views_content_panes_content_type($view, $display) {
   $contexts = array();
 
   $arguments = $display->handler->get_argument_input();
+  ctools_include('views');
   foreach ($arguments as $argument) {
-    if ($argument['type'] == 'context') {
-      if (strpos($argument['context'], '.')) {
-        list($context, $converter) = explode('.', $argument['context'], 2);
-      }
-      else {
-        // Backwards-compat for before we had a system for delimiting the data
-        // we retrieve out of context objects.
-        $context = $argument['context'];
-      }
-      $class = 'ctools_context_' . (empty($argument['context_optional']) ? 'required' : 'optional');
-      $contexts[] = new $class($argument['label'], $context);
-    }
+    $contexts[] = ctools_views_get_argument_context($argument);
   }
 
   $allow = $display->handler->get_option('allow');
