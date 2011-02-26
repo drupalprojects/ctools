@@ -1226,7 +1226,7 @@ function ctools_context_replace_placeholders($contexts, $arguments) {
       case 'context':
         if (!empty($arguments[$cid])) {
           $context_info = $context->placeholder['conf'];
-          $new_context = ctools_context_get_context_from_context($context_info, 'requiredcontext', $arguments[$cid]);
+          $new_context = ctools_context_get_context_from_context($context_info, 'context', $arguments[$cid]);
         }
         break;
     }
