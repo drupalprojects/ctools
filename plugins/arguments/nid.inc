@@ -19,6 +19,7 @@ $plugin = array(
     '#type' => 'textfield',
     '#description' => t('Enter the node ID of a node for this argument'),
   ),
+  'no ui' => TRUE,
 );
 
 /**

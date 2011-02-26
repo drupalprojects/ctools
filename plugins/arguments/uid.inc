@@ -23,6 +23,7 @@ $plugin = array(
   'default' => array('to_arg' => TRUE),
   'path placeholder' => '%pm_uid_arg', // This is in pagemanager.
   'path placeholder to_arg' => TRUE,
+  'no ui' => TRUE,
 );
 
 /**

@@ -20,6 +20,7 @@ $plugin = array(
   'settings form' => 'ctools_term_settings_form',
   'placeholder form' => 'ctools_term_ctools_argument_placeholder',
   'breadcrumb' => 'ctools_term_breadcrumb',
+  'no ui' => TRUE,
 );
 
 /**

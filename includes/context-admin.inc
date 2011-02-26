@@ -101,7 +101,9 @@ function ctools_context_add_argument_form($module, &$form, &$form_state, &$form_
   $args = ctools_get_arguments();
   $choices = array();
   foreach ($args as $name => $arg) {
-    $choices[$name] = $arg['title'];
+    if (empty($arg['no ui'])) {
+      $choices[$name] = $arg['title'];
+    }
   }
 
   asort($choices);

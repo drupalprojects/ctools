@@ -1120,7 +1120,9 @@ function page_manager_page_argument_form_change($form, &$form_state) {
 
   $options = array();
   foreach ($plugins as $id => $plugin) {
-    $options[$id] = $plugin['title'];
+    if (empty($plugin['no ui'])) {
+      $options[$id] = $plugin['title'];
+    }
   }
 
   asort($options);

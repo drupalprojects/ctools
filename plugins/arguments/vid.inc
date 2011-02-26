@@ -20,6 +20,7 @@ $plugin = array(
     '#type' => 'textfield',
     '#description' => t('Enter the vocabulary ID for this argument'),
   ),
+  'no ui' => TRUE,
 );
 
 /**
