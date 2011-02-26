@@ -97,32 +97,33 @@ function ctools_context_create_entity($empty, $data = NULL, $conf = FALSE, $plug
 
 function ctools_context_entity_settings_form($form, &$form_state) {
   $conf = &$form_state['conf'];
+  $plugin = &$form_state['plugin'];
 
   $form['entity'] = array(
-    '#title' => t('Enter the title or ID of a @entity entity', array('@entity' => $conf['keyword'])),
+    '#title' => t('Enter the title or ID of a @entity entity', array('@entity' => $plugin['keyword'])),
     '#type' => 'textfield',
     '#maxlength' => 512,
-    '#autocomplete_path' => 'ctools/autocomplete/' . $conf['keyword'],
+    '#autocomplete_path' => 'ctools/autocomplete/' . $plugin['keyword'],
     '#weight' => -10,
   );
 
   if (!empty($conf['id'])) {
-    $info = entity_load($conf['keyword'], array($conf['id']));
+    $info = entity_load($plugin['keyword'], array($conf['id']));
     $info = $info[$conf['id']];
     if ($info) {
-      $entity = entity_get_info($conf['keyword']);
-      $uri = entity_uri($conf['keyword'], $info);
+      $entity = entity_get_info($plugin['keyword']);
+      $uri = entity_uri($plugin['keyword'], $info);
       if (is_array($uri) && $entity['entity keys']['label']) {
-        $link = l(t("'%title' [%type id %id]", array('%title' => $info->{$entity['entity keys']['label']}, '%type' => $conf['keyword'], '%id' => $conf['id'])), $uri['path'], array('attributes' => array('target' => '_blank', 'title' => t('Open in new window')), 'html' => TRUE));
+        $link = l(t("'%title' [%type id %id]", array('%title' => $info->{$entity['entity keys']['label']}, '%type' => $plugin['keyword'], '%id' => $conf['id'])), $uri['path'], array('attributes' => array('target' => '_blank', 'title' => t('Open in new window')), 'html' => TRUE));
       }
       elseif (is_array($uri)) {
-        $link = l(t("[%type id %id]", array('%type' => $conf['keyword'], '%id' => $conf['id'])), $uri['path'], array('attributes' => array('target' => '_blank', 'title' => t('Open in new window')), 'html' => TRUE));
+        $link = l(t("[%type id %id]", array('%type' => $plugin['keyword'], '%id' => $conf['id'])), $uri['path'], array('attributes' => array('target' => '_blank', 'title' => t('Open in new window')), 'html' => TRUE));
       }
       elseif ($entity['entity keys']['label']) {
-        $link = l(t("'%title' [%type id %id]", array('%title' => $info->{$entity['entity keys']['label']}, '%type' => $conf['keyword'], '%id' => $conf['id'])), file_create_url($uri), array('attributes' => array('target' => '_blank', 'title' => t('Open in new window')), 'html' => TRUE));
+        $link = l(t("'%title' [%type id %id]", array('%title' => $info->{$entity['entity keys']['label']}, '%type' => $plugin['keyword'], '%id' => $conf['id'])), file_create_url($uri), array('attributes' => array('target' => '_blank', 'title' => t('Open in new window')), 'html' => TRUE));
       }
       else {
-        $link = t("[%type id %id]", array('%type' => $conf['keyword'], '%id' => $conf['id']));
+        $link = t("[%type id %id]", array('%type' => $plugin['keyword'], '%id' => $conf['id']));
       }
       $form['entity']['#description'] = t('Currently set to !link', array('!link' => $link));
     }
@@ -135,7 +136,7 @@ function ctools_context_entity_settings_form($form, &$form_state) {
 
   $form['entity_type'] = array(
     '#type' => 'value',
-    '#value' => $conf['keyword'],
+    '#value' => $plugin['keyword'],
   );
 
   $form['set_identifier'] = array(

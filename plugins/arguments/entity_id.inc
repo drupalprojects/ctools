@@ -41,7 +41,8 @@ function ctools_argument_entity_id_get_children($plugin, $parent) {
  * Discover if this argument gives us the entity we crave.
  */
 function ctools_argument_entity_id_context($arg = NULL, $conf = NULL, $empty = FALSE) {
-  $entity_type = $conf['keyword'];
+  $entity_type = explode(':', $conf['name']);
+  $entity_type = $entity_type[1];
   // If unset it wants a generic, unfilled context.
   if ($empty) {
     return ctools_context_create_empty('entity:' . $entity_type);
