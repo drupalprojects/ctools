@@ -72,10 +72,10 @@ function theme_links__ctools_dropbutton($vars) {
   // Check to see if the number of links is greater than 1;
   // otherwise just treat this like a button.
   if (!empty($vars['links'])) {
-    $isDropbutton = (count($vars['links']) > 1);
+    $is_drop_button = (count($vars['links']) > 1);
 
     // Add needed files
-    if ($isDropbutton) {
+    if ($is_drop_button) {
       ctools_add_js('dropbutton');
       ctools_add_css('dropbutton');
     }
@@ -86,7 +86,7 @@ function theme_links__ctools_dropbutton($vars) {
     $id++;
 
     // Wrapping div
-    $class = ($isDropbutton) ? 'ctools-dropbutton-no-js ctools-dropbutton' : '';
+    $class = ($is_drop_button) ? 'ctools-dropbutton-no-js ctools-dropbutton' : '';
     $class .= ' ctools-button';
     if (!empty($vars['class'])) {
       $class .= ($vars['class']) ? (' ' . implode(' ', $vars['class'])) : '';
@@ -97,7 +97,7 @@ function theme_links__ctools_dropbutton($vars) {
     $output .= '<div class="' . $class . '" id="ctools-button-' . $id . '">';
 
     // Add a twisty if this is a dropbutton
-    if ($isDropbutton) {
+    if ($is_drop_button) {
       $vars['title'] = ($vars['title'] ? $vars['title'] : t('open'));
 
       $output .= '<div class="ctools-link">';
