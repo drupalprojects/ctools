@@ -116,7 +116,7 @@ function page_manager_node_view_get_arguments($task, $subtask_id) {
       'keyword' => 'node',
       'identifier' => t('Node being viewed'),
       'id' => 1,
-      'name' => 'nid',
+      'name' => 'entity_id:node',
       'settings' => array(),
     ),
   );
