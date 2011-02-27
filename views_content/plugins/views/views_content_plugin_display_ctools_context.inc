@@ -98,6 +98,10 @@ class views_content_plugin_display_ctools_context extends views_plugin_display {
 
     $categories['context'] = array(
       'title' => t('Context settings'),
+      'column' => 'second',
+      'build' => array(
+        '#weight' => -10,
+      ),
     );
 
     $admin_title = $this->get_option('admin_title');
