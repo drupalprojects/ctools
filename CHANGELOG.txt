@@ -5,6 +5,7 @@ ctools 6.x-dev
 #967590: HTTP Response is not part of panels, erroneously refers to being so.
 #911362 by alex_b: Facilitate plugin cache resets for tests.
 #998870 by Amitaibu: Fix notice when content has no icon by using function already designed for that.
+#1030068 by stella: Fix parsing of tokens with : in them.
 
 ctools 6.x-1.8 (2010-Oct-29)
 ==============
