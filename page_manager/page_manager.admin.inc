@@ -390,7 +390,8 @@ function page_manager_edit_page($page) {
   drupal_set_title($page->subtask['admin title']);
   // Provide and process the save page form before anything else.
   $form_state = array('page' => &$page);
-  $form = drupal_render(drupal_build_form('page_manager_save_page_form', $form_state));
+  $built_form = drupal_build_form('page_manager_save_page_form', $form_state);
+  $form = drupal_render($built_form);
 
   $operations = page_manager_get_operations($page);
   $args = array('summary');
@@ -435,7 +436,8 @@ function page_manager_edit_page_operation() {
   // Since this form should never be submitted to this page, process it late so
   // that we can be sure it notices changes.
   $form_state = array('page' => &$page);
-  $form = drupal_render(drupal_build_form('page_manager_save_page_form', $form_state));
+  $built_form = drupal_build_form('page_manager_save_page_form', $form_state);
+  $form = drupal_render($built_form);
 
   $output = theme('page_manager_edit_page', array('page' => $page, 'save' => $form, 'operations' => $rendered_operations, 'content' => $content));
 
@@ -910,7 +912,8 @@ function _page_manager_get_operation_content($js, &$page, $active, $operation, $
       $form_state['handler'] = &$form_state['page']->new_handler;
     }
 
-    $output = drupal_render(ctools_wizard_multistep_form($form_info, $step, $form_state));
+    $built_form = ctools_wizard_multistep_form($form_info, $step, $form_state);
+    $output = drupal_render($built_form);
     $title = empty($form_state['title']) ? $operation['title'] : $form_state['title'];
     $titles[] = $title;
     $title = implode(' &raquo ', array_filter($titles));
