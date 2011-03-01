@@ -780,3 +780,19 @@ function ctools_modules_enabled($modules) {
   ctools_include('plugins');
   ctools_get_plugins_reset();
 }
+
+/**
+ * Menu theme callback.
+ *
+ * This simply ensures that Panels ajax calls are rendered in the same
+ * theme as the original page to prevent .css file confusion.
+ *
+ * To use this, set this as the theme callback on AJAX related menu
+ * items. Since the ajax page state won't be sent during ajax requests,
+ * it should be safe to use even if ajax isn't invoked.
+ */
+function ctools_ajax_theme_callback() {
+  if (!empty($_POST['ajax_page_state']['theme'])) {
+    return $_POST['ajax_page_state']['theme'];
+  }
+}
