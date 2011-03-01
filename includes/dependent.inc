@@ -146,6 +146,12 @@ function ctools_dependent_pre_render($element) {
     'type' => $element['#dependency_type'],
   );
 
+  // Add a additional wrapper id around textareas to support depedency on it.
+  if ($element['#type'] == 'textarea') {
+    $element['#theme_wrappers'][] = 'container';
+    $element['#attributes']['id'] = $element['#id'] . '-wrapper';
+  }
+
   ctools_add_js('dependent');
   $options['CTools']['dependent'][$element['#id']] = $js;
   drupal_add_js($options, 'setting');
