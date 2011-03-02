@@ -62,7 +62,7 @@ class views_content_plugin_display_ctools_context extends views_plugin_display {
    */
   function render() {
     if (!empty($this->previewing)) {
-      return theme($this->theme_functions(), $this->view);
+      return theme($this->theme_functions(), array('view' => $this->view));
     }
     else {
       // We want to process the view like we're theming it, but not actually
