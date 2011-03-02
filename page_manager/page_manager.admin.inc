@@ -1389,10 +1389,8 @@ function page_manager_handler_add_form($form, $form_state, $features = array()) 
 
   // This set of checkboxes is not dangerous at all.
   $form['features'] = array(
-    '#type' => 'checkboxes',
-    '#validated' => TRUE,
+    '#type' => 'item',
     '#title' => t('Optional features'),
-    '#options' => array(),
     '#description' => t('Check any optional features you need to be presented with forms for configuring them. If you do not check them here you will still be able to utilize these features once the new page is created. If you are not sure, leave these unchecked.'),
     '#tree' => TRUE,
   );
