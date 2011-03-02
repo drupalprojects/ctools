@@ -224,7 +224,7 @@ function ctools_custom_content_type_admin_info($subtype, $conf) {
     if (!filter_access($filter)) {
       return NULL;
     }
-    $block->content = '<pre>'. check_plain($settings['body']) .'</pre>';
+    $block->content = '<pre>' . check_plain($settings['body']) . '</pre>';
   }
   else {
     // We also need to filter through XSS admin because <script> tags can
@@ -269,9 +269,11 @@ function ctools_custom_content_type_edit_form($form, &$form_state) {
     // Set extended description if both CCK and Token modules are enabled, notifying of unlisted keywords
     if (module_exists('content') && module_exists('token')) {
       $description = t('If checked, context keywords will be substituted in this content. Note that CCK fields may be used as keywords using patterns like <em>%node:field_name-formatted</em>.');
-    } elseif (!module_exists('token')) {
+    }
+    elseif (!module_exists('token')) {
       $description = t('If checked, context keywords will be substituted in this content. More keywords will be available if you install the Token module, see http://drupal.org/project/token.');
-    } else {
+    }
+    else {
       $description = t('If checked, context keywords will be substituted in this content.');
     }
 

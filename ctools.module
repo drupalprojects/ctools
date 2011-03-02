@@ -111,7 +111,7 @@ function ctools_include($file, $module = 'ctools', $dir = 'includes') {
 
   if (!isset($used[$module][$dir][$file])) {
     require_once DRUPAL_ROOT . '/' . drupal_get_path('module', $module) . "$dir$file.inc";
-    $used[$module][$dir][$file] = true;
+    $used[$module][$dir][$file] = TRUE;
   }
 }
 
@@ -370,8 +370,8 @@ function ctools_init() {
  * Shutdown handler used during ajax operations to help catch fatal errors.
  */
 function ctools_shutdown_handler() {
-  if (function_exists('error_get_last') AND ($error = error_get_last())){
-    switch($error['type']){
+  if (function_exists('error_get_last') AND ($error = error_get_last())) {
+    switch ($error['type']) {
       case E_ERROR:
       case E_CORE_ERROR:
       case E_COMPILE_ERROR:

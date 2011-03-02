@@ -18,6 +18,7 @@ $plugin = array(
   'defaults' => array('vid' => ''),
   'keyword' => 'vocabulary',
   'context name' => 'vocabulary',
+  'no ui' => TRUE,
 );
 
 /**

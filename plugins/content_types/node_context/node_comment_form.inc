@@ -12,7 +12,7 @@ if (module_exists('comment')) {
     'description' => t('A form to add a new comment.'),
     'required context' => new ctools_context_required(t('Node'), 'node'),
     'category' => t('Node'),
-    'defaults' => array('anon_links' => false),
+    'defaults' => array('anon_links' => FALSE),
   );
 }
 
@@ -41,7 +41,7 @@ function ctools_node_comment_form_content_type_render($subtype, $conf, $panel_ar
           ),
         ),
       );
-      $block->content = drupal_build_form('comment_node_'. $node->type .'_form', $form_state);
+      $block->content = drupal_build_form('comment_node_' . $node->type . '_form', $form_state);
     }
     else if (!empty($conf['anon_links'])) {
       $block->content = theme('comment_post_forbidden', array('node' => $node));

@@ -34,7 +34,7 @@ function ctools_node_title_content_type_render($subtype, $conf, $panel_args, $co
   $block = new stdClass();
   $block->module  = 'node_title';
   $block->title   = $type->title_label;
-  $block->content = !empty($conf['link']) ? l($node->title, 'node/'. $node->nid) : check_plain($node->title);
+  $block->content = !empty($conf['link']) ? l($node->title, 'node/' . $node->nid) : check_plain($node->title);
   $block->delta   = $node->nid;
 
   return $block;

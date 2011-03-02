@@ -15,7 +15,7 @@ $plugin = array(
 
   // Administrative fields.
   'title' => t('HTTP response code'),
-  'admin summary' =>'page_manager_http_response_admin_summary',
+  'admin summary' => 'page_manager_http_response_admin_summary',
   'admin title' => 'page_manager_http_response_title',
   'operations' => array(
     'settings' => array(

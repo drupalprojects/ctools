@@ -158,7 +158,7 @@ function views_content_views_content_type_render($subtype, $conf, $panel_args, $
 
   $block = new stdClass();
   $block->module = 'views';
-  $block->delta  = $view->name .'-'.  $view->current_display;
+  $block->delta  = $view->name . '-' .  $view->current_display;
 
   if (!empty($conf['link_to_view'])) {
     $block->title_link = $view->get_url();

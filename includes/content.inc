@@ -750,7 +750,7 @@ function ctools_content_select_context($plugin, $subtype, $conf, $contexts) {
   // than it's wrong.
   if (is_array($subtype_info['required context'])) {
     if (empty($conf['context']) || count($subtype_info['required context']) != count($conf['context'])) {
-      foreach($subtype_info['required context'] as $index => $required) {
+      foreach ($subtype_info['required context'] as $index => $required) {
         if (!isset($conf['context'][$index])) {
           $filtered = ctools_context_filter($contexts, $required);
           if ($filtered) {

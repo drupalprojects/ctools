@@ -32,8 +32,8 @@ function ctools_entity_field_content_type_content_types() {
   foreach ($entities as $entity_type => $entity) {
     foreach ($entity['bundles'] as $type => $bundle) {
       foreach (field_info_instances($entity_type, $type) as $field_name => $field) {
-        if (!isset($types[$entity_type .':'. $field_name])) {
-          $types[$entity_type .':'. $field_name] = array(
+        if (!isset($types[$entity_type . ':' . $field_name])) {
+          $types[$entity_type . ':' . $field_name] = array(
             'category' => t(ucfirst($entity_type)),
             'icon' => 'icon_field.png',
             'title' => t('Field: @widget_label (@field_name) - @field_type', array(
@@ -51,7 +51,7 @@ function ctools_entity_field_content_type_content_types() {
             ),
           );
         }
-        $context_types[$entity_type .':'. $field_name]['types'][$type] = $bundle['label'];
+        $context_types[$entity_type . ':' . $field_name]['types'][$type] = $bundle['label'];
       }
     }
   }

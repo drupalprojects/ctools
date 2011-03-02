@@ -532,7 +532,7 @@ class ctools_stylizer_image_processor {
     }
 
     // The step size for each component
-    for($i = ($luminosity_input + 1); $i <= 255; $i++) {
+    for ($i = ($luminosity_input + 1); $i <= 255; $i++) {
       $palette[$i]['red'] = $red + round($step_size_red * ($i - $luminosity_input));
       $palette[$i]['green'] = $green + round($step_size_green * ($i - $luminosity_input));
       $palette[$i]['blue']= $blue + round($step_size_blue * ($i - $luminosity_input));
@@ -994,7 +994,7 @@ function ctools_stylizer_edit_style_form_default($form, &$form_state) {
       '#theme' => 'ctools_stylizer_color_scheme_form',
     );
 
-    $form['top box']['color']['palette']['#tree'] = true;
+    $form['top box']['color']['palette']['#tree'] = TRUE;
 
     foreach ($plugin['palette'] as $key => $color) {
       if (empty($settings['palette'][$key])) {

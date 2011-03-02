@@ -355,7 +355,7 @@ function views_content_views_panes_content_type_edit_form($form, &$form_state) {
       $form['arguments'][$id] = array(
         '#type' => 'textfield',
         '#default_value' => isset($conf['arguments'][$id]) ? $conf['arguments'][$id] : '',
-        '#title' => $argument['label'],
+        '#title' => check_plain($argument['label']),
       );
     }
   }
@@ -394,7 +394,7 @@ function views_content_views_panes_content_type_edit_form($form, &$form_state) {
     foreach ($view->display_handler->get_handlers('field') as $field => $handler) {
       $title = $handler->ui_name();
       if ($handler->options['label']) {
-        $title .= ' ('. $handler->options['label'] .')';
+        $title .= ' (' . check_plain($handler->options['label']) . ')';
       }
 
       $form['fields_override'][$field] = array(
@@ -585,7 +585,7 @@ function views_content_views_panes_content_type_admin_info($subtype, $conf, $con
 
     foreach ($conf['arguments'] as $key => $value) {
       $label = $argument_input[$key]['label'];
-      $info[] = $label .': '. $value;
+      $info[] = $label . ': ' . $value;
     }
   }
 
