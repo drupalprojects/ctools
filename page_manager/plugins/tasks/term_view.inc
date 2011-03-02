@@ -80,8 +80,20 @@ function page_manager_term_view_menu_alter(&$items, $task) {
   else {
     // automatically disable this task if it cannot be enabled.
     variable_set('page_manager_term_view_disabled', TRUE);
+
+    if (isset($items['taxonomy/term/%taxonomy_term']['page callback'])) {
+      $callback = $items['taxonomy/term/%taxonomy_term']['page callback'];
+    }
+    // Because Views changes %taxonomy_term to %views_arg, check to see if that
+    // is why we can't enable:
+    else if (isset($items['taxonomy/term/%views_arg']['page callback'])) {
+      $callback = $items['taxonomy/term/%views_arg']['page callback'];
+    }
+    else {
+      $callback = t('an unknown callback');
+    }
     if (!empty($GLOBALS['page_manager_enabling_term_view'])) {
-      drupal_set_message(t('Page manager module is unable to enable taxonomy/term/%term because some other module already has overridden with %callback.', array('%callback' => $items['taxonomy/term/%taxonomy_term']['page callback'])), 'error');
+      drupal_set_message(t('Page manager module is unable to enable taxonomy/term/%taxonomy_term because some other module already has overridden with %callback.', array('%callback' => $callback)), 'error');
     }
   }
 }
