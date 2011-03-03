@@ -23,11 +23,15 @@ function ctools_node_form_menu_content_type_render($subtype, $conf, $panel_args,
   $block->delta = 'menu-options';
 
   if (isset($context->form)) {
-    if (!empty($context->form['form_id']) && !empty($context->form['menu']['#access'])) {
-      // remove the fieldset
-      unset($context->form['menu']['#type']);
-      $context->form['menu']['link_title']['#size'] /= 2;
-      $block->content = drupal_render($context->form['menu']);
+    if (isset($context->form['menu'])) {
+      $block->content['menu'] = $context->form['menu'];
+      unset($block->content['menu']['#pre_render']);
+      unset($block->content['menu']['#theme_wrappers']);
+      $block->content['menu']['#type'] = '';
+
+      // Set access to false on the original rather than removing so that
+      // vertical tabs doesn't clone it. I think this is due to references.
+      $context->form['menu']['#access'] = FALSE;
     }
   }
   else {

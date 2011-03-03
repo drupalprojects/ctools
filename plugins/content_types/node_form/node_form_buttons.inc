@@ -21,10 +21,11 @@ function ctools_node_form_buttons_content_type_render($subtype, $conf, $panel_ar
   $block->delta = 'buttons';
 
   if (isset($context->form)) {
-    $block->content = drupal_render($context->form['buttons']);
-    $block->content .= drupal_render($context->form['form_token']);
-    $block->content .= drupal_render($context->form['form_build_id']);
-    $block->content .= drupal_render($context->form['form_id']);
+    $block->content = array();
+    foreach (array('actions', 'form_token', 'form_build_id', 'form_id') as $element) {
+      $block->content[$element] = $context->form[$element];
+      unset($context->form[$element]);
+    }
   }
   else {
     $block->content = t('Node form buttons.');

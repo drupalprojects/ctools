@@ -96,8 +96,8 @@ function page_manager_node_edit($node) {
     // Fall back!
     // We've already built the form with the context, so we can't build it again, or
     // form_clean_id will mess up our ids. But we don't really need to, either:
-    $context = current($contexts);
-    $output = drupal_render_form($context->form_id, $context->form);
+    $context = reset($contexts);
+    $output = $context->form;
   }
 
   return $output;
