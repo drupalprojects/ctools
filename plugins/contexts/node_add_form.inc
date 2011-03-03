@@ -46,7 +46,7 @@ function ctools_context_create_node_add_form($empty, $data = NULL, $conf = FALSE
   }
 
   if (!empty($data)) {
-    $types = node_get_types();
+    $types = node_type_get_types();
     $type = str_replace('-', '_', $data);
 
     // Validate the node type exists.
@@ -87,16 +87,11 @@ function ctools_context_create_node_add_form($empty, $data = NULL, $conf = FALSE
 function ctools_context_node_add_form_settings_form($form, &$form_state) {
   $conf = $form_state['conf'];
 
-  foreach (node_get_types() as $type => $info) {
-    $options[$type] = $info->name;
-  }
-  asort($options);
-
   $form['type'] = array(
     '#title' => t('Node type'),
     '#type' => 'select',
     '#options' => $options,
-    '#default_value' => $conf['type'],
+    '#default_value' => node_type_get_names(),
     '#description' => t('Select the node type for this form.'),
   );
 
