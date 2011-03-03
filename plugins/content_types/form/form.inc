@@ -27,7 +27,6 @@ function ctools_form_content_type_render($subtype, $conf, $panel_args, &$context
     $block->title = $context->form_title;
     $block->content = array();
     foreach (element_children($context->form) as $element) {
-      dpr($element);
       $block->content[$element] = $context->form[$element];
       unset($context->form[$element]);
     }
