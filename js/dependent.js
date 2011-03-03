@@ -165,6 +165,7 @@
                 if (Drupal.settings.CTools.dependent[id].num <= len) {
                   // Show if the element if criteria is matched
                   object.show(0);
+                  object.addClass('dependent-options');
                 }
                 else {
                   // Otherwise hide. Use css rather than hide() because hide()
