@@ -41,7 +41,11 @@ function ctools_entity_form_field_content_type_content_types() {
           $types[$entity_type . ':' . $field_name] = array(
             'category' => t('Form'),
             'icon' => 'icon_field.png',
+<<<<<<< HEAD
             'title' => t('Field form: @widget_label', array(
+=======
+            'title' => t('Field: @widget_label', array(
+>>>>>>> d5b70e8... Initial attempt at adding context for entity form fields.
               '@widget_label' => t($field['label']),
             )),
             'description' => t('Field on the referenced entity.'),

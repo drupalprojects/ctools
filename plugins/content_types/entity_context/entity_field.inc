@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Handle rendering entity fields as panes.
+ */
+
 $plugin = array(
   'title' => t('Entity field'),
   'defaults' => array('label' => '', 'formatter' => ''),

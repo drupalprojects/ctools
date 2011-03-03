@@ -78,6 +78,7 @@ function ctools_context_create_node_add_form($empty, $data = NULL, $conf = FALSE
       $context->form_title = t('Submit @name', array('@name' => $types[$type]->name));
       $context->node_type  = $type;
       $context->restrictions['type'] = array($type);
+      $context->restrictions['form'] = array('form');
       return $context;
     }
   }
