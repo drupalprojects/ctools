@@ -545,7 +545,9 @@ function _ctools_list_themes() {
     }
     // Put the actual theme info objects into the array
     foreach (array_keys($themes) as $name) {
-      $themes[$name] = $all_themes[$name];
+      if (isset($all_themes[$name])) {
+        $themes[$name] = $all_themes[$name];
+      }
     }
 
     // Make sure the current default theme always gets the last word
