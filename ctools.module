@@ -804,8 +804,13 @@ function ctools_ajax_theme_callback() {
 }
 
 function ctools_ctools_entity_context_alter(&$plugin, &$entity, $plugin_id) {
-  if ($plugin_id == 'entity:user') {
-    ctools_include('context');
-    $plugin = ctools_get_context('user');
+  ctools_include('context');
+  switch ($plugin_id) {
+    case 'entity:user':
+      $plugin = ctools_get_context('user');
+      break;
+    case 'entity_from_schema:uid-node-user':
+      $plugin['title'] = t('Node author');
+      break;
   }
 }
