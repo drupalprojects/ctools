@@ -31,9 +31,11 @@ function ctools_argument_entity_id_get_children($plugin, $parent) {
     $plugin['keyword'] = $entity_type;
     $plugin['description'] = t('Creates @entity context from an ID argument.', array('@entity' => $entity_type));
     $plugin['name'] = $parent . ':' . $entity_type;
-    $plugins[$parent . ':' . $entity_type] = $plugin;
+    $plugin_id = $parent . ':' . $entity_type;
+    drupal_alter('ctools_entity_context', $plugin, $entity, $plugin_id);
+    $plugins[$plugin_id] = $plugin;
   }
-
+  drupal_alter('ctools_entity_contexts', $plugins);
   return $plugins;
 }
 

@@ -802,3 +802,10 @@ function ctools_ajax_theme_callback() {
     return $_POST['ajax_page_state']['theme'];
   }
 }
+
+function ctools_ctools_entity_context_alter(&$plugin, &$entity, $plugin_id) {
+  if ($plugin_id == 'entity:user') {
+    ctools_include('context');
+    $plugin = ctools_get_context('user');
+  }
+}
