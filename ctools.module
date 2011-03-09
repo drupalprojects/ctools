@@ -453,6 +453,15 @@ function ctools_forms() {
 }
 
 /**
+ * Implements hook_element_info_alter().
+ *
+ */
+function ctools_element_info_alter(&$type) {
+  ctools_include('dependent');
+  ctools_dependent_element_info_alter($type);
+}
+
+/**
  * Implementation of hook_file_download()
  *
  * When using the private file system, we have to let Drupal know it's ok to
