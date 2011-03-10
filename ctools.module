@@ -429,7 +429,7 @@ function ctools_flush_caches() {
   // in an inconsistent fashion and it does not necessarily mean to *flush*
   // caches when running from cron. Instead it's just getting a list of cache
   // tables and may not do any flushing.
-  if (variable_get('cron_semaphore', FALSE)) {
+  if (!empty($GLOBALS['locks']['cron'])) {
     return;
   }
 
