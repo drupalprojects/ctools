@@ -14,7 +14,7 @@ $plugin = array(
 );
 
 function ctools_user_picture_content_type_render($subtype, $conf, $panel_args, $context) {
-  $account = isset($context->data) ? clone($context->data) : NULL;
+  $account = isset($context->data) ? clone($context->data) : FALSE;
   $block = new stdClass();
   $block->module = 'term-list';
 
