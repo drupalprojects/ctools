@@ -180,6 +180,12 @@ class ctools_export_ui {
       $form_state['input']['form_id'] = 'ctools_export_ui_list_form';
     }
 
+    // If we do any form rendering, it's to completely replace a form on the
+    // page, so don't let it force our ids to change.
+    if ($js && isset($_POST['ajax_html_ids'])) {
+      unset($_POST['ajax_html_ids']);
+    }
+
     $form = drupal_build_form('ctools_export_ui_list_form', $form_state);
     $form = drupal_render($form);
 

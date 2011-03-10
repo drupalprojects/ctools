@@ -20,6 +20,12 @@ function page_manager_list_page($js = NULL) {
   // TRUE if 'ajax', FALSE if otherwise.
   $js = $js == 'ajax';
 
+  // If we do any form rendering, it's to completely replace a form on the
+  // page, so don't let it force our ids to change.
+  if ($js && isset($_POST['ajax_html_ids'])) {
+    unset($_POST['ajax_html_ids']);
+  }
+
   if (module_exists('advanced_help') && !$js) {
     drupal_set_message(theme('advanced_help_topic', 'page_manager', 'getting-started', t('See the getting started guide for more information.')));
   }
@@ -107,7 +113,7 @@ function page_manager_list_page($js = NULL) {
   $commands = array();
   $commands[] = ajax_command_replace('#page-manager-list-pages', $table);
   if (!empty($replace_form)) {
-    $commands[] = ajax_command_replace('#page-manager-list-pages-form', $form);
+    $commands[] = ajax_command_replace('#page-manager-list-pages-form', drupal_render($form));
   }
   print ajax_render($commands);
   ajax_footer();
