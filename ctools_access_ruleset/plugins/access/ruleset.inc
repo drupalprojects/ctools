@@ -76,8 +76,10 @@ function ctools_ruleset_ctools_access_get_children($plugin, $parent) {
  */
 function ctools_ruleset_ctools_access_settings(&$form, &$form_state, $conf) {
   $form['markup'] = array(
-    '#value' => '<div class="description">' . check_plain($form_state['plugin']['ruleset']->admin_description) . '</div>',
+    '#markup' => '<div class="description">' . check_plain($form_state['plugin']['ruleset']->admin_description) . '</div>',
   );
+
+  return $form;
 }
 
 /**
