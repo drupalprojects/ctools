@@ -399,7 +399,7 @@ function ctools_shutdown_handler() {
 function ctools_theme() {
   ctools_include('utility');
   $items = array();
-  _ctools_passthrough($items, 'theme');
+  ctools_passthrough('ctools', 'theme', $items);
   return $items;
 }
 
@@ -409,7 +409,7 @@ function ctools_theme() {
 function ctools_menu() {
   ctools_include('utility');
   $items = array();
-  _ctools_passthrough($items, 'menu');
+  ctools_passthrough('ctools', 'menu', $items);
   return $items;
 }
 
@@ -418,7 +418,8 @@ function ctools_menu() {
  */
 function ctools_cron() {
   ctools_include('utility');
-  _ctools_passthrough($items, 'cron');
+  $items = array();
+  ctools_passthrough('ctools', 'cron', $items);
 }
 
 /**
@@ -505,7 +506,7 @@ function ctools_ctools_plugin_type() {
   ctools_include('utility');
   $items = array();
   // Add all the plugins that have their own declaration space elsewhere.
-  _ctools_passthrough($items, 'plugin-type');
+  ctools_passthrough('ctools', 'plugin-type', $items);
 
   return $items;
 }
