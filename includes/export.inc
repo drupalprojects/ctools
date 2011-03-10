@@ -720,7 +720,7 @@ function ctools_export_object($table, $object, $indent = '', $identifier = NULL,
 
     // Note: This is the *field* export callback, not the table one!
     if (!empty($info['export callback']) && function_exists($info['export callback'])) {
-      $output .= $indent . '$' . $identifier . '->' . $field . ' = ' . $info['export callback']($object, $field, $value, $indent) . ";\n";
+      $output .= $indent . '$' . $identifier . '->' . $field . ' = ' . $info['export callback']($object, $field, $object->$field, $indent) . ";\n";
     }
     else {
       $value = $object->$field;
