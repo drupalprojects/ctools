@@ -225,14 +225,12 @@ function ctools_attach_js($file, $module = 'ctools', $dir = 'js') {
  *
  * @return
  *   An array of role names keyed by role ID.
+ *
+ * @deprecated
+ *    user_roles() should be used instead.
  */
 function ctools_get_roles() {
-  static $roles = NULL;
-  if (!isset($roles)) {
-    $roles = user_roles();
-  }
-
-  return $roles;
+  return user_roles();
 }
 
 /*
