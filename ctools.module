@@ -229,8 +229,7 @@ function ctools_attach_js($file, $module = 'ctools', $dir = 'js') {
 function ctools_get_roles() {
   static $roles = NULL;
   if (!isset($roles)) {
-    $roles = user_roles(TRUE);
-    unset($roles[DRUPAL_AUTHENTICATED_RID]);
+    $roles = user_roles();
   }
 
   return $roles;
