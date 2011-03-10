@@ -523,6 +523,10 @@ function ctools_context_select($contexts, $required, $context) {
   if (is_array($required)) {
     $result = array();
     foreach ($required as $id => $r) {
+      if (empty($required[$id])) {
+        continue;
+      }
+
       if (($result[] = _ctools_context_select($contexts, $r, $context[$id])) === FALSE) {
         return FALSE;
       }

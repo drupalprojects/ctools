@@ -220,6 +220,13 @@ function ctools_context_entity_convert_list($plugin) {
   else {
     $token = $plugin['context name'];
   }
+
+  // Hack: we need either token.module or a core fix for this to work right,
+  // until then, we just muscle it.
+  if ($token == 'taxonomy_term') {
+    $token = 'term';
+  }
+
   $tokens = token_info();
   if (isset($tokens['tokens'][$token])) {
     foreach ($tokens['tokens'][$token] as $id => $info) {
@@ -237,13 +244,22 @@ function ctools_context_entity_convert_list($plugin) {
 function ctools_context_entity_convert($context, $type) {
   $entity_type = $context->type[2];
   $entity = entity_get_info($entity_type);
+
   if (isset($entity['token type'])) {
     $token = $entity['token type'];
   }
   else {
     $token = $entity_type;
   }
+
+  // Hack: we need either token.module or a core fix for this to work right,
+  // until then, we just muscle it.
+  if ($token == 'taxonomy_term') {
+    $token = 'term';
+  }
+
   $tokens = token_info();
+
   if (isset($tokens['tokens'][$token][$type])) {
     $values = token_generate($token, array($type => $type), array($token => $context->data));
     if (isset($values[$type])) {
