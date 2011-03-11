@@ -29,6 +29,7 @@ $plugin = array(
     'vid' => t('Vocabulary ID'),
   ),
   'convert' => 'ctools_context_term_convert',
+  'no ui' => TRUE,
 );
 
 /**

@@ -22,6 +22,7 @@ $plugin = array(
   'convert' => 'ctools_context_user_convert',
   'convert default' => 'name',
   'js' => array('misc/autocomplete.js'),
+  'no ui' => TRUE,
 );
 
 /**
