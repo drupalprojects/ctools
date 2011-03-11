@@ -29,7 +29,6 @@ function ctools_entity_from_field_get_children($plugin, $parent) {
 
   // Get the schema information for every field.
   $fields_info = field_info_instances();
-  //drupal_set_message('<pre>'. print_r($fields_info, TRUE) .'</pre>');
   foreach ($fields_info as $entity_type => $entity_info) {
     foreach ($entity_info as $bundle => $fields) {
       foreach ($fields as $field_name => $field) {
