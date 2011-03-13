@@ -25,6 +25,13 @@ function ctools_ajax_sample_menu() {
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
   );
+  $items['ctools_ajax_sample/%ctools_js/hello'] = array(
+      'title' => 'Hello World',
+      'page callback' => 'ctools_ajax_sample_hello',
+      'page arguments' => array(1),
+      'access callback' => TRUE,
+      'type' => MENU_CALLBACK,
+  );
   $items['ctools_ajax_sample/%ctools_js/tablenix/%'] = array(
       'title' => 'Hello World',
       'page callback' => 'ctools_ajax_sample_tablenix',
