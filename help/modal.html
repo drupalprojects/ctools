@@ -197,15 +197,15 @@ If you are displaying a form -- and the vast majority of modals display forms --
   );
   $output = ctools_modal_form_wrapper('my_form', $form_state);
   // There are some possible states after calling the form wrapper:
-  // 1) We are not using $js and there is form output to be rendered.
+  // 1) We are not using $js and the form has been executed.
   // 2) We are using $js and the form was successfully submitted and
   //    we need to dismiss the modal.
   // Most other states are handled automatically unless you set flags in
   // $form_state to avoid handling them, so we only deal with those two
   // states.
-  if (empty($output) && $js) {
+  if ($form_state['executed'] && $js) {
     $commands = array();
-    $commands[] = ctools_modal_command_dismiss(t('Login Success');
+    $commands[] = ctools_modal_command_dismiss(t('Login Success'));
     // In typical usage you will do something else here, such as update a
     // div with HTML or redirect the page based upon the results of the modal
     // form.
