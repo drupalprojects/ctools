@@ -245,5 +245,5 @@ function ctools_modal_form_render($form_state, $output) {
 function ctools_modal_render($title, $output) {
   $commands = array();
   $commands[] = ctools_modal_command_display($title, $output);
-  ajax_render($commands);
+  print ajax_render($commands);
 }
