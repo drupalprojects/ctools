@@ -89,9 +89,15 @@ function views_content_views_row_edit($form, &$form_state) {
     return $form;
   }
 
-  $name = $contexts[$conf['context']]->placeholder['conf']['name'];
-  list($plugin, $view_data) = explode(':', $name);
-  list($view_name, $display_id) = explode('-', $view_data);
+  if (!isset($contexts[$conf['context']]->argument)) {
+    $name = $contexts[$conf['context']]->placeholder['conf']['name'];
+    list($plugin, $view_data) = explode(':', $name);
+    list($view_name, $display_id) = explode('-', $view_data);
+  }
+  else {
+    $view_data = $contexts[$conf['context']]->argument;
+    list($view_name, $display_id) = explode(':', $view_data);
+  }
   $contexts[$conf['context']]->data['name'] = $view_name;
   $contexts[$conf['context']]->data['display'] = $display_id;
   $view = views_content_context_get_view($contexts[$conf['context']]);
