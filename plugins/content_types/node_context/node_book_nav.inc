@@ -22,7 +22,7 @@ function ctools_node_book_nav_content_type_render($subtype, $conf, $panel_args, 
 
   $block->title = t('Book navigation');
   if ($node) {
-    $block->content = isset($node->book) ? theme('book_navigation', $node->book) : '';
+    $block->content = isset($node->book) ? theme('book_navigation', array('book_link' => $node->book)) : '';
     $block->delta = $node->nid;
   }
   else {
