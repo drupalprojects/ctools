@@ -976,10 +976,6 @@ class ctools_export_ui {
     $item = $form_state['item'];
     $schema = ctools_export_get_schema($this->plugin['schema']);
 
-    // TODO: Drupal 7 has a nifty method of auto guessing names from
-    // titles that is standard. We should integrate that here as a
-    // nice standard.
-    // Guess at a couple of our standard fields.
     if (!empty($this->plugin['export']['admin_title'])) {
       $form['info'][$this->plugin['export']['admin_title']] = array(
         '#type' => 'textfield',
