@@ -552,8 +552,8 @@ function _ctools_export_get_defaults($table, $export) {
             else {
               // If version checking is enabled, ensure that the object can be used.
               if (isset($object->api_version) &&
-                $object->api_version >= $export['api']['minimum_version'] &&
-                $object->api_version <= $export['api']['current_version']) {
+                version_compare($object->api_version, $export['api']['minimum_version']) >= 0 &&
+                version_compare($object->api_version, $export['api']['current_version']) <= 0) {
                 $cache[$table][$name] = $object;
               }
             }
