@@ -997,16 +997,22 @@ function ctools_export_default_list($table, $schema) {
 
   $items = ctools_export_crud_load_all($table);
   $export_key = $schema['export']['key'];
-
   foreach ($items as $item) {
     // Try a couple of possible obvious title keys:
-    if (!empty($item->admin_title)) {
-      $string = "$item->admin_title (" . $item->$export_key . ")";
+    $keys = array('admin_title', 'title');
+    if (isset($schema['export']['admin_title'])) {
+      array_unshift($keys, $schema['export']['admin_title']);
     }
-    elseif (!empty($item->title)) {
-      $string = "$item->title (" . $item->$export_key . ")";
+
+    $string = '';
+    foreach ($keys as $key) {
+      if (!empty($item->$key)) {
+        $string = $item->$key . " (" . $item->$export_key . ")";
+        break;
+      }
     }
-    else {
+
+    if (empty($string)) {
       $string = $item->$export_key;
     }
     $list[$item->$export_key] = check_plain($string);
