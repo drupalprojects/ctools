@@ -37,6 +37,17 @@ class ctools_export_ui {
     return $title;
   }
 
+  /**
+   * Called by ctools_export_ui_load to load the item.
+   *
+   * This can be overridden for modules that want to be able to export
+   * items currently being edited, for example.
+   */
+  function load_item($item_name) {
+    $item = ctools_export_crud_load($this->plugin['schema'], $item_name);
+    return empty($item) ? FALSE : $item;
+  }
+
   // ------------------------------------------------------------------------
   // Menu item manipulation
 

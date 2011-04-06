@@ -657,11 +657,10 @@ function ctools_export_ui_load($item_name, $plugin_name) {
   if (!$return) {
     ctools_include('export-ui');
     $plugin = ctools_get_export_ui($plugin_name);
+    $handler = ctools_export_ui_get_handler($plugin);
 
-    if ($plugin) {
-      // Get the load callback.
-      $item = ctools_export_crud_load($plugin['schema'], $item_name);
-      return empty($item) ? FALSE : $item;
+    if ($handler) {
+      return $handler->load_item($item_name);
     }
   }
 
