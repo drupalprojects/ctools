@@ -171,8 +171,13 @@ function page_manager_admin_paths() {
           $path_parts[$key] = '*';
         }
       }
-      $path_parts = implode('/', $path_parts);
-      $items[$path_parts] = TRUE;
+      $path = implode('/', $path_parts);
+      array_pop($path_parts);
+      $parent_path = implode('/', $path_parts);
+      if ($page->menu['type'] == 'default tab') {
+        $items[$parent_path] = TRUE;
+      }
+      $items[$path] = TRUE;
     }
   }
   return $items;
