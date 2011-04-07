@@ -116,7 +116,7 @@ function page_manager_page_menu(&$items, $task) {
     $items[$menu_path] = page_manager_page_menu_item($task, $subtask->menu, $access_arguments, $page_arguments, $load_arguments);
 
     // Add a parent menu item if one is configured.
-    if (isset($subtask->menu['type']) && $subtask->menu['type'] == 'default tab' && $subtask->menu['parent']['type'] != 'none') {
+    if (isset($subtask->menu['type']) && $subtask->menu['type'] == 'default tab') {
       array_pop($path);
       $parent_path = implode('/', $path);
       $items[$parent_path] = page_manager_page_menu_item($task, $subtask->menu['parent'], $access_arguments, $page_arguments, $load_arguments);
@@ -740,7 +740,7 @@ function page_manager_page_form_menu($form, &$form_state) {
     '#suffix' => '</div>',
     '#title' => t('Parent menu item'),
     '#type' => 'radios',
-    '#options' => array('none' => t('Already exists'), 'normal' => t('Normal menu item'), 'tab' => t('Menu tab')),
+    '#options' => array('none' => t('No menu entry'), 'normal' => t('Normal menu item'), 'tab' => t('Menu tab')),
     '#default_value' => $menu['parent']['type'],
     '#description' => t('When providing a menu item as a default tab, Drupal needs to know what the parent menu item of that tab will be. Sometimes the parent will already exist, but other times you will need to have one created. The path of a parent item will always be the same path with the last part left off. i.e, if the path to this view is <em>foo/bar/baz</em>, the parent path would be <em>foo/bar</em>.'),
     '#process' => array('form_process_radios', 'ctools_dependent_process'),
