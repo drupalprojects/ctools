@@ -172,9 +172,9 @@ function page_manager_admin_paths() {
         }
       }
       $path = implode('/', $path_parts);
-      array_pop($path_parts);
-      $parent_path = implode('/', $path_parts);
       if ($page->menu['type'] == 'default tab') {
+        array_pop($path_parts);
+        $parent_path = implode('/', $path_parts);
         $items[$parent_path] = TRUE;
       }
       $items[$path] = TRUE;
