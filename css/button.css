@@ -23,6 +23,9 @@
 
 .ctools-button li {
   line-height: 1.3333;
+}
+
+.ctools-button li a {
   padding-left: 12px;
   padding-right: 12px;
 }
