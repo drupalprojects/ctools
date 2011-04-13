@@ -744,7 +744,7 @@ function ctools_export_get_schema($table) {
     // If our schema isn't loaded, it's possible we're in a state where it
     // simply hasn't been cached. If we've been asked, let's force the
     // issue.
-    if (!$schema) {
+    if (!$schema || empty($schema['export'])) {
       // force a schema reset:
       $schema = drupal_get_schema($table, TRUE);
     }
