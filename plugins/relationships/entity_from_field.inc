@@ -31,23 +31,28 @@ function ctools_entity_from_field_get_children($plugin, $parent) {
   $fields_info = field_info_instances();
   foreach ($fields_info as $entity_type => $entity_info) {
     foreach ($entity_info as $bundle => $fields) {
-      foreach ($fields as $field_name => $field) {
-        $field = field_info_field($field_name);
-        $module = $field['module'];
-        module_load_install($module);
-        $schema = module_invoke($module, 'field_schema', $field);
-        if (isset($schema['foreign keys'])) {
-          foreach ($schema['foreign keys'] as $key => $info) {
-            if (isset($info['table'])) {
-              foreach ($entities as $entity => $einfo) {
-                if ($einfo['base table'] == $info['table'] && isset($info['columns'][$einfo['entity keys']['id']])) {
-                  $plugin['title'] = t('@field_entity from @entity on @field_name field', array('@field_entity' => $einfo['label'], '@entity' => $entities[$entity_type]['label'], '@field_name' => $field_name));
-                  $plugin['keyword'] = $entity;
-                  $plugin['context name'] = $field_name . '-' . $entity_type . '-' . $entity;
-                  $plugin['name'] = $parent . ':' . $field_name . '-' . $entity_type . '-' . $entity;
-                  $plugin['description'] = t('Creates a @entity context from @base_entity field relationship on the @base_table table.', array('@entity' => $entity, '@base_entity' => $entity_type, '@base_table' => $einfo['base table']));
-                  $context_types[$parent . ':' . $field_name . '-' . $entity_type . '-' . $entity]['types'][$bundle] = $entities[$entity_type]['bundles'][$bundle]['label'];
-                  $plugins[$parent . ':' . $field_name . '-' . $entity_type . '-' . $entity] = $plugin;
+      // There might be fields attached to bundles that are disabled (e.g. a
+      // module that declared a node's content type, is now disabled), but the
+      // field instance is still shown.
+      if (!empty($entities[$entity_type]['bundles'][$bundle])) {
+        foreach ($fields as $field_name => $field) {
+          $field = field_info_field($field_name);
+          $module = $field['module'];
+          module_load_install($module);
+          $schema = module_invoke($module, 'field_schema', $field);
+          if (isset($schema['foreign keys'])) {
+            foreach ($schema['foreign keys'] as $key => $info) {
+              if (isset($info['table'])) {
+                foreach ($entities as $entity => $einfo) {
+                  if ($einfo['base table'] == $info['table'] && isset($info['columns'][$einfo['entity keys']['id']])) {
+                    $plugin['title'] = t('@field_entity from @entity on @field_name field', array('@field_entity' => $einfo['label'], '@entity' => $entities[$entity_type]['label'], '@field_name' => $field_name));
+                    $plugin['keyword'] = $entity;
+                    $plugin['context name'] = $field_name . '-' . $entity_type . '-' . $entity;
+                    $plugin['name'] = $parent . ':' . $field_name . '-' . $entity_type . '-' . $entity;
+                    $plugin['description'] = t('Creates a @entity context from @base_entity field relationship on the @base_table table.', array('@entity' => $entity, '@base_entity' => $entity_type, '@base_table' => $einfo['base table']));
+                    $context_types[$parent . ':' . $field_name . '-' . $entity_type . '-' . $entity]['types'][$bundle] = $entities[$entity_type]['bundles'][$bundle]['label'];
+                    $plugins[$parent . ':' . $field_name . '-' . $entity_type . '-' . $entity] = $plugin;
+                  }
                 }
               }
             }
