@@ -369,6 +369,7 @@ function ctools_plugin_get_plugin_type_info($flush = FALSE) {
           'use hooks' => FALSE,
           'defaults' => array(),
           'process' => '',
+          'alterable' => TRUE,
           'extension' => 'inc',
           'info file' => FALSE,
           'hook' => $module . '_' . $plugin_type_name,
@@ -709,9 +710,19 @@ function _ctools_process_data($result, $plugin_type_info, $module, $path, $file)
       }
     }
 
+    // Allow the plugin to be altered before processing.
+    if (!empty($plugin_type_info['alterable']) && $plugin_type_info['alterable']) {
+      drupal_alter('ctools_plugin_pre', $result[$name], $plugin_type_info);
+    }
+
     // Allow the plugin owner to do additional processing.
     if (!empty($plugin_type_info['process']) && $function = ctools_plugin_get_function($plugin_type_info, 'process')) {
       $function($result[$name], $plugin_type_info);
+    }
+
+    // Allow the plugin to be altered after processing.
+    if (!empty($plugin_type_info['alterable']) && $plugin_type_info['alterable']) {
+      drupal_alter('ctools_plugin_post', $result[$name], $plugin_type_info);
     }
   }
   return $result;
