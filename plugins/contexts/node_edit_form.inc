@@ -65,7 +65,7 @@ function ctools_context_create_node_edit_form($empty, $node = NULL, $conf = FALS
     require_once DRUPAL_ROOT . '/' . $file;
     // This piece of information can let other modules know that more files
     // need to be included if this form is loaded from cache:
-    $form_state['form_load_files'] = array($file);
+    $form_state['build_info']['files'] = array($file);
 
     $form = drupal_build_form($form_id, $form_state);
 
