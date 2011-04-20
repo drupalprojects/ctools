@@ -124,10 +124,10 @@ function ctools_context_node_settings_form_validate($form, &$form_state) {
     $nid = $preg_matches[1];
   }
   if (is_numeric($nid)) {
-    $node = db_query('SELECT nid FROM {node} WHERE nid = :nid', array(':nid' => $nid))->fetchObject();
+    $node = db_query('SELECT nid, status FROM {node} WHERE nid = :nid', array(':nid' => $nid))->fetchObject();
   }
   else {
-    $node = db_query('SELECT nid FROM {node} WHERE LOWER(title) = LOWER(:title)', array(':title' => $nid))->fetchObject();
+    $node = db_query('SELECT nid, status FROM {node} WHERE LOWER(title) = LOWER(:title)', array(':title' => $nid))->fetchObject();
   }
 
   // Do not allow unpublished nodes to be selected by unprivileged users

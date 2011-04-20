@@ -186,10 +186,10 @@ function  ctools_node_content_type_edit_form_validate(&$form, &$form_state) {
     $nid = $preg_matches[1];
   }
   if (is_numeric($nid)) {
-    $node = db_query('SELECT nid FROM {node} WHERE nid = :nid', array(':nid' => $nid))->fetchObject();
+    $node = db_query('SELECT nid, status FROM {node} WHERE nid = :nid', array(':nid' => $nid))->fetchObject();
   }
   else {
-    $node = db_query('SELECT nid FROM {node} WHERE LOWER(title) = LOWER(:title)', array(':title' => $nid))->fetchObject();
+    $node = db_query('SELECT nid, status FROM {node} WHERE LOWER(title) = LOWER(:title)', array(':title' => $nid))->fetchObject();
   }
   if ($node) {
     $form_state['values']['nid'] = $node->nid;
@@ -221,7 +221,7 @@ function ctools_node_content_type_admin_title($subtype, $conf) {
 
   $node = node_load($conf['nid']);
   if ($node) {
-    if (!empty($data->status) || user_access('administer nodes')) {
+    if (!empty($node->status) || user_access('administer nodes')) {
       return check_plain($node->title);
     }
     else {
