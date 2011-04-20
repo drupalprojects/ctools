@@ -94,11 +94,14 @@ function ctools_entity_field_content_type_render($subtype, $conf, $panel_args, $
   }
   $language = field_language($entity_type, $entity, $field_name);
 
+  // Get the field output, and the title.
+  $field_output = field_view_field($entity_type, $entity, $field_name, ($conf['formatter_settings'] ? array('type' => $conf['formatter'], 'settings' => $conf['formatter_settings']) : array('label' => 'hidden', 'type' => $conf['formatter'])), $language);
+
   // Build the content type block.
   $block = new stdClass();
   $block->module  = 'entity_field';
-  $block->title   = $field['label'];
-  $block->content = field_view_field($entity_type, $entity, $field_name, ($conf['formatter_settings'] ? array('label' => 'hidden', 'type' => $conf['formatter'], 'settings' => $conf['formatter_settings']) : array('label' => 'hidden', 'type' => $conf['formatter'])), $language);
+  $block->title   = $field_output['#title'];
+  $block->content = $field_output;
   $block->delta   = $ids[0];
 
   return $block;
