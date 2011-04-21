@@ -50,7 +50,7 @@ function ctools_node_content_type_render($subtype, $conf, $panel_args) {
   // Support node translation
   if (module_exists('translation')) {
     if ($translations = module_invoke('translation', 'node_get_translations', $nid)) {
-  	  if ($translations[$GLOBALS['language']->language])  {
+      if (isset($translations[$GLOBALS['language']->language]))  {
         $nid = $translations[$GLOBALS['language']->language]->nid;
       }
     }
