@@ -1129,7 +1129,7 @@ class ctools_export_ui {
    * as though the filter form had been executed.
    */
   function set_item_state($state, $js, $input, $item) {
-    ctools_export_set_object_status($item, $state);
+    ctools_export_crud_set_status($item, $state);
 
     if (!$js) {
       drupal_goto(ctools_export_ui_plugin_base_path($this->plugin));
