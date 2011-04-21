@@ -123,6 +123,12 @@ function mymodule_schema() {
 <dt>default hook</dt>
 <dd>What hook to invoke to find exportable objects that are currently defined. These will all be gathered into a giant array. Defaults to 'default_' . $table.</dd>
 
+<dt>cache defaults</dt>
+<dd>If true, default objects will be cached so that the processing of the hook does not need to be called often. Defaults to FALSE. Recommended if you will potentially have a lot of objects in code. Not recommended if code will be the exception.</dd>
+
+<dt>default cache bin</dt>
+<dd>If default object caching is enabled, what cache bin to use. This defaults to the basic "cache". It is highly recommended that you use a different cache bin if possible.</dd>
+
 <dt>identifier</dt>
 <dd>When exporting the object, the identifier is the variable that the exported object will be placed in. Defaults to $table.</dd>
 

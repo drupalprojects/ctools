@@ -390,8 +390,14 @@ function ctools_export_load_object($table, $type = 'all', $args = array()) {
     $export['subrecords callback']($cache[$table]);
   }
 
-  if ($defaults = _ctools_export_get_defaults($table, $export)) {
+  if ($type == 'names' && !empty($args) && !empty($export['cache defaults'])) {
+    $defaults = _ctools_export_get_some_defaults($table, $export, $args);
+  }
+  else {
+    $defaults = _ctools_export_get_defaults($table, $export);
+  }
 
+  if ($defaults) {
     foreach ($defaults as $object) {
       if ($type == 'conditions') {
         // if this does not match all of our conditions, skip it.
@@ -495,8 +501,14 @@ function ctools_get_default_object($table, $name) {
     return;
   }
 
-  // @todo add a method to load .inc files for this.
-  $defaults = _ctools_export_get_defaults($table, $export);
+  // Try to load individually from cache if this cache is enabled.
+  if (!empty($export['cache defaults'])) {
+    $defaults = _ctools_export_get_some_defaults($table, $export, array($name));
+  }
+  else {
+    $defaults = _ctools_export_get_defaults($table, $export);
+  }
+
   $status = variable_get($export['status'], array());
 
   if (!isset($defaults[$name])) {
@@ -525,7 +537,22 @@ function ctools_get_default_object($table, $name) {
 function _ctools_export_get_defaults($table, $export) {
   $cache = &drupal_static(__FUNCTION__, array());
 
+  // If defaults may be cached, first see if we can load from cache.
+  if (!isset($cache[$table]) && !empty($export['cache defaults'])) {
+    $cache[$table] = _ctools_export_get_defaults_from_cache($table, $export);
+  }
+
   if (!isset($cache[$table])) {
+    // If we're caching, attempt to get a lock. We will wait a short time
+    // on the lock, but not too long, because it's better to just rebuild
+    // and throw away results than wait too long on a lock.
+    if (!empty($export['cache defaults'])) {
+      for ($counter = 0; !($lock = lock_acquire('ctools_export:' . $table)) && $counter > 5; $counter++) {
+        lock_wait('ctools_export:' . $table, 1);
+        ++$counter;
+      }
+    }
+
     $cache[$table] = array();
 
     if ($export['default hook']) {
@@ -562,10 +589,100 @@ function _ctools_export_get_defaults($table, $export) {
       }
 
       drupal_alter($export['default hook'], $cache[$table]);
+
+      // If we acquired a lock earlier, cache the results and release the
+      // lock.
+      if (!empty($lock)) {
+        // Cache the index.
+        $index = array_keys($cache[$table]);
+        cache_set('ctools_export_index:' . $table, $index, $export['default cache bin']);
+
+        // Cache each object.
+        foreach ($cache[$table] as $name => $object) {
+          cache_set('ctools_export:' . $table . ':' . $name, $object, $export['default cache bin']);
+        }
+        lock_release('ctools_export:' . $table);
+      }
     }
   }
 
   return $cache[$table];
+}
+
+/**
+ * Attempt to load default objects from cache.
+ *
+ * We can be instructed to cache default objects by the schema. If so
+ * we cache them as an index which is a list of all default objects, and
+ * then each default object is cached individually.
+ *
+ * @return Either an array of cached objects, or NULL indicating a cache
+ *   rebuild is necessary.
+ */
+function _ctools_export_get_defaults_from_cache($table, $export) {
+  $data = cache_get('ctools_export_index:' . $table, $export['default cache bin']);
+  if (!$data || !is_array($data->data)) {
+    return;
+  }
+
+  // This is the perfectly valid case where there are no default objects,
+  // and we have cached this state.
+  if (empty($data->data)) {
+    return array();
+  }
+
+  $keys = array();
+  foreach ($data->data as $name) {
+    $keys[] = 'ctools_export:' . $table . ':' . $name;
+  }
+
+  $data = cache_get_multiple($keys, $export['default cache bin']);
+
+  // If any of our indexed keys missed, then we have a fail and we need to
+  // rebuild.
+  if (!empty($keys)) {
+    return;
+  }
+
+  // Now, translate the returned cache objects to actual objects.
+  $cache = array();
+  foreach ($data as $cached_object) {
+    $cache[$cached_object->data->{$export['key']}] = $cached_object->data;
+  }
+
+  return $cache;
+}
+
+/**
+ * Get a limited number of default objects.
+ *
+ * This attempts to load the objects directly from cache. If it cannot,
+ * the cache is rebuilt. This does not disturb the general get defaults
+ * from cache object.
+ *
+ * This function should ONLY be called if default caching is enabled.
+ * It does not check, it is assumed the caller has already done so.
+ */
+function _ctools_export_get_some_defaults($table, $export, $names) {
+  foreach ($names as $name) {
+    $keys[] = 'ctools_export:' . $table . ':' . $name;
+  }
+
+  $data = cache_get_multiple($keys, $export['default cache bin']);
+
+  // Cache hits remove the $key from $keys by reference. Cache
+  // misses do not. A cache miss indicates we may have to rebuild.
+  if (!empty($keys)) {
+    return _ctools_export_get_defaults($table, $export);
+  }
+
+  // Now, translate the returned cache objects to actual objects.
+  $cache = array();
+  foreach ($data as $cached_object) {
+    $cache[$cached_object->data->{$export['key']}] = $cached_object->data;
+  }
+
+  return $cache;
 }
 
 /**
@@ -770,6 +887,8 @@ function ctools_export_get_schema($table) {
       'bulk export' => TRUE,
       'list callback' => "$schema[module]_{$table}_list",
       'to hook code callback' => "$schema[module]_{$table}_to_hook_code",
+      'cache defaults' => FALSE,
+      'default cache bin' => 'cache',
     );
 
     // If the export definition doesn't have the "primary key" then the CRUD
