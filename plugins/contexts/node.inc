@@ -115,9 +115,9 @@ function ctools_context_node_settings_form_validate($form, &$form_state) {
 
   $nid          = $form_state['values']['node'];
   $preg_matches = array();
-  $match        = preg_match('/\[nid: (\d+)\]/', $nid, $preg_matches);
+  $match        = preg_match('/\[id: (\d+)\]/', $nid, $preg_matches);
   if (!$match) {
-    $match = preg_match('/^nid: (\d+)/', $nid, $preg_matches);
+    $match = preg_match('/^id: (\d+)/', $nid, $preg_matches);
   }
 
   if ($match) {
@@ -136,7 +136,6 @@ function ctools_context_node_settings_form_validate($form, &$form_state) {
   }
   else {
     form_set_value($form['nid'], $node->nid, $form_state);
-    // $form_state['values']['nid'] = $node->nid;
   }
 }
 
