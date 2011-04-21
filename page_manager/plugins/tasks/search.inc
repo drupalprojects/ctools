@@ -60,9 +60,9 @@ function page_manager_search_menu_alter(&$items, $task) {
   // different due to the way the search menu items function.
 
   // Go through each search module item.
-  foreach (module_implements('search') as $name) {
+  foreach (module_implements('search_info') as $name) {
     // Do not bother with search menu items that should not have search tabs.
-    if (!module_invoke($name, 'search', 'name')) {
+    if (!module_invoke($name, 'search_info', 'name')) {
       continue;
     }
 
@@ -254,8 +254,8 @@ function page_manager_search_enable($cache, $status) {
  */
 function page_manager_search_subtasks($task) {
   $return = array();
-  foreach (module_implements('search') as $name) {
-    if (module_invoke($name, 'search', 'name')) {
+  foreach (module_implements('search_info') as $name) {
+    if (module_invoke($name, 'search_info', 'name')) {
       $return[$name] = page_manager_search_build_subtask($task, $name);
     }
   }
@@ -274,7 +274,7 @@ function page_manager_search_subtask($task, $subtask_id) {
  * Build a subtask array for a given page.
  */
 function page_manager_search_build_subtask($task, $name) {
-  $type = module_invoke($name, 'search', 'name', TRUE);
+  $type = module_invoke($name, 'search_info', 'name', TRUE);
   $subtask = array(
     'name' => $name,
     'admin title' => $type,
