@@ -162,7 +162,7 @@ function ctools_entity_field_content_type_formatter_styles_submit($form, &$form_
   foreach ($formatter_info as $info) {
     if (!empty($info['settings'])) {
       foreach ($info['settings'] as $field_name => $value) {
-        if (!empty($form_state['values'][$field_name])) {
+        if (isset($form_state['values'][$field_name])) {
           $form_state['conf']['formatter_settings'][$field_name] = $form_state['values'][$field_name];
         }
       }
