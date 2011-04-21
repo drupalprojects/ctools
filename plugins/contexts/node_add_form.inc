@@ -90,8 +90,8 @@ function ctools_context_node_add_form_settings_form($form, &$form_state) {
   $form['type'] = array(
     '#title' => t('Node type'),
     '#type' => 'select',
-    '#options' => $options,
-    '#default_value' => node_type_get_names(),
+    '#options' => node_type_get_names(),
+    '#default_value' => $conf['type'],
     '#description' => t('Select the node type for this form.'),
   );
 
