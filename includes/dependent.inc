@@ -147,8 +147,8 @@ function ctools_dependent_pre_render($element) {
       'type' => $element['#dependency_type'],
     );
 
-    // Add a additional wrapper id around textareas to support depedency on it.
-    if ($element['#type'] == 'textarea') {
+    // Add a additional wrapper id around fieldsets, textareas to support depedency on it.
+    if (in_array($element['#type'], array('textarea', 'fieldset'))) {
       $element['#theme_wrappers'][] = 'container';
       $element['#attributes']['id'] = $element['#id'] . '-wrapper';
     }
