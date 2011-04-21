@@ -277,9 +277,9 @@ function page_manager_search_build_subtask($task, $name) {
   $type = module_invoke($name, 'search_info', 'name', TRUE);
   $subtask = array(
     'name' => $name,
-    'admin title' => $type,
+    'admin title' => $type['title'],
     'admin path' => "search/$name/!keywords",
-    'admin description' => t('Search @type', array('@type' => $type)),
+    'admin description' => t('Search @type', array('@type' => $type['title'])),
     'admin type' => t('System'),
     'row class' => empty($page->disabled) ? 'page-manager-enabled' : 'page-manager-disabled',
     'storage' => t('In code'),
