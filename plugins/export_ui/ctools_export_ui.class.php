@@ -574,6 +574,7 @@ class ctools_export_ui {
       'header' => $this->list_table_header(),
       'rows' => $this->rows,
       'attributes' => array('id' => 'ctools-export-ui-list-items'),
+      'empty' => $this->plugin['strings']['message']['no items'],
     );
     return theme('table', $table);
   }
