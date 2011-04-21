@@ -163,6 +163,9 @@ function mymodule_schema() {
 <dt>import callback</dt>
 <dd>CRUD callback to use for importing. If not provided, the default export function will be used. This function will accept the code as a single argument and, if the code evaluates, return an object represented by that code. In the case of failure, this will return a string with human readable errors.</dd>
 
+<dt>status callback</dt>
+<dd>CRUD callback to use for updating the status of an object. If the status is TRUE the object will be disabled. If the status is FALSE the object will be enabled.</dd>
+
 In addition, each field can contain the following:
 <dl>
 <dt>no export</dt>

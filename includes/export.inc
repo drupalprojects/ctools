@@ -269,6 +269,65 @@ function ctools_export_crud_import($table, $code) {
 }
 
 /**
+ * Change the status of a certain object.
+ *
+ * @param $table
+ *   The name of the table to use to enable a certain object. This table
+ *   must have an 'export' section containing data or this function
+ *   will fail.
+ * @param $object
+ *   The fully populated object to enable, or the machine readable name.
+ * @param $status
+ *   The status, in this case, is whether or not it is 'disabled'.
+ */
+function ctools_export_crud_set_status($table, $object, $status) {
+  $schema = ctools_export_get_schema($table);
+  $export = $schema['export'];
+
+  if (!empty($export['status callback']) && function_exists($export['status callback'])) {
+    $export['status callback']($object, $status);
+  }
+  else {
+    if (is_object($object)) {
+      ctools_export_set_object_status($table, $object, $status);
+    }
+    else {
+      ctools_export_set_status($table, $object, $status);
+    }
+  }
+  
+}
+
+
+/**
+ * Enable a certain object.
+ *
+ * @param $table
+ *   The name of the table to use to enable a certain object. This table
+ *   must have an 'export' section containing data or this function
+ *   will fail.
+ * @param $object
+ *   The fully populated object to enable, or the machine readable name.
+ */
+function ctools_export_crud_enable($table, $object) {
+  return ctools_export_crud_set_status($table, $object, FALSE);
+}
+
+/**
+ * Disable a certain object.
+ *
+ * @param $table
+ *   The name of the table to use to disable a certain object. This table
+ *   must have an 'export' section containing data or this function
+ *   will fail.
+ * @param $object
+ *   The fully populated object to disable, or the machine readable name.
+ */
+function ctools_export_crud_disable($table, $object) {
+  return ctools_export_crud_set_status($table, $object, TRUE);
+}
+
+/**
  * @}
  */
 
