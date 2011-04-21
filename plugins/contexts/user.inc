@@ -30,7 +30,7 @@ $plugin = array(
  * are not always created from the UI.
  */
 function ctools_context_create_user($empty, $data = NULL, $conf = FALSE) {
-  $context = new ctools_context('user');
+  $context = new ctools_context(array('entity:user', 'entity', 'user'));
   $context->plugin = 'user';
 
   if ($empty) {
@@ -46,6 +46,11 @@ function ctools_context_create_user($empty, $data = NULL, $conf = FALSE) {
     else {
       $data = user_load($data['uid']);
     }
+  }
+  // Load entity if the data provided is a numeric value. This kind of data is
+  // passed by some relationships.
+  if (is_numeric($data)) {
+    $data = user_load($data);
   }
 
   if (!empty($data)) {
