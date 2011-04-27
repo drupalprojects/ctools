@@ -382,7 +382,6 @@ function ctools_context_ajax_item_add($mechanism = NULL, $type = NULL, $cache_ke
     'cache storage' => 'object',
   );
 
-  dsm($type);
   if ($type == 'requiredcontext') {
     $form_info += array(
       'add form name' => 'required context add form',
