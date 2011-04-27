@@ -58,7 +58,11 @@ function views_content_context_view_create($empty, $data = NULL, $conf = FALSE) 
 
   if (is_object($data)) {
     // We don't store the loaded view as we don't want the view object
-    // cached.
+    // cached. However, in order to extract it you can use:
+    // @code
+    // $output = views_content_context_get_output($context);
+    // $view = $output['view'];
+    // @endcode
     $context->data     = array(
       'name' => $data->name,
       'display' => $data->current_display,
