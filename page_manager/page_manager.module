@@ -95,6 +95,7 @@ function page_manager_menu() {
   $base = array(
     'access arguments' => array('use page manager'),
     'file' => 'page_manager.admin.inc',
+    'theme callback' => 'ajax_base_page_theme',
   );
 
   $items['admin/structure/pages'] = array(
