@@ -380,9 +380,15 @@ function ctools_context_ajax_item_add($mechanism = NULL, $type = NULL, $cache_ke
     'cache key' => $cache_key,
     // This is stating what the cache will be referred to in $form_state
     'cache storage' => 'object',
-    'add form name' => 'required context add form',
-    'edit form name' => 'required context edit form',
   );
+
+  dsm($type);
+  if ($type == 'requiredcontext') {
+    $form_info += array(
+      'add form name' => 'required context add form',
+      'edit form name' => 'required context edit form',
+    );
+  }
 
   $output = ctools_plugin_configure_form($form_info, $form_state);
 
@@ -550,9 +556,14 @@ function ctools_context_ajax_item_edit($mechanism = NULL, $type = NULL, $cache_k
     'cache key' => $cache_key,
     // This is stating what the cache will be referred to in $form_state
     'cache storage' => 'object',
-    'add form name' => 'required context add form',
-    'edit form name' => 'required context edit form',
   );
+
+  if ($type == 'requiredcontext') {
+    $form_info += array(
+      'add form name' => 'required context add form',
+      'edit form name' => 'required context edit form',
+    );
+  }
 
   $output = ctools_plugin_configure_form($form_info, $form_state);
 
