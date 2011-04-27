@@ -386,8 +386,10 @@ function ctools_context_ajax_item_add($mechanism = NULL, $type = NULL, $cache_ke
 
   $output = ctools_plugin_configure_form($form_info, $form_state);
 
-  // If $rc is FALSE, there was no actual form.
-  if ($output === FALSE || !empty($form_state['complete'])) {
+  if (!empty($form_state['cancel'])) {
+    $output = array(ctools_modal_command_dismiss());
+  }
+  else if (!empty($form_state['complete'])) {
     // Successful submit -- move temporary data to location.
 
     // Create a reference to the place our context lives. Since this is fairly
@@ -554,8 +556,10 @@ function ctools_context_ajax_item_edit($mechanism = NULL, $type = NULL, $cache_k
 
   $output = ctools_plugin_configure_form($form_info, $form_state);
 
-  // If $rc is FALSE, there was no actual form.
-  if ($output === FALSE || !empty($form_state['complete'])) {
+  if (!empty($form_state['cancel'])) {
+    $output = array(ctools_modal_command_dismiss());
+  }
+  else if (!empty($form_state['complete'])) {
     // successful submit
     $ref[$position] = $conf;
     if (isset($object->temporary)) {
