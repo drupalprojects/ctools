@@ -116,7 +116,6 @@ function ctools_search_result_content_type_edit_form($form, &$form_state) {
     '#title' => t('Title'),
     '#type' => 'textfield',
     '#default_value' => $conf['empty_title'],
-    '#process' => array('ctools_dependent_process'),
     '#dependency' => array('edit-override-empty' => array(1)),
   );
 
@@ -124,7 +123,6 @@ function ctools_search_result_content_type_edit_form($form, &$form_state) {
     '#title' => t('No result text'),
     '#type' => 'textarea',
     '#default_value' => $conf['empty'],
-    '#process' => array('ctools_dependent_process'),
     '#dependency' => array('edit-override-empty' => array(1)),
   );
 
@@ -132,7 +130,6 @@ function ctools_search_result_content_type_edit_form($form, &$form_state) {
     '#type' => 'hidden',
     '#id' => 'edit-empty-format',
     '#prefix' => '<div><fieldset id="edit-empty-format" class="collapsed collapsible"><legend>' . t('Input format') . '</legend>',
-    '#process' => array('ctools_dependent_process'),
     '#dependency' => array('edit-override-empty' => array(1)),
   );
   // Yes, lots of gymnastics to make this fieldset work with dependencies.
@@ -154,7 +151,6 @@ function ctools_search_result_content_type_edit_form($form, &$form_state) {
     '#title' => t('Title'),
     '#type' => 'textfield',
     '#default_value' => $conf['no_key_title'],
-    '#process' => array('ctools_dependent_process'),
     '#dependency' => array('edit-override-no-key' => array(1)),
   );
 
@@ -162,7 +158,6 @@ function ctools_search_result_content_type_edit_form($form, &$form_state) {
     '#title' => t('No keywords text'),
     '#type' => 'textarea',
     '#default_value' => $conf['no_key'],
-    '#process' => array('ctools_dependent_process'),
     '#dependency' => array('edit-override-no-key' => array(1)),
   );
 
@@ -170,7 +165,6 @@ function ctools_search_result_content_type_edit_form($form, &$form_state) {
     '#type' => 'hidden',
     '#id' => 'edit-no-key-format',
     '#prefix' => '<div><fieldset id="edit-no-key-format" class="collapsed collapsible"><legend>' . t('Input format') . '</legend>',
-    '#process' => array('ctools_dependent_process'),
     '#dependency' => array('edit-override-no-key' => array(1)),
   );
   // Yes, lots of gymnastics to make this fieldset work with dependencies.

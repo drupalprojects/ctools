@@ -82,7 +82,6 @@ function ctools_context_user_settings_form($form, &$form_state) {
     '#type' => 'textfield',
     '#maxlength' => 512,
     '#autocomplete_path' => 'user/autocomplete',
-    '#process' => array('ctools_dependent_process'),
     '#dependency' => array('radio:type' => array('select')),
   );
 
@@ -103,7 +102,6 @@ function ctools_context_user_settings_form($form, &$form_state) {
     '#default_value' => FALSE,
     '#title' => t('Reset identifier to username'),
     '#description' => t('If checked, the identifier will be reset to the user name of the selected user.'),
-    '#process' => array('ctools_dependent_process'),
     '#dependency' => array('radio:context[context_settings][type]' => array('select')),
   );
 

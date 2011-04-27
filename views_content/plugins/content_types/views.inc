@@ -335,7 +335,6 @@ function views_content_views_content_type_edit_form($form, &$form_state) {
     '#title' => t('Use pager'),
     '#default_value' => $conf['use_pager'],
     '#id' => 'use-pager-checkbox',
-    '#process' => array('ctools_dependent_process'),
     '#dependency' => array('override-pager-checkbox' => array(1)),
   );
   $form['pager_settings']['pager_id'] = array(
@@ -344,7 +343,6 @@ function views_content_views_content_type_edit_form($form, &$form_state) {
     '#title' => t('Pager ID'),
     '#size' => 4,
     '#id' => 'use-pager-textfield',
-    '#process' => array('ctools_dependent_process'),
     '#dependency' => array('override-pager-checkbox' => array(1), 'use-pager-checkbox' => array(1)),
     '#dependency_count' => 2,
     '#suffix' => '</div>',
@@ -355,7 +353,6 @@ function views_content_views_content_type_edit_form($form, &$form_state) {
     '#default_value' => $conf['nodes_per_page'],
     '#size' => 4,
     '#title' => t('Num posts'),
-    '#process' => array('ctools_dependent_process'),
     '#dependency' => array('override-pager-checkbox' => array(1)),
   );
 
@@ -365,7 +362,6 @@ function views_content_views_content_type_edit_form($form, &$form_state) {
     '#title' => t('Offset'),
     '#size' => 4,
     '#description' => t('The number of items to skip and not display.'),
-    '#process' => array('ctools_dependent_process'),
     '#dependency' => array('override-pager-checkbox' => array(1)),
   );
 

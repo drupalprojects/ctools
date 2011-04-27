@@ -33,7 +33,7 @@ function ctools_term_has_parent_ctools_access_settings($form, &$form_state, $con
   if (!isset($conf['vid'])) {
     $conf['vid'] = 0;
   }
-  
+
   $form['settings']['vid'] = array(
     '#title' => t('Vocabulary'),
     '#type' => 'select',
@@ -59,7 +59,6 @@ function ctools_term_has_parent_ctools_access_settings($form, &$form_state, $con
     $form['settings'][$vid] = array(
       '#title' => t('Terms'),
       '#description' => t('Select a term or terms from @vocabulary.', array('@vocabulary' => $vocabulary->name)),
-      '#process' => array('ctools_dependent_process'),
       '#dependency' => array('ctools-select-vid' => array($vocabulary->vid)),
       '#default_value' => !empty($conf[$vid]) ? $conf[$vid] : '',
       '#size' => 10,
@@ -102,7 +101,7 @@ function ctools_term_has_parent_ctools_access_check($conf, $context) {
     return FALSE;
   }
   $vid = $conf['vid'];
-  
+
   // we'll start looking up the hierarchy from our context term id.
   $current_term = $context->data->tid;
 
@@ -113,29 +112,29 @@ function ctools_term_has_parent_ctools_access_check($conf, $context) {
     // select parent as term_parent to avoid PHP5 complications with the parent keyword
     //@todo: Find a way to reduce the number of queries required for really deep hierarchies.
     $term = db_query("SELECT parent AS term_parent, tid AS tid FROM {taxonomy_term_hierarchy} th WHERE th.tid = :tid", array(':tid'=>$current_term))->fetchObject();
-  
+
     // if no term is found, get out of the loop
     if (!$term || empty($term->tid)) {
       break;
     }
-    
+
     // check the term selected, if the user asked it to.
     if (!empty($conf['include_self']) && in_array($term->tid, $conf[$vid])) {
       return TRUE;
     }
-    
+
     // did we find the parent TID we were looking for?
     if (in_array($term->term_parent, $conf[$vid])) {
       // YES, we're done!
       return TRUE;
     }
     // Nope, we didn't find it.
-    
+
     // If this is the top of the hierarchy, stop scanning.
     if ($term->term_parent==0) {
       break;
     }
-    
+
     // update the parent, and keep scanning.
     $current_term = $term->term_parent;
   }

@@ -121,7 +121,6 @@ function ctools_search_form_content_type_edit_form($form, &$form_state) {
   $form['path'] = array(
     '#type' => 'textfield',
     '#default_value' => $conf['path'],
-    '#process' => array('ctools_dependent_process'),
     '#dependency' => array('edit-path-type' => array('custom')),
     '#suffix' => '</div>',
   );
@@ -136,7 +135,6 @@ function ctools_search_form_content_type_edit_form($form, &$form_state) {
   $form['prompt'] = array(
     '#type' => 'textfield',
     '#default_value' => $conf['prompt'],
-    '#process' => array('ctools_dependent_process'),
     '#dependency' => array('edit-override-prompt' => array(1)),
     '#suffix' => '</div>',
   );

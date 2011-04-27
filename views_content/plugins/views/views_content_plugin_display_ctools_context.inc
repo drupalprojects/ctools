@@ -194,7 +194,6 @@ class views_content_plugin_display_ctools_context extends views_plugin_display {
             '#description' => t('If "From context" is selected, which type of context to use.'),
             '#default_value' => $argument['context'],
             '#options' => ctools_context_get_all_converters(),
-            '#process' => array('form_process_select', 'ctools_dependent_process'),
             '#dependency' => array($type_id => array('context')),
           );
 
@@ -203,7 +202,6 @@ class views_content_plugin_display_ctools_context extends views_plugin_display {
             '#title' => t('Context is optional'),
             '#description' => t('This context need not be present for the pane to function. If you plan to use this, ensure that the argument handler can handle empty values gracefully.'),
             '#default_value' => $argument['context_optional'],
-            '#process' => array('form_process_checkbox', 'ctools_dependent_process'),
             '#dependency' => array($type_id => array('context')),
           );
         }

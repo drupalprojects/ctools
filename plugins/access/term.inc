@@ -60,7 +60,6 @@ function ctools_term_ctools_access_settings($form, &$form_state, $conf) {
     $form['settings'][$vocabulary->vid] = array(
       '#title' => t('Terms'),
       '#description' => t('Select a term or terms from @vocabulary.', array('@vocabulary' => $vocabulary->name)), //. $description,
-      '#process' => array('ctools_dependent_process'),
       '#dependency' => array('ctools-select-vid' => array($vocabulary->vid)),
       '#default_value' => !empty($conf[$vid]) ? $conf[$vid] : '',
       '#multiple' => TRUE,

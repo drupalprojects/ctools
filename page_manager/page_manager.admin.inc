@@ -1414,7 +1414,6 @@ function page_manager_handler_add_form($form, $form_state, $features = array()) 
 
       if ($plugin != 'default') {
         $form['features'][$plugin][$feature_id] += array(
-          '#process' => array('ctools_dependent_process'),
           '#dependency' => array('edit-handler' => array($plugin)),
         );
       }
