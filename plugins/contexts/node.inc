@@ -25,7 +25,9 @@ $plugin = array(
     '#type' => 'textfield',
     '#description' => t('Enter the node ID of a node for this context.'),
   ),
+  // This context is deprecated and should not be usable in the UI.
   'no ui' => TRUE,
+  'no required context ui' => TRUE,
 );
 
 /**

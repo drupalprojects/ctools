@@ -21,8 +21,10 @@ $plugin = array(
   'convert list' => 'ctools_context_user_convert_list',
   'convert' => 'ctools_context_user_convert',
   'convert default' => 'name',
-  'js' => array('misc/autocomplete.js'),
+
+  // This context is deprecated and should not be usable in the UI.
   'no ui' => TRUE,
+  'no required context ui' => TRUE,
 );
 
 /**

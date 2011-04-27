@@ -29,7 +29,9 @@ $plugin = array(
     'vid' => t('Vocabulary ID'),
   ),
   'convert' => 'ctools_context_term_convert',
+  // This context is deprecated and should not be usable in the UI.
   'no ui' => TRUE,
+  'no required context ui' => TRUE,
 );
 
 /**

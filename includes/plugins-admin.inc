@@ -71,18 +71,21 @@ function _ctools_plugin_configure_create_form_info(&$form_info, $plugin_definiti
     'show back' => TRUE,
   );
 
+  $add_form = isset($form_info['add form name']) ? $form_info['add form name'] : 'add form';
+  $edit_form = isset($form_info['edit form name']) ? $form_info['edit form name'] : 'edit form';
+
   // Figure out what the forms should actually be. Since they can be specified
   // in a couple of different ways (in order to support simple declarations for
   // the minimal forms but more complex declarations for powerful wizards).
   if ($op == 'add') {
-    if (!empty($plugin_definition['add form'])) {
-      $info = $plugin_definition['add form'];
+    if (!empty($plugin_definition[$add_form])) {
+      $info = $plugin_definition[$add_form];
     }
   }
   if (!isset($info) || $op == 'edit') {
     // Use the edit form for the add form if add form was completely left off.
-    if (!empty($plugin_definition['edit form'])) {
-      $info = $plugin_definition['edit form'];
+    if (!empty($plugin_definition[$edit_form])) {
+      $info = $plugin_definition[$edit_form];
     }
   }
 
