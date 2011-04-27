@@ -115,13 +115,13 @@ function page_manager_menu() {
     'title' => 'Edit',
     'page callback' => 'page_manager_edit_page',
     'page arguments' => array(4),
-    'type' => MENU_CALLBACK,
+    'type' => MENU_NORMAL_ITEM,
   ) + $base;
 
   $items['admin/structure/pages/%ctools_js/operation/%page_manager_cache'] = array(
     'page callback' => 'page_manager_edit_page_operation',
     'page arguments' => array(3, 5),
-    'type' => MENU_CALLBACK,
+    'type' => MENU_NORMAL_ITEM,
   ) + $base;
 
   $items['admin/structure/pages/%ctools_js/enable/%page_manager_cache'] = array(
