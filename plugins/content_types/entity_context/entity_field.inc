@@ -41,10 +41,9 @@ function ctools_entity_field_content_type_content_types() {
           $types[$entity_type . ':' . $field_name] = array(
             'category' => t(ucfirst($entity_type)),
             'icon' => 'icon_field.png',
-            'title' => t('Field: @widget_label (@field_name) - @field_type', array(
+            'title' => t('Field: @widget_label (@field_name)', array(
               '@widget_label' => t($field['label']),
               '@field_name' => $field_name,
-              '@field_type' => t($field['widget']['type']),
             )),
             'description' => t('Field on the referenced entity.'),
             'edit form' => array(
@@ -69,6 +68,7 @@ function ctools_entity_field_content_type_content_types() {
     ));
     unset($context_types[$key]['types']);
   }
+
   return $types;
 }
 
@@ -174,5 +174,7 @@ function ctools_entity_field_content_type_formatter_styles_submit($form, &$form_
 * Returns the administrative title for a type.
 */
 function ctools_entity_field_content_type_admin_title($subtype, $conf, $context) {
-  return t('"@s" @field', array('@s' => $context->identifier, '@field' => $subtype));
+  list($bundle, $field_name) = explode(':', $subtype);
+  ctools_include('fields');
+  return t('"@s" @field', array('@s' => $context->identifier, '@field' => ctools_field_label($field_name)));
 }
