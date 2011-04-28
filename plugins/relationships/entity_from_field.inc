@@ -23,6 +23,7 @@ function ctools_entity_from_field_get_child($plugin, $parent, $child) {
 }
 
 function ctools_entity_from_field_get_children($plugin, $parent) {
+  ctools_include('fields');
   $entities = entity_get_info();
   $plugins = array();
   $context_types = array();
@@ -45,11 +46,18 @@ function ctools_entity_from_field_get_children($plugin, $parent) {
               if (isset($info['table'])) {
                 foreach ($entities as $entity => $einfo) {
                   if ($einfo['base table'] == $info['table'] && isset($info['columns'][$einfo['entity keys']['id']])) {
-                    $plugin['title'] = t('@field_entity from @entity on @field_name field', array('@field_entity' => $einfo['label'], '@entity' => $entities[$entity_type]['label'], '@field_name' => $field_name));
+                    $replacements = array(
+                      '@to_entity' => $einfo['label'],
+                      '@from_entity' => $entities[$entity_type]['label'],
+                      '@field_name' => ctools_field_label($field_name),
+                      '%field_name' => ctools_field_label($field_name),
+                    );
+                    $plugin['title'] = t('@to_entity from @from_entity (on @field_name)', $replacements);
                     $plugin['keyword'] = $entity;
                     $plugin['context name'] = $field_name . '-' . $entity_type . '-' . $entity;
                     $plugin['name'] = $parent . ':' . $field_name . '-' . $entity_type . '-' . $entity;
-                    $plugin['description'] = t('Creates a @entity context from @base_entity field relationship on the @base_table table.', array('@entity' => $entity, '@base_entity' => $entity_type, '@base_table' => $einfo['base table']));
+                    $plugin['description'] = t('Creates a @to_entity context from @from_entity using the %field_name field.', $replacements);
+
                     $context_types[$parent . ':' . $field_name . '-' . $entity_type . '-' . $entity]['types'][$bundle] = $entities[$entity_type]['bundles'][$bundle]['label'];
                     $plugins[$parent . ':' . $field_name . '-' . $entity_type . '-' . $entity] = $plugin;
                   }
@@ -69,6 +77,7 @@ function ctools_entity_from_field_get_children($plugin, $parent) {
     drupal_alter('ctools_entity_context', $plugins[$key], $plugin_entities, $key);
   }
   drupal_alter('ctools_entity_contexts', $plugins);
+  dsm($plugins);
   return $plugins;
 }
 
