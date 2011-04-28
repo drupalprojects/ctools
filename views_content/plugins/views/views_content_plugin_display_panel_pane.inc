@@ -243,6 +243,9 @@ class views_content_plugin_display_panel_pane extends views_plugin_display {
         ctools_include('dependent');
         $form['argument_input']['#tree'] = TRUE;
 
+        $converters = ctools_context_get_all_converters();
+        ksort($converters);
+
         foreach ($argument_input as $id => $argument) {
           $form['argument_input'][$id] = array(
             '#tree' => TRUE,
@@ -265,13 +268,12 @@ class views_content_plugin_display_panel_pane extends views_plugin_display {
             '#title' => t('@arg source', array('@arg' => $argument['name'])),
             '#default_value' => $argument['type'],
           );
-
           $form['argument_input'][$id]['context'] = array(
             '#type' => 'select',
             '#title' => t('Required context'),
             '#description' => t('If "From context" is selected, which type of context to use.'),
             '#default_value' => $argument['context'],
-            '#options' => ctools_context_get_all_converters(),
+            '#options' => $converters,
             '#dependency' => array($type_id => array('context')),
           );
 

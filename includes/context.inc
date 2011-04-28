@@ -477,9 +477,11 @@ function ctools_context_get_all_converters() {
   $contexts = ctools_get_contexts();
   $converters = array();
   foreach ($contexts as $name => $context) {
-    $context_converters = _ctools_context_get_converters($name . '.', $name);
-    if ($context_converters) {
-      $converters[$context['title']] = $context_converters;
+    if (empty($context['no required context ui'])) {
+      $context_converters = _ctools_context_get_converters($name . '.', $name);
+      if ($context_converters) {
+        $converters[$context['title']] = $context_converters;
+      }
     }
   }
 

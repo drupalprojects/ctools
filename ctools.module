@@ -809,6 +809,7 @@ function ctools_ctools_entity_context_alter(&$plugin, &$entity, $plugin_id) {
     case 'entity:user':
       $plugin = ctools_get_context('user');
       unset($plugin['no ui']);
+      unset($plugin['no required context ui']);
       break;
     case 'entity_from_schema:uid-node-user':
       $plugin['title'] = t('Node author');
