@@ -815,4 +815,16 @@ function ctools_ctools_entity_context_alter(&$plugin, &$entity, $plugin_id) {
       $plugin['title'] = t('Node author');
       break;
   }
+
+  // Apply restrictions on taxonomy term reverse relationships whose
+  // restrictions are in the settings on the field.
+  if (!empty($plugin['parent']) &&
+      $plugin['parent'] == 'entity_from_field' &&
+      !empty($plugin['reverse']) &&
+      $plugin['to entity'] == 'taxonomy_term') {
+    $field = field_info_field($plugin['field name']);
+    if (isset($field['settings']['allowed_values'][0]['vocabulary'])) {
+      $plugin['required context']->restrictions = array('vocabulary' => array($field['settings']['allowed_values'][0]['vocabulary']));
+    }
+  }
 }
