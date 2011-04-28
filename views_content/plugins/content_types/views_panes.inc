@@ -86,10 +86,7 @@ function _views_content_panes_content_type($view, $display) {
     return;
   }
 
-  $title = $display->handler->get_option('pane_title');
-  if (!$title) {
-    $title = t('@view: @display', array('@view' => $view->name, '@display' => $display->display_title));
-  }
+  $title = views_content_get_display_title($view, $display->id);
 
   $description = $display->handler->get_option('pane_description');
   if (!$description) {
@@ -213,7 +210,7 @@ function views_content_views_panes_content_type_render($subtype, $conf, $panel_a
 
   $block = new stdClass();
   $block->module = 'views';
-  $block->delta  = $view->name . $display;
+  $block->delta  = $view->name . '-' . $display;
 
   if (($allow['link_to_view'] && !empty($conf['link_to_view'])) ||
       (!$allow['link_to_view'] && $view->display_handler->get_option('link_to_view'))) {
@@ -563,8 +560,9 @@ function views_content_views_panes_content_type_admin_title($subtype, $conf, $co
   $view->set_display($display);
   views_content_views_panes_add_defaults($conf, $view);
 
-  $title = $view->display_handler->get_option('pane_title');
-  return check_plain($title ? $title : $view->name);
+  $title = views_content_get_display_title($view, $display);
+
+  return check_plain($title);
 }
 
 /**

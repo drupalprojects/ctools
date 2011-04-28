@@ -183,3 +183,32 @@ function views_content_context_get_output(&$context) {
 
   return $context->output;
 }
+
+/**
+ * Get the title to display for a views content display for pane or context.
+ */
+function views_content_get_display_title($view, $display_id, $option = 'pane_title') {
+  $handler = $view->display[$display_id]->handler;
+  $title = $handler->get_option($option);
+  if (!$title) {
+    if ($handler->display->display_title == $handler->definition['title']) {
+      $title = t('View: @view', array('@view' => $view->get_human_name()));
+    }
+    else {
+      $title = t('View: @view: @display', array('@view' => $view->get_human_name(), '@display' => $handler->display->display_title));
+    }
+  }
+
+  return $title;
+}
+
+/**
+ * Get the proper label for a display.
+ *
+ * Views renamed the default to Master, but it can still have a conflicting
+ * display title. Fix that.
+ */
+function views_content_get_display_label($view, $display_id) {
+  $title = $display_id == 'default' ? t('Master') : $view->display[$display_id]->display_title;
+  return $title;
+}

@@ -74,7 +74,8 @@ function _views_content_context_relationships($view, $display, $parent) {
     return;
   }
 
-  $title = t('View @view: @display', array('@view' => $view->name, '@display' => $display->display_title));
+  $title = views_content_get_display_title($view, $display->id, 'admin_title');
+
   $description = $view->description;
   $contexts = array();
 

@@ -86,10 +86,7 @@ function views_content_context_view_settings_form($form, &$form_state) {
   $views = views_get_applicable_views('returns context');
   foreach ($views as $data) {
     list($view, $id) = $data;
-    $title = $view->display_handler->get_option('admin_title');
-    if (!$title) {
-      $title = $view->name;
-    }
+    $title = views_content_get_display_title($view, $id, 'admin_title');
     $options[$view->name . ':' . $id] = $title;
   }
 
