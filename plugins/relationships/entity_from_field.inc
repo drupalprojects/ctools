@@ -77,7 +77,6 @@ function ctools_entity_from_field_get_children($plugin, $parent) {
     drupal_alter('ctools_entity_context', $plugins[$key], $plugin_entities, $key);
   }
   drupal_alter('ctools_entity_contexts', $plugins);
-  dsm($plugins);
   return $plugins;
 }
 
