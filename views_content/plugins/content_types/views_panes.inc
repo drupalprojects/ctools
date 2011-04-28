@@ -344,11 +344,18 @@ function views_content_views_panes_content_type_edit_form($form, &$form_state) {
   $view = views_get_view($name);
 
   if (empty($view)) {
-    $form['markup'] = array('#value' => t('Broken/missing/deleted view.'));
-    return;
+    $form['markup'] = array('#markup' => t('Broken/missing/deleted view.'));
+    return $form;
   }
 
   $view->set_display($display_id);
+
+  // If it couldn't set the display and we got the default display instead,
+  // fail.
+  if ($view->current_display == 'default') {
+    $form['markup'] = array('#markup' => t('Broken/missing/deleted view display.'));
+    return $form;
+  }
 
   $allow = $view->display_handler->get_option('allow');
 
