@@ -135,6 +135,9 @@ function mymodule_schema() {
 <dt>bulk export</dt>
 <dd>Declares whether or not the exportable will be available for bulk exporting.</dd>
 
+<dt>export type string</dt>
+<dd>The export type string (Local, Overridden, Database) is normally stored as $item-&gt;type. Since type is a very common keyword, it's possible to specify what key to actually use. </dd>
+
 <dt>list callback</dt>
 <dd>Bulk export callback to provide a list of exportable objects to be chosen for bulk exporting. Defaults to $module . '_' . $table . '_list' if the function exists. If it is not, a default listing function will be provided that will make a best effort to list the titles. See ctools_export_default_list().</dd>
 
@@ -205,6 +208,7 @@ Exportable objects have several reserved keys that are used by the CTools export
 <li><em>Overridden</em> is an object that lives in the database and is overriding the exported configuration of a corresponding object in code.</li>
 <li><em>Default</em> is an object that lives only in code.</li>
 </ul>
+<i>Note: This key can be changed by setting 'export type string' to something else, to try and prevent "type" from conflicting.
 </dd>
 </dl>
 

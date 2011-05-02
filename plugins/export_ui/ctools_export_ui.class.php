@@ -337,6 +337,7 @@ class ctools_export_ui {
   function list_form_submit(&$form, &$form_state) {
     // Filter and re-sort the pages.
     $plugin = $this->plugin;
+    $schema = ctools_export_get_schema($this->plugin['schema']);
 
     $prefix = ctools_export_ui_plugin_base_path($plugin);
 
@@ -352,10 +353,10 @@ class ctools_export_ui {
       $allowed_operations = drupal_map_assoc(array_keys($plugin['allowed operations']));
       $not_allowed_operations = array('import');
 
-      if ($item->type == t('Normal')) {
+      if ($item->{$schema['export']['export type string']} == t('Normal')) {
         $not_allowed_operations[] = 'revert';
       }
-      elseif ($item->type == t('Overridden')) {
+      elseif ($item->{$schema['export']['export type string']} == t('Overridden')) {
         $not_allowed_operations[] = 'delete';
       }
       else {
@@ -417,7 +418,8 @@ class ctools_export_ui {
    *   TRUE if the item should be excluded.
    */
   function list_filter($form_state, $item) {
-    if ($form_state['values']['storage'] != 'all' && $form_state['values']['storage'] != $item->type) {
+    $schema = ctools_export_get_schema($this->plugin['schema']);
+    if ($form_state['values']['storage'] != 'all' && $form_state['values']['storage'] != $item->{$schema['export']['export type string']}) {
       return TRUE;
     }
 
@@ -506,8 +508,9 @@ class ctools_export_ui {
   function list_build_row($item, &$form_state, $operations) {
     // Set up sorting
     $name = $item->{$this->plugin['export']['key']};
+    $schema = ctools_export_get_schema($this->plugin['schema']);
 
-    // Note: $item->type should have already been set up by export.inc so
+    // Note: $item->{$schema['export']['export type string']} should have already been set up by export.inc so
     // we can use it safely.
     switch ($form_state['values']['order']) {
       case 'disabled':
@@ -520,7 +523,7 @@ class ctools_export_ui {
         $this->sorts[$name] = $name;
         break;
       case 'storage':
-        $this->sorts[$name] = $item->type . $name;
+        $this->sorts[$name] = $item->{$schema['export']['export type string']} . $name;
         break;
     }
 
@@ -532,7 +535,7 @@ class ctools_export_ui {
       $this->rows[$name]['data'][] = array('data' => check_plain($item->{$this->plugin['export']['admin_title']}), 'class' => array('ctools-export-ui-title'));
     }
     $this->rows[$name]['data'][] = array('data' => check_plain($name), 'class' => array('ctools-export-ui-name'));
-    $this->rows[$name]['data'][] = array('data' => check_plain($item->type), 'class' => array('ctools-export-ui-storage'));
+    $this->rows[$name]['data'][] = array('data' => check_plain($item->{$schema['export']['export type string']}), 'class' => array('ctools-export-ui-storage'));
     $this->rows[$name]['data'][] = array('data' => theme('links', array('links' => $operations)), 'class' => array('ctools-export-ui-operations'));
 
     // Add an automatic mouseover of the description if one exists.
