@@ -39,6 +39,10 @@ function ctools_entity_from_schema_get_children($parent_plugin, $parent) {
       if (isset($schemas[$table]['foreign keys'])) {
         foreach ($schemas[$table]['foreign keys'] as $relationship => $info) {
           foreach ($entities as $to_entity => $to_entity_info) {
+            if (empty($info['table'])) {
+              continue;
+            }
+
             if ($info['table'] == $to_entity_info['base table'] && in_array($to_entity_info['entity keys']['id'], $info['columns'])) {
               $this_col = ctools_entity_from_schema_columns_filter($info['columns'], $to_entity_info['entity keys']['id']);
 
