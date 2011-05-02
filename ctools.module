@@ -806,6 +806,9 @@ function ctools_ajax_theme_callback() {
 function ctools_ctools_entity_context_alter(&$plugin, &$entity, $plugin_id) {
   ctools_include('context');
   switch ($plugin_id) {
+    case 'entity_id:taxonomy_term':
+      $plugin['no ui'] = TRUE;
+      break;
     case 'entity:user':
       $plugin = ctools_get_context('user');
       unset($plugin['no ui']);

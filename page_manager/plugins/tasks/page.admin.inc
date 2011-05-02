@@ -1029,7 +1029,10 @@ function page_manager_page_subtask_argument_ajax($step = NULL, $task_name = NULL
   );
 
   $output = ctools_wizard_multistep_form($form_info, $step, $form_state);
-  if (!empty($form_state['complete'])) {
+  if (!empty($form_state['cancel'])) {
+    $commands = array(ctools_modal_command_dismiss());
+  }
+  else if (!empty($form_state['complete'])) {
     if (isset($page->temporary_arguments[$keyword])) {
       $page->arguments[$keyword] = $page->temporary_arguments[$keyword];
     }

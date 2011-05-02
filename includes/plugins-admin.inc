@@ -106,12 +106,17 @@ function _ctools_plugin_configure_create_form_info(&$form_info, $plugin_definiti
     else {
       $title = t('Configure !plugin_title', array('!plugin_title' => $plugin_definition['title']));
     }
-    $form_info['order'] = array('form' => $title);
-    $form_info['forms'] = array(
-      'form' => array(
-        'title' => $title,
-        'form id' => $info,
-      ),
+    if (empty($form_info['order']) {
+      $form_info['order'] = array();
+    }
+    $form_info['order']['form'] = $title;
+
+    if (empty($form_info['forms'])) {
+      $form_info['forms'] = array();
+    }
+    $form_info['forms']['form'] = array(
+      'title' => $title,
+      'form id' => $info,
     );
 
     // Add the default form if one is specified.
@@ -130,8 +135,12 @@ function _ctools_plugin_configure_create_form_info(&$form_info, $plugin_definiti
     }
   }
   else if (is_array($info)) {
-    $form_info['order'] = array();
-    $form_info['forms'] = array();
+      if (empty($form_info['order'])) {
+        $form_info['order'] = array();
+      }
+    if (empty($form_info['forms'])) {
+      $form_info['forms'] = array();
+    }
     $count = 0;
     $base = 'step';
     $wrapper = NULL;
