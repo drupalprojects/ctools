@@ -218,7 +218,9 @@ function page_manager_get_pages($tasks, &$pages, $task_id = NULL) {
       }
     }
 
-    $row['data']['operations'] = array('data' => theme('links', array('links' => $operations)), 'class' => array('page-manager-page-operations'));
+    $ops = theme('links__ctools_dropbutton', array('links' => $operations, 'attributes' => array('class' => array('links', 'inline'))));
+
+    $row['data']['operations'] = array('data' => $ops, 'class' => array('page-manager-page-operations'));
 
     $pages['disabled'][$task_name] = !empty($task['disabled']);
     $pages['tasks'][] = $task_name;
