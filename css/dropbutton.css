@@ -3,6 +3,7 @@
 .ctools-dropbutton-processed {
   padding-right: 18px;
   position: relative;
+  background-color: inherit;
 }
 
 .ctools-dropbutton-processed.open {
@@ -23,6 +24,19 @@
   text-indent: -9999px; /* LTR */
   top: 0;
   width: 17px;
+}
+
+.ctools-dropbutton-processed .ctools-link a {
+  overflow: hidden;
+}
+
+.ctools-dropbutton-processed .ctools-content ul {
+  margin: 0;
+  overflow: hidden;
+}
+
+.ctools-dropbutton-processed.open li + li {
+  padding-top: 4px;
 }
 
 /**
