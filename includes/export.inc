@@ -289,7 +289,7 @@ function ctools_export_crud_set_status($table, $object, $status) {
   }
   else {
     if (is_object($object)) {
-      ctools_export_set_object_status($table, $object, $status);
+      ctools_export_set_object_status($object, $status);
     }
     else {
       ctools_export_set_status($table, $object, $status);
@@ -1037,7 +1037,7 @@ function ctools_export_set_object_status($object, $new_status = TRUE) {
   $table = $object->table;
   $schema = ctools_export_get_schema($table);
   $export = $schema['export'];
-  $status = variable_get($schema['export']['status'], array());
+  $status = variable_get($export['status'], array());
 
   // Compare
   if (!$new_status && $object->export_type & EXPORT_IN_DATABASE) {
@@ -1047,7 +1047,7 @@ function ctools_export_set_object_status($object, $new_status = TRUE) {
     $status[$object->{$export['key']}] = $new_status;
   }
 
-  variable_set($schema['export']['status'], $status);
+  variable_set($export['status'], $status);
 }
 
 /**
