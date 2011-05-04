@@ -814,9 +814,6 @@ function ctools_ctools_entity_context_alter(&$plugin, &$entity, $plugin_id) {
       unset($plugin['no ui']);
       unset($plugin['no required context ui']);
       break;
-    case 'entity_from_schema:uid-node-user':
-      $plugin['title'] = t('Node author');
-      break;
   }
 
   // Apply restrictions on taxonomy term reverse relationships whose

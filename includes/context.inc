@@ -927,7 +927,7 @@ function ctools_context_get_relevant_relationships($contexts) {
   // Go through each relationship
   foreach ($relationships as $rid => $relationship) {
     // For each relationship, see if there is a context that satisfies it.
-    if (ctools_context_filter($contexts, $relationship['required context'])) {
+    if (empty($relationship['no ui']) && ctools_context_filter($contexts, $relationship['required context'])) {
       $relevant[$rid] = $relationship['title'];
     }
   }

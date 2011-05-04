@@ -264,6 +264,7 @@ function ctools_context_add_item_table_buttons($type, $module, &$form, $availabl
       '#value' => url("ctools/context/ajax/add/$module/$type/$cache_key", array('absolute' => TRUE)),
     );
 
+    asort($available_contexts);
     // This also will be in the URL.
     $form['buttons'][$type]['item'] = array(
       '#attributes' => array('class' => array("ctools-$type-add-url")),
