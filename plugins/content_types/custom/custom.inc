@@ -258,7 +258,7 @@ function ctools_custom_content_type_edit_form($form, &$form_state) {
     '#title' => t('Title'),
   );
 
-    $form['body'] = array(
+  $form['body'] = array(
     '#type' => 'text_format',
     '#title' => t('Body'),
     '#default_value' => $settings['body'],
