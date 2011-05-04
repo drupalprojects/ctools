@@ -106,7 +106,7 @@ function _ctools_plugin_configure_create_form_info(&$form_info, $plugin_definiti
     else {
       $title = t('Configure !plugin_title', array('!plugin_title' => $plugin_definition['title']));
     }
-    if (empty($form_info['order']) {
+    if (empty($form_info['order'])) {
       $form_info['order'] = array();
     }
     $form_info['order']['form'] = $title;
