@@ -84,7 +84,7 @@ function ctools_node_content_type_render($subtype, $conf, $panel_args) {
   }
 
   if (!empty($conf['identifier'])) {
-    $node->panel_identifier = $conf['identifier'];
+    $node->ctools_template_identifier = $conf['identifier'];
   }
 
   // Handle existing configurations with the deprecated 'teaser' option.
@@ -152,7 +152,7 @@ function ctools_node_content_type_edit_form($form, &$form_state) {
     '#type' => 'textfield',
     '#default_value' => !empty($conf['identifier']) ? $conf['identifier'] : '',
     '#title' => t('Template identifier'),
-    '#description' => t('This identifier will be added as a template suggestion to display this node: node-panel-IDENTIFIER.tpl.php. Please see the Drupal theming guide for information about template suggestions.'),
+    '#description' => t('This identifier will be added as a template suggestion to display this node: node--panel--IDENTIFIER.tpl.php. Please see the Drupal theming guide for information about template suggestions.'),
   );
 
   $entity = entity_get_info('node');
