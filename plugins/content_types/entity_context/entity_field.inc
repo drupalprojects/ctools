@@ -7,7 +7,7 @@
 
 $plugin = array(
   'title' => t('Entity field'),
-  'defaults' => array('label' => '', 'formatter' => ''),
+  'defaults' => array('label' => 'title', 'formatter' => ''),
   'content type' => 'ctools_entity_field_content_type_content_type',
 );
 
@@ -94,13 +94,33 @@ function ctools_entity_field_content_type_render($subtype, $conf, $panel_args, $
   }
   $language = field_language($entity_type, $entity, $field_name);
 
-  // Get the field output, and the title.
-  $field_output = field_view_field($entity_type, $entity, $field_name, ($conf['formatter_settings'] ? array('type' => $conf['formatter'], 'settings' => $conf['formatter_settings']) : array('label' => 'hidden', 'type' => $conf['formatter'])), $language);
+  if (empty($conf['label']) || $conf['label'] == 'title') {
+    $label = 'hidden';
+    $conf['label'] = 'title';
+  }
+  else {
+    $label = $conf['label'];
+  }
+
+  $field_settings = array(
+    'label' => $label,
+    'type' => $conf['formatter'],
+  );
+
+  // Get the field output, and the title.\
+  if (!empty($conf['formatter_settings'])) {
+    $field_settings['settings'] = $conf['formatter_settings'];
+  }
+
+  $field_output = field_view_field($entity_type, $entity, $field_name, $field_settings, $language);
 
   // Build the content type block.
   $block = new stdClass();
   $block->module  = 'entity_field';
-  $block->title   = $field_output['#title'];
+  if ($conf['label'] == 'title' && isset($field_output['#title'])) {
+    $block->title = $field_output['#title'];
+  }
+
   $block->content = $field_output;
   $block->delta   = $ids[0];
 
@@ -122,6 +142,20 @@ function ctools_entity_field_content_type_formatter_options($form, &$form_state)
   module_load_include('inc', 'field_ui', 'field_ui.admin');
   $formatter_options = field_ui_formatter_options($field['type']);
 
+  $field_label_options = array(
+    'title' => t('Pane title'),
+    'above' => t('Above'),
+    'inline' => t('Inline'),
+    'hidden' => t('Hidden'),
+  );
+
+  $form['label'] = array(
+    '#type' => 'select',
+    '#title' => t('Label'),
+    '#options' => $field_label_options,
+    '#default_value' => $conf['label'],
+  );
+
   $form['formatter'] = array(
     '#type' => 'select',
     '#title' => t('Select a formatter'),
@@ -134,6 +168,7 @@ function ctools_entity_field_content_type_formatter_options($form, &$form_state)
 
 function ctools_entity_field_content_type_formatter_options_submit($form, &$form_state) {
   $form_state['conf']['formatter'] = $form_state['values']['formatter'];
+  $form_state['conf']['label'] = $form_state['values']['label'];
 }
 
 function ctools_entity_field_content_type_formatter_styles($form, &$form_state) {
