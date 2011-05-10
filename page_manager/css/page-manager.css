@@ -354,3 +354,20 @@ body form#page-manager-list-pages-form {
   line-height: 1.75em;
 }
 
+
+/** Override that obnoxious float on throbber. **/
+#page-manager-edit .progress-disabled {
+  float: none;
+}
+
+#page-manager-edit .progress-disabled + .ajax-progress {
+  float: right;
+  position: relative;
+  top: -2em;
+}
+
+#page-manager-list-pages-form .progress-disabled + .ajax-progress {
+  position: relative;
+  top: 2em;
+  left: -.5em;
+}
