@@ -260,7 +260,7 @@ function ctools_export_crud_import($table, $code) {
     // Set these defaults just the same way that ctools_export_new_object sets
     // them.
     $item->export_type = NULL;
-    $item->type = t('Local');
+    $item->{$export['export type string']} = t('Local');
 
     return $item;
   }
@@ -382,7 +382,7 @@ function ctools_export_load_object($table, $type = 'all', $args = array()) {
   while ($data = db_fetch_object($result)) {
     $object = _ctools_export_unpack_object($schema, $data, $export['object']);
     $object->table = $table;
-    $object->type = t('Normal');
+    $object->{$export['export type string']} = t('Normal');
     $object->export_type = EXPORT_IN_DATABASE;
     // Determine if default object is enabled or disabled.
     if (isset($status[$object->{$export['key']}])) {
@@ -423,14 +423,14 @@ function ctools_export_load_object($table, $type = 'all', $args = array()) {
       }
 
       if (!empty($cache[$table][$object->{$export['key']}])) {
-        $cache[$table][$object->{$export['key']}]->type = t('Overridden');
+        $cache[$table][$object->{$export['key']}]->{$export['export type string']} = t('Overridden');
         $cache[$table][$object->{$export['key']}]->export_type |= EXPORT_IN_CODE;
         if ($type == 'conditions') {
           $return[$object->{$export['key']}] = $cache[$table][$object->{$export['key']}];
         }
       }
       else {
-        $object->type = t('Default');
+        $object->{$export['export type string']} = t('Default');
         $object->export_type = EXPORT_IN_CODE;
         $object->in_code_only = TRUE;
         $object->table = $table;
@@ -520,7 +520,7 @@ function ctools_get_default_object($table, $name) {
     $object->disabled = $status[$object->{$export['key']}];
   }
 
-  $object->type = t('Default');
+  $object->{$export['export type string']} = t('Default');
   $object->export_type = EXPORT_IN_CODE;
   $object->in_code_only = TRUE;
 
@@ -772,6 +772,7 @@ function ctools_export_get_schema($table) {
       'bulk export' => TRUE,
       'list callback' => "$schema[module]_{$table}_list",
       'to hook code callback' => "$schema[module]_{$table}_to_hook_code",
+      'export type string' => 'type',
     );
 
     // If the export definition doesn't have the "primary key" then the CRUD
@@ -923,7 +924,7 @@ function ctools_export_new_object($table, $set_defaults = TRUE) {
     // We don't set the export_type property here, as this object is not saved
     // yet. We do give it NULL so we don't generate notices trying to read it.
     $object->export_type = NULL;
-    $object->type = t('Local');
+    $object->{$export['export type string']} = t('Local');
   }
   return $object;
 }
