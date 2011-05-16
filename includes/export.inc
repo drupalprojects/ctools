@@ -380,7 +380,12 @@ function ctools_export_load_object($table, $type = 'all', $args = array()) {
   $status = variable_get($export['status'], array());
   // Unpack the results of the query onto objects and cache them.
   while ($data = db_fetch_object($result)) {
-    $object = _ctools_export_unpack_object($schema, $data, $export['object']);
+    if (isset($schema['export']['object factory']) && function_exists($schema['export']['object factory'])) {
+      $object = $schema['export']['object factory']($schema, $data);
+    }
+    else {
+      $object = _ctools_export_unpack_object($schema, $data, $export['object']);
+    }
     $object->table = $table;
     $object->{$export['export type string']} = t('Normal');
     $object->export_type = EXPORT_IN_DATABASE;
