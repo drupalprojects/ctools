@@ -16,7 +16,10 @@ API Version 2.0
   Introduce 'cache defaults' and 'default cache bin' keys to export.inc
 
 API Version 2.0.1
-  Introduce ctools_export_crud_enable(), ctools_export_crud_disable() and ctools_export_crud_set_status() and requisite changes.
+  Introduce ctools_export_crud_enable(), ctools_export_crud_disable() and
+    ctools_export_crud_set_status() and requisite changes.
+  Introduce 'object factory' to export schema, allowing modules to control
+    how the exportable objects are instantiated.
   
 Versions prior to 2.0 have been removed from this document. See the D6 version
 for that information.
