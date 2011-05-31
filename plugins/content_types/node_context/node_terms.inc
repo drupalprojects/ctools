@@ -60,7 +60,7 @@ function ctools_node_terms_content_type_render($subtype, $conf, $panel_args, $co
           $terms[] = check_plain($term->name);
         }
         else {
-          $terms[] = l($term->name, taxonomy_term_uri($term), array('attributes' => array('rel' => 'tag', 'title' => strip_tags($term->description))));
+          $terms[] = l($term->name, "taxonomy/term/$term->tid", array('attributes' => array('rel' => 'tag', 'title' => strip_tags($term->description))));
         }
       }
     }
