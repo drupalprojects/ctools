@@ -52,7 +52,7 @@ function ctools_term_list_content_type_render($subtype, $conf, $panel_args, $con
     if ($terms) {
       foreach ($terms as $related) {
         if (is_object($related)) {
-          $items[] = l($related->name, taxonomy_term_path($related), array('rel' => 'tag', 'title' => strip_tags($related->description)));
+          $items[] = l($related->name, taxonomy_term_uri($related), array('rel' => 'tag', 'title' => strip_tags($related->description)));
         }
         else {
           $items[] = check_plain($related);

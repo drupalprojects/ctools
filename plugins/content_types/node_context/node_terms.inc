@@ -52,7 +52,7 @@ function ctools_node_terms_content_type_render($subtype, $conf, $panel_args, $co
           // terms matching the requested vid.
           $terms['taxonomy_term_' . $term->tid] = array(
             'title' => $term->name,
-            'href' => taxonomy_term_path($term),
+            'href' => taxonomy_term_uri($term),
             'attributes' => array('rel' => 'tag', 'title' => strip_tags($term->description)),
           );
         }
@@ -60,7 +60,7 @@ function ctools_node_terms_content_type_render($subtype, $conf, $panel_args, $co
           $terms[] = check_plain($term->name);
         }
         else {
-          $terms[] = l($term->name, taxonomy_term_path($term), array('attributes' => array('rel' => 'tag', 'title' => strip_tags($term->description))));
+          $terms[] = l($term->name, taxonomy_term_uri($term), array('attributes' => array('rel' => 'tag', 'title' => strip_tags($term->description))));
         }
       }
     }
