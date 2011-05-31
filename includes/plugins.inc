@@ -405,7 +405,7 @@ function ctools_get_plugins_reset() {
  *   An array of information created for this plugin.
  */
 function ctools_plugin_load_includes($info, $filename = NULL) {
-  // Keep a static array so we don't hit drupal_system_listing more than necessary.
+  // Keep a static array so we don't hit file_scan_directory more than necessary.
   $all_files = &drupal_static(__FUNCTION__, array());
 
   // store static of plugin arrays for reference because they can't be reincluded.
@@ -436,7 +436,7 @@ function ctools_plugin_load_includes($info, $filename = NULL) {
       $extension = empty($info['info file']) ? $info['extension'] : 'info';
 
       foreach ($directories as $module => $path) {
-        $all_files[$info['module']][$info['type']][$module] = drupal_system_listing('/\.' . $extension . '$/', $path, 'name', 0);
+        $all_files[$info['module']][$info['type']][$module] = file_scan_directory($path, '/\.' . $extension . '$/', array('key' => 'name'));
       }
 
       cache_set("ctools_plugin_files:$info[module]:$info[type]", $all_files[$info['module']][$info['type']]);
