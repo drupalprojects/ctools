@@ -59,7 +59,7 @@ function ctools_entity_from_field_get_children($parent_plugin, $parent) {
               if (isset($info['table'])) {
                 foreach ($entities as $to_entity => $to_entity_info) {
                   $from_entity_info = $entities[$from_entity];
-                  if ($to_entity_info['base table'] == $info['table'] && isset($info['columns'][$to_entity_info['entity keys']['id']])) {
+                  if (isset($to_entity_info['base table']) && $to_entity_info['base table'] == $info['table'] && isset($info['columns'][$to_entity_info['entity keys']['id']])) {
                     $name = $field_name . '-' . $from_entity . '-' . $to_entity;
                     $plugin_id = $parent . ':' . $name;
 
