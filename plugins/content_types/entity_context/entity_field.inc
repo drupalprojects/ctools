@@ -49,7 +49,10 @@ function ctools_entity_field_content_type_content_types() {
             'edit form' => array(
               'ctools_entity_field_content_type_formatter_options' => array(
                 'default' => TRUE,
-                'title' => t('Formatter Options'),
+                'title' => t('Formatter options for: @widget_label (@field_name)', array(
+                  '@widget_label' => t($field['label']),
+                  '@field_name' => $field_name,
+                )),
               ),
               'ctools_entity_field_content_type_formatter_styles' => t('Formatter Styles'),
             ),
