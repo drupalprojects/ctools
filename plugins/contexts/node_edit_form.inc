@@ -32,7 +32,7 @@ $plugin = array(
  */
 function ctools_context_create_node_edit_form($empty, $node = NULL, $conf = FALSE) {
   static $created;
-  $context = new ctools_context(array('form', 'node_edit', 'node_form', 'node', 'node_edit_form'));
+  $context = new ctools_context(array('form', 'node_edit', 'node_form',  'node_edit_form'));
   $context->plugin = 'node_edit_form';
 
   if ($empty || (isset($created) && $created)) {
