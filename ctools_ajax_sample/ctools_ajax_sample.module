@@ -738,8 +738,10 @@ function ctools_ajax_sample_ajax_button_form() {
 
   $form['url'] = array(
     '#type' => 'hidden',
+    // The name of the class is the #id of $form['ajax_button'] with "-url"
+    // suffix.
     '#attributes' => array('class' => array('ctools-ajax-sample-button-url')),
-    '#value' => 'ctools_ajax_sample/nojs/animal',
+    '#value' => url('ctools_ajax_sample/nojs/animal'),
   );
 
   $form['ajax_button'] = array(
