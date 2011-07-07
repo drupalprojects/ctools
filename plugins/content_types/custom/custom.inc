@@ -174,6 +174,17 @@ function ctools_custom_content_type_render($subtype, $conf, $args, $contexts) {
   }
 
   $block->content = check_markup($content, $settings['format']);
+  if ($settings['custom_type'] == 'fixed' && user_access('administer custom content')) {
+    $block->admin_links = array(
+      array(
+        'title' => t('Configure content pane'),
+        'alt' => t("Configure this pane in administer >> site building >> custom content panes"),
+        'href' => 'admin/build/ctools-content/list/' . $settings['content']->name . '/edit',
+        'query' => drupal_get_destination(),
+      ),
+    );
+  }
+
   return $block;
 }
 
