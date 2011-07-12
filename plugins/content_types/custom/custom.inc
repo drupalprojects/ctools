@@ -311,7 +311,7 @@ function ctools_custom_content_type_edit_form($form, &$form_state) {
       }
     }
     $header = array(t('Keyword'), t('Value'));
-    $form['contexts']['context'] = array('#value' => theme('table', $header, $rows));
+    $form['contexts']['context'] = array('#markup' => theme('table', array('header' => $header, 'rows' => $rows)));
   }
 
   if (!user_access('administer custom content') || !module_exists('ctools_custom_content')) {
