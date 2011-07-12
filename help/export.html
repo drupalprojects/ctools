@@ -172,6 +172,23 @@ function mymodule_schema() {
 <dt>status callback</dt>
 <dd>CRUD callback to use for updating the status of an object. If the status is TRUE the object will be disabled. If the status is FALSE the object will be enabled.</dd>
 
+<dt>api</dt>
+<dd>The 'api' key can optionally contain some information for the plugin API definition. This means that the imports can be tied to an API name which is used to have automatic inclusion of files, and can be used to prevent dangerous objects from older versions from being loaded, causing a loss of functionality rather than site crashes or security loopholes. 
+
+If not present, no additional files will be loaded and the default hook will always be a simple hook that must be either part of the .module file or loaded during normal operations.
+
+api supports these subkeys:
+<dl>
+<dt>owner</dt>
+<dd>The module that owns the API. Typically this is the name of the module that owns the schema. This will be one of the two keys used by hook_ctools_plugin_api() to determine version compatibility. Note that the name of this hook can be tailored via the use of hook_ctools_plugin_api_hook_name(). See ctools_plugin_api_get_hook() for details.</dd>
+<dt>api</dt>
+<dd>This is the name of the API, and will be the second parameter to the above mentioned hook. It will also be used as part of the name of the file that the hook containing default objects will be in, which comes in the form of MODULENAME.API.inc.</dd>
+<dt>minimum_version</dt>
+<dd>The minimum version supported. Any module reporting an API less than this will not have its default objects used. This should be updated only when API changes can cause older objects to crash or otherwise break badly.</dd>
+<dt>current_version</dt>
+<dd>The current version of the API. Any module reporting a required API higher than this will not have its default objects used.</dd>
+</dl>
+</dd>
 In addition, each field can contain the following:
 <dl>
 <dt>no export</dt>
