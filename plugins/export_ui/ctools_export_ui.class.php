@@ -121,7 +121,7 @@ class ctools_export_ui {
 
     switch ($op) {
       case 'import':
-        return user_access('use PHP for block visibility');
+        return user_access('use PHP for settings');
       case 'revert':
         return ($item->export_type & EXPORT_IN_DATABASE) && ($item->export_type & EXPORT_IN_CODE);
       case 'delete':
