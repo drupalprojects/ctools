@@ -182,7 +182,13 @@ function ctools_context_handler_render_handler($task, $subtask, $handler, $conte
       '#theme_wrappers' => array('container'),
       '#attributes' => array('class' => array('contextual-links-region')),
     );
-    $build['content']['#markup'] = $info['content'];
+
+    if (!is_array($info['content'])) {
+      $build['content']['#markup'] = $info['content'];
+    }
+    else {
+      $build['content'] = $info['content'];
+    }
 
     $path = page_manager_edit_url(page_manager_make_task_name($handler->task, $handler->subtask), $trail);
     $build['contextual_links'] = array(
