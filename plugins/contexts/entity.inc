@@ -262,10 +262,8 @@ function ctools_context_entity_convert($context, $type) {
 
   $tokens = token_info();
 
-  if (isset($tokens['tokens'][$token][$type])) {
-    $values = token_generate($token, array($type => $type), array($token => $context->data));
-    if (isset($values[$type])) {
-      return $values[$type];
-    }
+  $values = token_generate($token, array($type => $type), array($token => $context->data));
+  if (isset($values[$type])) {
+    return $values[$type];
   }
 }
