@@ -377,18 +377,9 @@ class views_content_plugin_display_panel_pane extends views_plugin_display {
     return (bool) $conf['more_link'];
   }
 
-  function has_path() {
-    // Set this display to pretend it has a path so that exposed form in
-    // a block will work again.
-    return TRUE;
-  }
-
   function get_path() {
     if (empty($this->view->override_path)) {
-      $path = parent::get_path();
-      if (empty($path)) {
-        return $_GET['q'];
-      }
+      return parent::get_path();
     }
     return $this->view->override_path;
   }
