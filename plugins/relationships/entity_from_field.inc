@@ -58,12 +58,13 @@ function ctools_entity_from_field_get_children($parent_plugin, $parent) {
             foreach ($foreign_keys as $key => $info) {
               if (isset($info['table'])) {
                 foreach ($entities as $to_entity => $to_entity_info) {
+                  $from_entity_info = $entities[$from_entity];
                   // If somehow the bundle doesn't exist on the to-entity,
                   // skip.
                   if (!isset($from_entity_info['bundles'][$bundle])) {
                     continue;
                   }
-                  $from_entity_info = $entities[$from_entity];
+
                   if (isset($to_entity_info['base table']) && $to_entity_info['base table'] == $info['table'] && isset($info['columns'][$to_entity_info['entity keys']['id']])) {
                     $name = $field_name . '-' . $from_entity . '-' . $to_entity;
                     $plugin_id = $parent . ':' . $name;
