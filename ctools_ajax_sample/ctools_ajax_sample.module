@@ -561,6 +561,7 @@ function ctools_ajax_sample_start($form, &$form_state) {
     '#default_value' => $form_state['object']->type,
     '#required' => TRUE,
   );
+
   return $form;
 }
 
