@@ -30,14 +30,14 @@ $plugin = array(
  * are not always created from the UI.
  */
 function ctools_context_create_node_add_form($empty, $data = NULL, $conf = FALSE) {
-  static $created;
+  static $creating = FALSE;
   $context = new ctools_context(array('form', 'node_add', 'node_form'));
   $context->plugin = 'node_add_form';
 
-  if ($empty || (isset($created) && $created)) {
+  if ($empty || $creating)) {
     return $context;
   }
-  $created = TRUE;
+  $creating = TRUE;
 
   if ($conf && (isset($data['types']) || isset($data['type']))) {
     // Holdover from typo'd config.
@@ -78,9 +78,11 @@ function ctools_context_create_node_add_form($empty, $data = NULL, $conf = FALSE
       $context->form_title = t('Submit @name', array('@name' => $types[$type]->name));
       $context->node_type  = $type;
       $context->restrictions['type'] = array($type);
+      $creating = FALSE;
       return $context;
     }
   }
+  $creating = FALSE;
 }
 
 function ctools_context_node_add_form_settings_form($conf) {
