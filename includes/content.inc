@@ -288,6 +288,9 @@ function ctools_content_render($type, $subtype, $conf, $keywords = array(), $arg
     }
 
     $content = $function($subtype, $conf, $args, $pane_context, $incoming_content);
+    if (empty($content)) {
+      return;
+    }
 
     // Set up some defaults and other massaging on the content before we hand
     // it back to the caller.
