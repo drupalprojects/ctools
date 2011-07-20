@@ -161,7 +161,7 @@ function ctools_entity_from_field_get_children($parent_plugin, $parent) {
  * Return a new context based on an existing context.
  */
 function ctools_entity_from_field_context($context, $conf) {
-  $delta = !empty($conf['delta']) ? intval($conf['delta']) : 0
+  $delta = !empty($conf['delta']) ? intval($conf['delta']) : 0;
   $plugin = $conf['name'];
   list($plugin, $plugin_name) = explode(':', $plugin);
   list($field_name, $from_entity, $to_entity_info) = explode('-', $plugin_name);
