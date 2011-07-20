@@ -178,8 +178,8 @@ function ctools_custom_content_type_render($subtype, $conf, $args, $contexts) {
     $block->admin_links = array(
       array(
         'title' => t('Configure content pane'),
-        'alt' => t("Configure this pane in administer >> site building >> custom content panes"),
-        'href' => 'admin/build/ctools-content/list/' . $settings['content']->name . '/edit',
+        'alt' => t("Configure this pane in administer >> structure >> custom content panes"),
+        'href' => 'admin/structure/ctools-content/list/' . $settings['content']->name . '/edit',
         'query' => drupal_get_destination(),
       ),
     );
