@@ -132,10 +132,6 @@
                 continue;
               }
 
-              if (!$('#' + id).size()) {
-                console.log(id + ' does not exist');
-              }
-
               // This bit had to be rewritten a bit because two properties on the
               // same set caused the counter to go up and up and up.
               if (!Drupal.CTools.dependent.activeBindings[id]) {
