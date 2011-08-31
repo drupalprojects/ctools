@@ -86,6 +86,36 @@ function ctools_export_crud_load($table, $name) {
 }
 
 /**
+ * Load multiple exportable objects.
+ *
+ * @param $table
+ *   The name of the table to use to retrieve $schema values. This table
+ *   must have an 'export' section containing data or this function
+ *   will fail.
+ * @param $names
+ *   An array of unique IDs to load. The field for these IDs will be specified
+ *   by the export key, which normally defaults to 'name'.
+ *
+ * @return
+ *   An array of the loaded objects.
+ */
+function ctools_export_crud_load_multiple($table, array $names) {
+  $schema = ctools_export_get_schema($table);
+  $export = $schema['export'];
+
+  $results = array();
+  if (!empty($export['load multiple callback']) && function_exists($export['load multiple callback'])) {
+    $results = $export['load multiple callback']($names);
+  }
+  else {
+    $results = ctools_export_load_object($table, 'names', $names);
+  }
+
+  // Ensure no empty results are returned.
+  return array_filter($results);
+}
+
+/**
  * Load all exportable objects of a given type.
  *
  * @param $table
@@ -973,6 +1003,7 @@ function ctools_export_get_schema($table) {
     //
     // create callback
     // load callback
+    // load multiple callback
     // load all callback
     // save callback
     // delete callback
