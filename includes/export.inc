@@ -988,7 +988,7 @@ function ctools_export_default_to_hook_code($schema, $table, $names, $name) {
   $objects = ctools_export_load_object($table, 'names', $names);
   if ($objects) {
     $output = "/**\n";
-    $output .= " * Implementation of hook_{$export['default hook']}()\n";
+    $output .= " * Implements hook_{$export['default hook']}().\n";
     $output .= " */\n";
     $output .= "function " . $name . "_{$export['default hook']}() {\n";
     $output .= "  \${$export['identifier']}s = array();\n\n";
