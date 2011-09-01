@@ -44,13 +44,16 @@ function views_content_views_row_content_type_render($subtype, $conf, $panel_arg
   // This guarantees the view is rendered normally which must happen.
   $view = views_content_context_get_view($context);
   $output = views_content_context_get_output($context);
-  // Rows are keyed by result id value and need to be reset.
-  $output['rows'] = array_values($output['rows']);
-  if (empty($conf['use_fields']) || empty($view->style_plugin->row_plugin)) {
+
+  $sets = array();
+  $plugin = $view->style_plugin;
+
+  if (empty($conf['use_fields']) || empty($plugin->row_plugin)) {
     foreach ($conf['rows'] as $row) {
       // We store the row number 1-indexed but they are 0-indexed internally.
-      if (isset($output['rows'][$row - 1])) {
-        $block->content .= $output['rows'][$row - 1];
+      $row_index = $row - 1;
+      if (isset($output['rows'][$row_index])) {
+        $sets[$plugin->groups[$row_index]][$row_index] = $output['rows'][$row_index];
       }
     }
   }
@@ -63,10 +66,22 @@ function views_content_views_row_content_type_render($subtype, $conf, $panel_arg
     // Rerender just the rows we need.
     foreach ($conf['rows'] as $row) {
       $view->row_index = $row - 1;
-      if (!empty($view->result[$row - 1])) {
-        $block->content .= $view->style_plugin->row_plugin->render($view->result[$row - 1]);
+      if (!empty($view->result[$view->row_index])) {
+        $sets[$plugin->groups[$row_index]][$view->row_index] = $plugin->row_plugin->render($view->result[$view->row_index]);
       }
+      unset($view->row_index);
     }
+  }
+
+  foreach ($sets as $title => $rows) {
+    $block->content .= theme($plugin->theme_functions(),
+      array(
+        'view' => $view,
+        'options' => $plugin->options,
+        'rows' => $rows,
+        'title' => $title
+      )
+    );
   }
 
   return $block;
