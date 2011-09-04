@@ -48,7 +48,7 @@
     var $objects = $('a[href="' + old_url + '"]')
     $objects.addClass('ctools-fetching');
     try {
-      url = old_url.replace(/\/nojs(\/|$)/g, '/ajax$1');
+      url = Drupal.CTools.AJAX.urlReplaceNojs(url);
       $.ajax({
         type: "POST",
         url: url,
@@ -107,7 +107,7 @@
     var object = $(this);
     $(this).addClass('ctools-ajaxing');
     try {
-      url = url.replace(/\/nojs(\/|$)/g, '/ajax$1');
+      url = Drupal.CTools.AJAX.urlReplaceNojs(url);
       $.ajax({
         type: "POST",
         url: url,
@@ -149,7 +149,7 @@
     var object = $(this);
     try {
       if (url) {
-        url = url.replace(/\/nojs(\/|$)/g, '/ajax$1');
+        url = Drupal.CTools.AJAX.urlReplaceNojs(url);;
         $.ajax({
           type: "POST",
           url: url,
@@ -195,7 +195,7 @@
     $form.addClass('ctools-ajaxing');
 
     try {
-      url = url.replace(/\/nojs(\/|$)/g, '/ajax$1');
+      url = Drupal.CTools.AJAX.urlReplaceNojs(url);
 
       var ajaxOptions = {
         type: 'POST',
@@ -286,7 +286,7 @@
     var form_id = $(object).parents('form').get(0).id;
     try {
       if (url) {
-        url = url.replace(/\/nojs(\/|$)/g, '/ajax$1');
+        url = Drupal.CTools.AJAX.urlReplaceNojs(url);
         $.ajax({
           type: "POST",
           url: url,
@@ -517,6 +517,22 @@
     $(data.selector).submit();
   }
 
+  /**
+   * Replacing 'nojs' with 'ajax' in the URL allows for an easy method to let
+   * the server detect when it needs to degrade gracefully. 
+   * There are five scenarios to check for:
+   * 1. /nojs/
+   * 2. /nojs$ - The end of a URL string.
+   * 3. /nojs? - Followed by a query (with clean URLs enabled).
+   *      E.g.: path/nojs?destination=foobar
+   * 4. /nojs& - Followed by a query (without clean URLs enabled).
+   *      E.g.: ?q=path/nojs&destination=foobar
+   * 5. /nojs# - Followed by a fragment.
+   *      E.g.: path/nojs#myfragment
+   */
+  Drupal.CTools.AJAX.urlReplaceNojs = function(url) {
+    return url.replace(/\/nojs(\/|$|\?|&|#)/g, '/ajax$1');
+  }
 
   /**
    * Bind links that will open modals to the appropriate function.
