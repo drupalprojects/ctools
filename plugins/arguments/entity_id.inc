@@ -56,15 +56,11 @@ function ctools_argument_entity_id_context($arg = NULL, $conf = NULL, $empty = F
     return ctools_context_create('entity:' . $entity_type, $arg);
   }
 
-  if (!is_numeric($arg)) {
+  $entities = entity_load($entity_type, array($arg));
+  if (empty($entities)) {
     return FALSE;
   }
 
-  $entity = entity_load($entity_type, array($arg));
-  if (!$entity) {
-    return FALSE;
-  }
-
-  return ctools_context_create('entity:' . $entity_type, $entity[$arg]);
+  return ctools_context_create('entity:' . $entity_type, $entities[$arg]);
 }
 
