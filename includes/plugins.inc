@@ -143,10 +143,10 @@ function ctools_plugin_api_include($owner, $api, $minimum_version, $current_vers
   foreach ($info as $module => $plugin_info) {
     if (!isset($already_done[$owner][$api][$module])) {
       if (isset($plugin_info["$api file"])) {
-        $file = isset($plugin_info["$api file"]);
+        $file = $plugin_info["$api file"];
       }
       else if (isset($plugin_info['file'])) {
-        $file = isset($plugin_info['file']);
+        $file = $plugin_info['file'];
       }
       else {
         $file = "$module.$api.inc";
