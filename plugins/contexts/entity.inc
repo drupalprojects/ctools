@@ -55,7 +55,7 @@ function ctools_context_entity_get_children($plugin, $parent) {
  */
 function ctools_context_create_entity($empty, $data = NULL, $conf = FALSE, $plugin) {
   $entity_type = $plugin['keyword'];
-  $entity_info = entity_get_info($entity_type);
+  $entity = entity_get_info($entity_type);
   $context = new ctools_context(array('entity:' . $entity_type, 'entity', $entity_type));
   $context->plugin = $plugin['name'];
   $context->keyword = $entity_type;
@@ -66,35 +66,34 @@ function ctools_context_create_entity($empty, $data = NULL, $conf = FALSE, $plug
 
   if (is_array($data) && isset($data['id'])) {
     $id = $data['id'];
-    $entities = entity_load($entity_type, array($id));
   }
   elseif (is_object($data)) {
     $ids = entity_extract_ids($entity_type, $data);
     $id = $ids[0];
-    $entity = $data;
   }
-  else {
+  elseif (is_numeric($data)) {
     $id = $data;
-    $entities = entity_load($entity_type, array($id));
+    $data = entity_load($entity_type, array($id));
+    $data = !empty($data[$id]) ? $data[$id] : FALSE;
   }
 
-  if (!empty($entities)) {
-    $entity = $entities[$id];
+  if (is_array($data)) {
+    $data = entity_load($entity_type, array($id));
+    $data = !empty($data[$id]) ? $data[$id] : FALSE;
   }
 
-  if (isset($entity)) {
-    $context->data     = $entity;
-    if (isset($entity_info['entity keys']['label'])) {
-      $context->title    = $entity->{$entity_info['entity keys']['label']};
+  if (!empty($data)) {
+    $context->data     = $data;
+    if (isset($entity['entity keys']['label'])) {
+      $context->title    = $data->{$entity['entity keys']['label']};
     }
     $context->argument = $id;
 
-    if ($entity_info['entity keys']['bundle']) {
-      $context->restrictions['type'] = array($entity->{$entity_info['entity keys']['bundle']});
+    if ($entity['entity keys']['bundle']) {
+      $context->restrictions['type'] = array($data->{$entity['entity keys']['bundle']});
     }
+    return $context;
   }
-
-  return $context;
 }
 
 function ctools_context_entity_settings_form($form, &$form_state) {
