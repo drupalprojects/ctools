@@ -28,6 +28,7 @@ $plugin = array(
   // This context is deprecated and should not be usable in the UI.
   'no ui' => TRUE,
   'no required context ui' => TRUE,
+  'superceded by' => 'entity:node',
 );
 
 /**
@@ -35,6 +36,7 @@ $plugin = array(
  * are not always created from the UI.
  */
 function ctools_context_create_node($empty, $data = NULL, $conf = FALSE) {
+  dsm(debug_backtrace());
   $context = new ctools_context('node');
   $context->plugin = 'node';
 
