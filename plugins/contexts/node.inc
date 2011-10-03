@@ -36,7 +36,6 @@ $plugin = array(
  * are not always created from the UI.
  */
 function ctools_context_create_node($empty, $data = NULL, $conf = FALSE) {
-  dsm(debug_backtrace());
   $context = new ctools_context('node');
   $context->plugin = 'node';
 
