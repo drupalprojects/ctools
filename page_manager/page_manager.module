@@ -1262,6 +1262,6 @@ function page_manager_addressable_content($address, $type) {
 
   $function = ctools_plugin_get_function($handler_plugin, 'addressable callback');
   if ($function) {
-    return $function($task, $subtask_name, $handler, $address, $contexts, $type);
+    return $function($task, $subtask_name, $handler, $address, $contexts, $arguments, $type);
   }
 }
