@@ -132,6 +132,7 @@ function ctools_node_content_render_node($node, $conf) {
     $content['links']['#access'] = FALSE;
   }
 
+  dsm($content);
   return $content;
 }
 
