@@ -607,7 +607,7 @@ class ctools_export_ui {
 
     // If a step not set, they are trying to create a new item. If a step
     // is set, they're in the process of creating an item.
-    if (!empty($this->plugin['use wizard']) && !empty($step)) {
+    if ((!empty($this->plugin['use wizard']) || !empty($this->plugin['use operations'])) && !empty($step)) {
       $item = $this->edit_cache_get(NULL, 'add');
     }
     if (empty($item)) {
@@ -644,7 +644,7 @@ class ctools_export_ui {
     drupal_set_title($this->get_page_title('edit', $item));
 
     // Check to see if there is a cached item to get if we're using the wizard.
-    if (!empty($this->plugin['use wizard'])) {
+    if (!empty($this->plugin['use wizard']) || !empty($this->plugin['use operations'])) {
       $cached = $this->edit_cache_get($item, 'edit');
       if (!empty($cached)) {
         $item = $cached;
@@ -682,7 +682,7 @@ class ctools_export_ui {
 
     // If a step not set, they are trying to create a new clone. If a step
     // is set, they're in the process of cloning an item.
-    if (!empty($this->plugin['use wizard']) && !empty($step)) {
+    if ((!empty($this->plugin['use wizard']) || !empty($this->plugin['use operations'])) && !empty($step)) {
       $item = $this->edit_cache_get(NULL, 'clone');
     }
     if (empty($item)) {
@@ -730,6 +730,9 @@ class ctools_export_ui {
    * settings.
    */
   function edit_execute_form(&$form_state) {
+    if (!empty($this->plugin['use operations'])) {
+      return $this->edit_execute_operations($form_state);
+    }
     if (!empty($this->plugin['use wizard'])) {
       return $this->edit_execute_form_wizard($form_state);
     }
@@ -915,6 +918,529 @@ class ctools_export_ui {
     if ($form_state['form type'] == 'import' && !empty($form_state['item']->export_ui_allow_overwrite)) {
       ctools_export_crud_delete($this->plugin['schema'], $form_state['item']);
     }
+
+    $this->edit_cache_clear($form_state['item'], $form_state['form type']);
+  }
+
+  /**
+   * Execute the complex operations form for editing.
+   *
+   * For even more complex objects where multiple pages of potentially
+   * wizard forms are needed, we have the operations form.
+   *
+   * The operations form is a master display of operations that can then
+   * each lead into individual forms, each of which may be pages. These
+   * forms are usually handled as ajax operations, and can be in a
+   * centralized area or in a modal popup, depending upon the complexity
+   * needed for the operations form.
+   *
+   * UIs that utilize operations need a template and a list of operations
+   * that will almost certainly be customized to the object.
+   */
+  function edit_execute_operations(&$form_state) {
+    // Every operation has a trail. When we enter this function the trail
+    // either comes from the args, which are put in
+    // $form_state['function args'] for us, or something else called us
+    // with an operation trail set (which happens if we get quasi
+    // redirected.
+    if (isset($form_state['operation trail'])) {
+      $trail = $form_state['operation trail'];
+    }
+    else {
+      $trail = array_slice($form_state['function args'], 3);
+    }
+
+    // Make a copy of $form_state for the operation page. Because we have
+    // two potential forms here, the $operation form and the save form,
+    // we need two form states. The one for the 'save' form will be
+    // considered the master.
+    $operation_form_state = $form_state;
+
+    // If this form was submitted build it early, because a successful
+    // submit of this form will short circuit anything else we do here.
+    if (!empty($_POST['form_id']) && $_POST['form_id'] == 'ctools_export_ui_save_object_form') {
+      $save_form = drupal_build_form('ctools_export_ui_save_object_form', $form_state);
+
+      // If successfully submitted, just return; we'll be saved and a
+      // a drupal goto will be performed.
+      if (!empty($form_state['executed'])) {
+        // @todo -- set a goto location here so that a save comes back to
+        // the last operation trail visited, regardless of ajax operations.
+        return $save_form;
+      }
+    }
+
+    $operations = $this->get_operations($form_state['item']);
+
+    // This is the default operation trail if no operation was specified.
+    if (empty($trail)) {
+      $trail = $this->get_default_operation_trail($form_state['item'], $operations);
+    }
+
+    // In the default scenario, there's a default "operation" and we get its
+    // content on this page.
+    $content = $this->render_operation($operation_form_state, $operations, $trail);
+    if (!empty($content['new trail'])) {
+      // Provide some gate logic to prevent recursing too deep. A simple
+      // local static works fine for this.
+      static $recursion = 0;
+      $retval = NULL;
+      $recursion++;
+
+      if ($recursion < 3) {
+        $form_state['operation trail'] = $content['new trail'];
+        $retval = $this->edit_execute_operations($form_state);
+      }
+      $recursion--;
+      return $retval;
+    }
+
+    // Some content can change operations, by adding new ones or subtracting
+    // no longer needed ones. If so we need to rebuild the operations before
+    // rendering.
+    if (!empty($content['changed operations'])) {
+      $operations = $this->get_operations($form_state['item']);
+    }
+
+    $rendered_operations = $this->render_operations($form_state['item'], $operations, $trail);
+
+    // If the save form wasn't built earlier, build it now. We do this so that
+    // it can detect changes.
+    if (!isset($save_form)) {
+      $save_form = drupal_build_form('ctools_export_ui_save_object_form', $form_state);
+    }
+
+    // @todo -- we should move this to render() in the template
+//    $form = drupal_render($save_form);
+
+    $output = $this->render_operation_page($save_form, $rendered_operations, $content);
+
+    if ($form_state['ajax']) {
+      // we need to turn this into a commands array instead.
+      $commands = array();
+      // @todo -- this needs to be abstracted better.
+      // $this->operations_ajax_render($output) perhaps?
+      $commands[] = ajax_command_replace('#ctools-export-ui-edit', drupal_render($output));
+
+      $output = array(
+        '#type' => 'ajax',
+        '#commands' => $commands,
+      );
+    }
+    return $output;
+  }
+
+  /**
+   * Render the final operation output form.
+   *
+   * For complex pages that have more than the simple operations/actions
+   * sections or that need more complicated theming than the default
+   * template allows, this method allows an easy point to control what
+   * theme is used to render this data.
+   */
+  function render_operation_page($save_form, $rendered_operations, $content) {
+    return array(
+      '#theme' => 'ctools_export_ui_operations_page',
+      '#object' => $this,
+      '#save' => $save_form,
+      '#operations' => $rendered_operations,
+      '#content' => $content,
+    );
+  }
+
+  /**
+   * Get the operations for this item.
+   *
+   * The operations are created as a renderable array, but like forms they
+   * also contain additional information about how operations are actually
+   * implemented.
+   *
+   * This almost certainly needs to be overridden by any class using operations
+   * since the default operations don't provide very much.
+   *
+   * Currently we support render api types:
+   * - '#type' => 'ctools_operation_group' -- A container to group operations.
+   *   Groups can be #collapsible and if #auto-collapse is set, they will
+   *   collapse if not within the active trail.
+   * - '#type' => 'link' -- A link to something. #href will be automatically
+   *   filled in with the operation path if not set already.
+   *   '#operation' will then contain an array with operation
+   *   specific information such as form id, wizard form info, or render
+   *   callback.
+   *
+   * All links must be within
+   */
+  function get_operations($item) {
+    $operations = array();
+
+    // The primary "operations" group is anonymous.
+    $operations['operations'] = array(
+      '#type' => 'ctools_operation_group',
+      // Filling in a path here would update the path for all groups.
+    );
+
+    $operations['operations']['edit'] = array(
+      '#type' => 'link',
+      '#title' => t('Edit'),
+      '#description' => t('Edit this item'),
+      '#operation' => array(
+        'form' => 'ctools_export_ui_edit_item_form',
+      ),
+    );
+
+    drupal_alter('ctools_export_ui_operations', $operations, $this);
+    return $operations;
+  }
+
+  /**
+   * Return the default operation.
+   *
+   * When you first visit an edit page, there is a 'default' operation
+   * that is the first thing you see.
+   *
+   * This method can be overridden to provide a more appropriate default
+   * operation.
+   */
+  function get_default_operation_trail($item, $operations) {
+    return array('operations', 'edit');
+  }
+
+  /**
+   * Render an entire set of operations.
+   *
+   * Each item in the top level of the operations array will be rendered
+   * separately. This means anything that isn't a group or otherwise
+   * renderable by itself isn't going to render properly.
+   */
+  function render_operations($item, $operations, $trail) {
+    $export_key = $this->plugin['export']['key'];
+    $name = $item->{$export_key};
+    $default_path = ctools_export_ui_plugin_menu_path($this->plugin, 'edit', $name);
+
+    // Set #active on each individual element by drilling down on the trail
+    // loop. This is simpler than array splice operations in the main process.
+    $active = $operations;
+    foreach ($trail as $key) {
+      if (empty($active[$key])) {
+        break;
+      }
+
+      $active = &$active[$key];
+      $active['#active'] = TRUE;
+    }
+
+    $content = array();
+    foreach ($operations as $name => $group) {
+      $this->process_operations($item, $operations, $key, $default_path);
+      $content[$name] = drupal_render($group);
+    }
+
+    return $content;
+  }
+
+  /**
+   * Recursively add information to the operations array prior to rendering.
+   *
+   * Much like form process, this sets valuable information such
+   * as parenting and paths and changed flags that won't
+   * easily be available during drupal_render() due to the limitations
+   * of data availability during theming.
+   */
+  function process_operations($item, &$element, $key, $default_path, $trail = array()) {
+    $trail[] = $key;
+    $element['#parents'][] = $trail;
+
+    $path = implode('/', $trail);
+    $element['#changed'] = !empty($item->changed_operations[$path]);
+    if (!isset($element['#uri'])) {
+      $element['#uri'] = $default_path . '/' . $path;
+    }
+
+    foreach (element_children($element) as $child) {
+      $this->process_operations($item, $element[$child], $key, $default_path, $trail);
+    }
+  }
+
+  /**
+   * Get the current operation from the $operations array based upon
+   * the operations trail.
+   *
+   * An operation trail can be longer than is actually addressed; if so,
+   * the additional items are considered arguments.
+   *
+   * @return
+   *   If successful, an array with the following keys:
+   *   - operation: The array of info from the operation.
+   *   - active: The portion of the trail that actually found the operation.
+   *   - args: Any remainder of the trail that can be used as arguments for
+   *     the operation.
+   *   - titles: The titles, if any, of the active trail not including the
+   *     current operation.
+   */
+  function get_operation_from_trail($operations, $trail) {
+    $args = $trail;
+    $stop = FALSE;
+    $active = array();
+    $titles = array();
+
+    // Loop through our $trail by parsing through $args.
+    while ($args) {
+      // Fetch the first item in the remaining args. Don't pop it off the
+      // stack until we know it actually exists.
+      $key = reset($args);
+
+      // Stop if there's no further down to go:
+      if (!is_array($operations) || empty($operations[$key])) {
+        break;
+      }
+
+      // We know it exists, so pop it off $args and add it to $active.
+      $active[] = array_shift($args);
+      // If the parent operation had a title, add it to our title trail.
+      if (!empty($operations['#title'])) {
+        $titles[] = $operations['#title'];
+      }
+
+      // Move down one level into the operation we found.
+      $operations = $operations[$key];
+    }
+
+    // Only return a value if there's an #operation array at
+    // the address we stopped at.
+    if (!empty($operations['#operation'])) {
+      return array(
+        'operation' => $operations,
+        'active' => $active,
+        'args' => $args,
+        'titles' => $titles
+      );
+    }
+  }
+
+  /**
+   * Render the operation for the item at the given trail.
+   */
+  function render_operation($form_state, $operations, $trail) {
+    $info = $this->get_operation_from_trail($operations, $trail);
+
+    $operation = $info['operation']['#operation'];
+    // Inherit a couple of fields if necessary:
+    if (empty($operation['title']) && isset($info['operation']['#title'])) {
+      $operation['title'] = $info['operation']['#title'];
+    }
+    if (empty($operation['description']) && isset($info['operation']['#description'])) {
+      $operation['description'] = $info['operation']['#description'];
+    }
+
+    // Assume type 'form' if not specified.
+    if (empty($operation['type'])) {
+      $operation['type'] == 'form';
+    }
+
+    $method = 'render_operation_type_' . $operation['type'];
+    if (!method_exists($this, $method)) {
+      $method = 'render_operation_type_form';
+    }
+
+    $form_state['operations'] = $operations;
+    $content = $this->$method($form_state, $info, $operation);
+
+    if (!$content) {
+      return array(
+        'title' => t('Error'),
+        'content' => t('This operation trail does not exist.'),
+        'description' => '',
+      );
+    }
+
+    // If there are messages for the form, render them.
+    if ($form_state['ajax'] && ($messages = theme('status_messages'))) {
+      $content['content'] = $messages . $content['content'];
+    }
+
+    // Expand the title to include the entire active trail.
+    if (!empty($info['titles'])) {
+      $titles = $info['titles'];
+      $titles[] = $content['title'];
+      $content['title'] = implode(' &raquo ', array_filter($titles));
+    }
+
+    $content['description'] = isset($operation['description']) ? $operation['description'] : '';
+
+    return $content;
+  }
+
+  /**
+   * Render an operation if it is a form.
+   *
+   * Most operations are forms. This gets the basic wizard info,
+   * gives it the information needed for the operation, and runs
+   * the form. Each form is treated as an individual wizard so
+   * operations can easily have multiple forms.
+   */
+  function render_operation_type_form($form_state, $info, $operation) {
+    $form_info = array(
+      'id' => 'ctools_export_ui_operation',
+      'finish text' => t('Update'),
+      'show trail' => FALSE,
+      'show back' => FALSE,
+      'show return' => FALSE,
+      'show cancel' => FALSE,
+      'next callback' => 'ctools_export_ui_operation_next',
+      'finish callback' => 'ctools_export_ui_operation_finish',
+      'path' => $operation['path'] . "/%step",
+      // wrapper function to add an extra finish button.
+      'wrapper' => 'ctools_export_operation_wrapper',
+    );
+
+    // If $operation['form'] is empty, then it's going to use our
+    // delegation form which will call back to
+    // $this->edit_form_{trail}_step where trail is the keys imploded
+    // with _. For example, the trail ('operations', 'edit') will
+    // end up as $this->edit_form_operations_edit_form
+    //
+    // The step may also be left off, meaning all steps will end up
+    // at that form. This is only useful for single step forms.
+    if (empty($operation['form'])) {
+      $operation['form'] = 'ctools_export_ui_operation_form';
+    }
+
+    // If $operation['form'] is simply a string, then it is the function
+    // name of the form.
+    if (!is_array($operation['form'])) {
+      $form_info['order'] = array(
+        'form' => $operation['title'],
+      );
+      $form_info['forms'] = array(
+        'form' => array('form id' => $operation['form']),
+      );
+      if (isset($operation['wrapper'])) {
+        $form_info['forms']['form']['wrapper'] = $operation['wrapper'];
+      }
+    }
+    // Otherwise it's the order and forms arrays directly.
+    else {
+      // We allow them to leave off 'form' information so that
+      // forms will pass through to our default delegator.
+      $forms = array();
+      if (!empty($operation['form']['forms'])) {
+        $forms = $operation['form']['forms'];
+      }
+
+      foreach ($operation['form']['order'] as $step => $title) {
+        if (empty($forms[$step]['form id'])) {
+          $forms[$step]['form id'] = 'ctools_export_ui_operation_form';
+        }
+      }
+
+      $form_info['order'] = $operation['form']['order'];
+      $form_info['forms'] = $forms;
+    }
+
+    // Allow the operation to override any form info settings:
+    if (isset($operation['form info'])) {
+      $form_info = $operation['form info'] + $form_info;
+    }
+
+    $step = reset($info['args']);
+    // If step is unset, go with the basic step.
+    if (!isset($step)) {
+      $step = current(array_keys($form_info['order']));
+    }
+
+    // If it is locked, hide the buttonzzz!
+/*
+    @todo -- automatic locking not implemented in ctools UI at this time.
+    if ($form_state['item']->locked && empty($operation['even locked'])) {
+      $form_info['no buttons'] = TRUE;
+    }
+*/
+    ctools_include('wizard');
+    $form_state['operation_info'] = $info;
+    $form_state['operation'] = $operation;
+
+    $output = ctools_wizard_multistep_form($form_info, $step, $form_state);
+
+    return array(
+      'title' => empty($form_state['title']) ? $operation['title'] : $form_state['title'],
+      // @todo move drupal_render to preprocess or something.
+      'content' => drupal_render($output),
+    );
+  }
+
+  /**
+   * Wizard 'next' callback when using an operation to edit an item.
+   */
+  function edit_operation_next(&$form_state) {
+    $this->edit_cache_set($form_state['item'], $form_state['form type']);
+  }
+
+  /**
+   * Wizard 'finish' callback when using an operation to edit an item.
+   *
+   * This callback informs the user that the item has been updated.
+   */
+  function edit_operation_finish(&$form_state) {
+    $item = $form_state['item'];
+    $export_key = $this->plugin['export']['key'];
+
+    if (empty($form_state['operation']['silent'])) {
+      if (empty($form_state['clicked_button']['#save'])) {
+        $string = $this->plugin['strings']['confirmation']['operation']['finish'];
+      }
+      else {
+        $string = $this->plugin['strings']['confirmation']['operation']['finish-and-save'];
+      }
+
+      $message = str_replace('%title', check_plain($item->{$export_key}), $string);
+      drupal_set_message($message);
+    }
+
+    // Mark every item in the entire trail as changed.
+    $path = array();
+    foreach ($form_state['trail'] as $operation) {
+      $path[] = $operation;
+      $item->changed_operations[implode('/', $path)] = TRUE;
+    }
+
+    // We basically always want to force a rerender when the forms
+    // are finished, so make sure there is a new trail. This is the
+    // equivalent of doing a redirect in the AJAX system.
+    if (empty($form_state['new trail'])) {
+      // force a rerender to get rid of old form items that may have changed
+      // during save.
+      $form_state['new trail'] = $form_state['trail'];
+    }
+
+    // If a new trail is set and we're not ajaxing, set a redirect in the
+    // form state so that the form will properly handle the next step.
+    if (isset($form_state['new trail']) && empty($form_state['ajax'])) {
+      $operation = drupal_array_get_nested_value($form_state['operations'], $form_state['new trail']);
+      if (!empty($operation['#uri'])) {
+        $form_state['redirect'] = $operation['#uri'];
+      }
+    }
+  }
+
+  /**
+   * Operation save callback when the save/cancel form is saved.
+   *
+   * The actual saving is handled back in edit_execute_operations(), so
+   * the default implementation doesn't do anything here.
+   */
+  function edit_operation_save(&$form_state) {
+
+  }
+
+  /**
+   * Operation save callback when the save/cancel form is canceled.
+   */
+  function edit_operation_cancel(&$form_state) {
+    $item = $form_state['item'];
+    $export_key = $this->plugin['export']['key'];
+
+    $message = str_replace('%title', check_plain($item->{$export_key}), $this->plugin['strings']['confirmation']['operation']['cancel']);
+    drupal_set_message($message);
 
     $this->edit_cache_clear($form_state['item'], $form_state['form type']);
   }
@@ -1474,4 +2000,139 @@ function ctools_export_ui_wizard_cancel(&$form_state) {
  */
 function ctools_export_ui_wizard_finish(&$form_state) {
   $form_state['object']->edit_wizard_finish($form_state);
+}
+
+// --------------------------------------------------------------------------
+// Forms and callbacks for using the edit system with the operations wizard.
+
+/**
+ * Form callback to edit an exportable item using the wizard
+ *
+ * This simply loads the object defined in the plugin and hands it off.
+ */
+function ctools_export_ui_operation_form($form, &$form_state) {
+  // When called using #ajax via ajax_form_callback(), 'export' may
+  // not be included so include it here.
+  ctools_include('export');
+
+  $trail = implode('/', $form_state['operation_info']['trail']);
+  $method = 'edit_form_' . $trail . '_' . $form_state['step'];
+  if (!method_exists($form_state['object'], $method)) {
+    $method = 'edit_form_' . $trail;
+  }
+  if (!method_exists($form_state['object'], $method)) {
+    $method = 'edit_form';
+  }
+
+  $form_state['object']->$method($form, $form_state);
+  return $form;
+}
+
+/**
+ * Validate handler for ctools_export_ui_operation_form.
+ */
+function ctools_export_ui_operation_form_validate(&$form, &$form_state) {
+  $trail = implode('/', $form_state['operation_info']['trail']);
+  $method = 'edit_form_' . $trail . '_' . $form_state['step'] . '_validate';
+  if (!method_exists($form_state['object'], $method)) {
+    $method = 'edit_form_' . $trail . '_validate';;
+  }
+  if (!method_exists($form_state['object'], $method)) {
+    $method = 'edit_form_validate';
+  }
+
+  $form_state['object']->$method($form, $form_state);
+}
+
+/**
+ * Submit handler for ctools_export_ui_operation_form.
+ */
+function ctools_export_ui_operation_form_submit(&$form, &$form_state) {
+  $trail = implode('/', $form_state['operation_info']['trail']);
+  $method = 'edit_form_' . $trail . '_' . $form_state['step'] . '_submit';
+  if (!method_exists($form_state['object'], $method)) {
+    $method = 'edit_form_' . $trail . '_submit';;
+  }
+  if (!method_exists($form_state['object'], $method)) {
+    $method = 'edit_form_submit';
+  }
+
+  $form_state['object']->$method($form, $form_state);
+}
+
+/**
+ * Form wrapper for the export UI operations functionality.
+ *
+ * This adds an extra "Save and update" button to the wizard if there is
+ * a finish and we're not explicity told not to by the operation.
+ */
+function ctools_export_ui_operation_wrapper($form, &$form_state) {
+  if (empty($form_state['operation']['no update and save']) && !empty($form['buttons']['return']['#wizard type']) && $form['buttons']['return']['#wizard type']) {
+    $form['buttons']['save'] = array(
+      '#type' => 'submit',
+      '#value' => !empty($form_state['form_info']['save text']) ? $form_state['form_info']['save text'] : t('Update and save'),
+      '#wizard type' => 'finish',
+      '#attributes' => $form['buttons']['return']['#attributes'],
+      '#save' => TRUE,
+    );
+  }
+
+  return $form;
+}
+
+/**
+ * Wizard 'next' callback when using a wizard to edit an item.
+ */
+function ctools_export_ui_operation_next(&$form_state) {
+  $form_state['object']->edit_operation_next($form_state);
+}
+
+/**
+ * Wizard 'finish' callback when using a wizard to edit an item.
+ */
+function ctools_export_ui_operation_finish(&$form_state) {
+  $form_state['object']->edit_operation_finish($form_state);
+}
+
+/**
+ * Provide a simple form for saving the item info out of the cache.
+ */
+function ctools_export_ui_save_object_form($form, &$form_state) {
+  $item = $form_state['item'];
+  $export_key = $this->plugin['export']['key'];
+
+  if (!empty($item->changed_operations)) {
+    $message = str_replace('%title', check_plain($item->{$export_key}), $this->plugin['strings']['confirmation']['operation']['unsaved']);
+    $form['markup'] = array(
+      '#markup' => '<div class="changed-notification">' . $message . '</div>',
+    );
+
+    $form['save'] = array(
+      '#type' => 'submit',
+      '#value' => t('Save'),
+      '#submit' => array('ctools_export_ui_save_object_form_submit'),
+    );
+
+    $form['cancel'] = array(
+      '#type' => 'submit',
+      '#value' => t('Cancel'),
+      '#submit' => array('ctools_export_ui_save_object_form_cancel'),
+    );
+
+    return $form;
+  }
+}
+
+/**
+ * Submit callback for the item.
+ */
+function ctools_export_ui_save_object_form_submit(&$form, &$form_state) {
+  $form_state['object']->edit_operation_save($form_state);
+}
+
+/**
+ * Cancel callback for the item.
+ */
+function ctools_export_ui_save_object_form_cancel($form, &$form_state) {
+  $form_state['object']->edit_operation_cancel($form_state);
 }

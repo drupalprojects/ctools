@@ -439,6 +439,23 @@ function ctools_flush_caches() {
 }
 
 /**
+ * Implements hook_element_info()
+ */
+function ctools_element_info() {
+  // @todo -- should we use the delegated file export-ui.element-info.inc instead?
+  $types = array();
+
+  $types['ctools_operation_group'] = array(
+    '#theme' => array('ctools_operation_group'),
+  );
+  $types['ctools_operation_link'] = array(
+    '#pre_render' => array('ctools_pre_render_operation_link', 'drupal_pre_render_markup'),
+  );
+
+  return $types;
+}
+
+/**
  * Implements hook_element_info_alter().
  *
  */

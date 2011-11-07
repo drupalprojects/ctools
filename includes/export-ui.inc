@@ -318,6 +318,7 @@ function ctools_export_ui_process(&$plugin, $info) {
     'delete' => array(),
     'add' => array(),
     'edit' => array(),
+    'operation' => array(),
   );
 
   $plugin['strings']['confirmation']['revert'] += array(
@@ -340,6 +341,15 @@ function ctools_export_ui_process(&$plugin, $info) {
   $plugin['strings']['confirmation']['edit'] += array(
     'success' => t('%title has been updated.'),
     'fail' => t('%title could not be updated.'),
+  );
+
+  $plugin['strings']['confirmation']['operation'] += array(
+    'finish' => t('%title has been updated. Changes will not be permanent until you Save.'),
+    'finish-and-save' => t('%title has been updated and all changes saved.'),
+    'fail' => t('%title could not be updated.'),
+    'unsaved' => t('You have unsaved changes to %title. You must select Save to write them to the database, or Cancel to discard these changes. Please note that if you have changed any form, you must submit that form before saving.'),
+    // @todo -- when locking is re-implemented this message needs to be updated.
+    'cancel' => t('All pending changes have been discarded.'),
   );
 
   // Strings used in $forms.
