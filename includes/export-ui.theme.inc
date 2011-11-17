@@ -114,7 +114,7 @@ function template_preprocess_ctools_export_ui_operations_page($vars) {
  *   directory and that is annoying to the CTools organization system.
  */
 function theme_ctools_export_ui_operations_page($vars) {
-  return <<< EOF;
+  return <<<EOF
 <div id="ctools-export-ui-edit">
   <div class="ctools-export-ui-wrapper">
       <div class="primary-actions clearfix actions">
@@ -130,15 +130,15 @@ function theme_ctools_export_ui_operations_page($vars) {
         <div class="inside">
           <div class="content-header">
             <div class="content-title">
-              $content['title']
+              {$content['title']}
             </div>
           </div>
 
           <div class="content-content">
               <div class="description">
-                $content['description']
+                {$content['description']}
               </div>
-            $content['content']
+            {$content['content']}
           </div>
         </div>
       </div>
