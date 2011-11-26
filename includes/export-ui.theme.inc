@@ -95,11 +95,11 @@ function theme_ctools_operation_group($element) {
  * set of operations on the top, and the main operations set on the left.
  * This is probably fine for 98% of the applications that might use this UI.
  */
-function template_preprocess_ctools_export_ui_operations_page($vars) {
+function template_preprocess_ctools_export_ui_operations_page(&$vars) {
   $element = $vars['element'];
 
   $vars['operations'] = !empty($element['#operations']['operations']) ? $element['#operations']['operations'] : '';
-  $vars['operations'] = !empty($element['#operations']['actions']) ? $element['#operations']['actions'] : '';
+  $vars['actions'] = !empty($element['#operations']['actions']) ? $element['#operations']['actions'] : '';
   $vars['content'] = $element['#content'];
   $vars['save'] = drupal_render($element['#save_form']);
 }
@@ -114,6 +114,8 @@ function template_preprocess_ctools_export_ui_operations_page($vars) {
  *   directory and that is annoying to the CTools organization system.
  */
 function theme_ctools_export_ui_operations_page($vars) {
+  extract($vars);
+
   return <<<EOF
 <div id="ctools-export-ui-edit">
   <div class="ctools-export-ui-wrapper">
