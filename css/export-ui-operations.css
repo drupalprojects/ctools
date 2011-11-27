@@ -1,0 +1,373 @@
+body form#ctools-export-ui-list-form {
+  margin: 0 0 20px 0;
+}
+
+#ctools-export-ui-list-form .form-item {
+  padding-right: 1em; /* LTR */
+  float: left; /* LTR */
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+#ctools-export-ui-list-items {
+  width: 100%;
+}
+
+#edit-order-wrapper {
+  clear: left; /* LTR */
+}
+
+#edit-items-apply,
+#edit-items-reset {
+  margin-top: 1.65em;
+  float: left; /* LTR */
+}
+
+#ctools-export-ui-edit {
+  margin-top: 1em;
+}
+
+#ctools-export-ui-edit table {
+  width: 100%;
+}
+
+#ctools-export-ui-edit table tr.even {
+  background-color: #fafafa;
+}
+
+#ctools-export-ui-list-items tr.ctools-export-ui-disabled td {
+  color: #999;
+}
+
+#ctools-export-ui-list-items tr.ctools-export-ui-locked td.ctools-export-ui-item-name {
+  font-style: italic;
+  color: green;
+  padding-left: 22px; /* LTR */
+  background: url(../images/locked.png) no-repeat scroll left center; /* LTR */
+}
+
+#ctools-export-ui-list-items tr.ctools-export-ui-locked-other td.ctools-export-ui-item-name {
+  font-style: italic;
+  color: red;
+  padding-left: 22px; /* LTR */
+  background: url(../images/locked-other.png) no-repeat scroll left center; /* LTR */
+}
+
+/* Force the background color to inherit so that the dropbuttons do not need
+   a specific background color. */
+#ctools-export-ui-list-items td.ctools-export-ui-item-operations {
+  vertical-align: top;
+  background-color: inherit;
+}
+
+#ctools-export-ui-list-items td.ctools-export-ui-item-operations .ctools-dropbutton {
+  text-align: left; /* LTR */
+  position: absolute;
+  right: 10px;
+}
+
+
+
+#ctools-export-ui-edit .ctools-export-ui-wrapper {
+  margin: 0;
+  padding: 0 0 0 149px;
+  color: #494949;
+}
+
+#ctools-export-ui-edit .ctools-export-ui-tabs {
+  border: 1px solid #aaa;
+}
+
+#ctools-export-ui-edit .ctools-export-ui-edit-operations {
+  float: left; /* LTR */
+  width: 150px;
+  margin-left: -150px;
+  margin-top: -1px;
+  height: 100%;
+  font-size: 90%;
+}
+
+#ctools-export-ui-edit .ctools-export-ui-edit-operations .inside {
+  border-top: 1px solid #aaa;
+  border-bottom: 1px solid #aaa;
+}
+
+#ctools-export-ui-edit .ctools-export-ui-edit-operations ul {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 0;
+  margin-left: 0;
+}
+
+#ctools-export-ui-edit .ctools-export-ui-edit-operations li {
+  list-style: none;
+  background: #F6F6F6;
+  border-top: 1px solid #aaa;
+  border-left: 1px solid #aaa;
+  border-right: 1px solid #aaa;
+  padding: 0 0 0 0;
+  margin: 0;
+  line-height: 2em;
+}
+
+#ctools-export-ui-edit .ctools-export-ui-edit-operations li.active,
+#ctools-export-ui-edit .ctools-export-ui-edit-operations li.active-group .ctools-export-ui-group-title {
+  background: #FFFFFF url(../images/arrow-active.png) no-repeat scroll right center;
+}
+
+#ctools-export-ui-edit .ctools-export-ui-edit-operations li.changed,
+#ctools-export-ui-edit .ctools-export-ui-edit-operations li.changed-group .ctools-export-ui-group-title {
+  background-color: #ffe;
+  font-weight: bold;
+}
+
+/** provide a reset for non active stray paths */
+#ctools-export-ui-edit .ctools-export-ui-edit-operations li.active-group li.not-active .ctools-export-ui-group-title,
+#ctools-export-ui-edit .ctools-export-ui-edit-operations li.changed-group li.not-changed .ctools-export-ui-group-title {
+  background: #F6F6F6;
+}
+
+#ctools-export-ui-edit .ctools-export-ui-edit-operations li.active {
+  border-right: 1px solid white;
+}
+
+#ctools-export-ui-edit .ctools-export-ui-edit-operations li.active a,
+#ctools-export-ui-edit .ctools-export-ui-edit-operations li.active a:hover {
+  background: #FFFFFF url(../images/arrow-active.png) no-repeat scroll right center;
+  color: #000000;
+  font-weight: bold;
+}
+
+#ctools-export-ui-edit .ctools-export-ui-edit-operations li.operation-first {
+  border-top: none;
+}
+
+#ctools-export-ui-edit .ctools-export-ui-edit-operations li li.operation-first {
+  border-top: 1px solid #aaa;
+}
+
+#ctools-export-ui-edit .ctools-export-ui-edit-operations li a {
+  display: block;
+  padding: 0 0 0 .5em;
+  color: #494949;
+}
+
+#ctools-export-ui-edit .ctools-export-ui-edit-operations li a:hover {
+  background-color: #eee;
+  text-decoration: none;
+}
+
+#ctools-export-ui-edit .ctools-collapsible-container {
+  display: inline-block;
+  position: relative;
+  *float: left; /* LTR */
+  width: 100%;
+}
+
+#ctools-export-ui-edit .ctools-export-ui-edit-operations li .ctools-collapsible-handle:hover {
+  background-color: #eee;
+}
+
+#ctools-export-ui-edit .ctools-export-ui-edit-operations li li {
+  border-right: none;
+  border-left: none;
+  margin-left: 1em;
+}
+
+#ctools-export-ui-edit .ctools-export-ui-edit-operations li ul {
+}
+
+#ctools-export-ui-edit .ctools-export-ui-group-title {
+  line-height: 2em;
+  font-weight: bold;
+  padding: 0 0 0 .5em;
+}
+
+/* Change the position of the arrow on the dropdown to look nicer with our defaults. */
+#ctools-export-ui-edit .ctools-export-ui-edit-operations .ctools-toggle {
+  background-position: 0 9px;
+  width: 10px;
+}
+
+#ctools-export-ui-edit .ctools-export-ui-ajax-pad {
+  float: left; /* LTR */
+  width: 100%;
+  border-left: none;
+  height: 100%;
+  background: white;
+}
+
+/** A riser to force the ajax pad to a minimum height. **/
+#ctools-export-ui-edit .ctools-export-ui-ajax-pad .ctools-export-ui-riser {
+  width: 1px;
+  float: right; /* LTR */
+  height: 400px;
+}
+
+#ctools-export-ui-edit .ctools-export-ui-ajax-pad .ctools-export-ui-riser span {
+  display: none;
+}
+
+#ctools-export-ui-edit .ctools-export-ui-ajax-pad .content-title {
+  font-weight: bold;
+  font-size: 120%;
+  background-color: #fafafa;
+  border-bottom: 1px solid #aaa;
+  border-left: 1px solid #aaa;
+  margin-left: -1px;
+  padding: 2px 5px 2px 20px;
+}
+
+#ctools-export-ui-edit .actions {
+  padding: 0 0 0 20px;
+}
+
+#ctools-export-ui-edit .primary-actions li {
+  border-top: 1px solid #aaa;
+}
+
+#ctools-export-ui-edit .secondary-actions {
+  border-bottom: 1px solid #aaa;
+}
+
+#ctools-export-ui-edit .handler-actions {
+  float: right; /* LTR */
+}
+
+#ctools-export-ui-edit .actions .ctools-export-ui-group-title {
+  float: left; /* LTR */
+  padding-left: 0;
+}
+
+#ctools-export-ui-edit .actions ul {
+  float: right; /* LTR */
+  text-align: right; /* LTR */
+  padding: 0;
+  margin: 0;
+  border-right: 1px solid #aaa;
+}
+
+#ctools-export-ui-edit .handler-title .actions ul {
+  border-right: none;
+}
+
+#ctools-export-ui-edit .actions li {
+  float: left; /* LTR */
+  background: none;
+  list-style: none;
+  border-left: 1px solid #aaa;
+  margin: 0;
+  padding: 0;
+}
+
+#ctools-export-ui-edit .actions ul li.operation-last {
+  border-right: none;
+}
+
+#ctools-export-ui-edit .actions li a:hover {
+  background-color: #eee;
+  text-decoration: none;
+}
+
+#ctools-export-ui-edit .actions li a {
+  display: block;
+  padding: 0.2em 0.5em;
+  color:#0062A0;
+  background-color: #F6F6F6;
+}
+
+#ctools-export-ui-edit .ctools-export-ui-changed {
+  float: right; /* LTR */
+  font-style: italic;
+  color: #f93;
+  padding-left: 1em;
+  padding-right: 22px;
+  background: url(../images/locked.png) no-repeat scroll right center;
+}
+
+#ctools-export-ui-edit .ctools-export-ui-ajax-pad .content-content {
+  padding: .5em 20px;
+}
+
+#ctools-export-ui-edit .ctools-export-ui-ajax-pad textarea {
+  width: 100%;
+}
+
+#ctools-export-ui-edit .changed-notification {
+  border: 1px solid #aaa;
+  background-color: #ffe;
+  color: #494949;
+  padding: 1em;
+  margin-top: 1em;
+}
+
+#ctools-export-ui-edit .ctools-locked {
+  margin-bottom: 2em;
+}
+
+#ctools-export-ui-item-summary .title {
+  font-weight: bold;
+  font-size: 160%;
+}
+
+#ctools-export-ui-item-summary .handler-summary {
+}
+
+#ctools-export-ui-item-summary .item-summary-operation {
+  text-align: right;
+}
+
+#ctools-export-ui-item-summary .item-summary-label {
+  width: 8em;
+  font-weight: bold;
+}
+
+
+.handler-summary dl {
+  margin: 0;
+}
+
+.handler-summary dt {
+  margin: 0;
+  padding: 0;
+}
+
+.handler-summary dd {
+  margin: 0;
+}
+
+.handler-summary ol {
+  margin: 0;
+}
+
+.handler-summary .handler-title {
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  background: #fafafa;
+  padding: 0 0 0 5px;
+  margin-top: .5em;
+}
+
+.handler-summary .handler-title .title-label {
+  font-weight: bold;
+  font-size: 120%;
+  line-height: 1.75em;
+}
+
+
+/** Override that obnoxious float on throbber. **/
+#ctools-export-ui-edit .progress-disabled {
+  float: none;
+}
+
+#ctools-export-ui-edit .progress-disabled + .ajax-progress {
+  float: right;
+  position: relative;
+  top: -2em;
+}
+
+#ctools-export-ui-list-items-form .progress-disabled + .ajax-progress {
+  position: relative;
+  top: 2em;
+  left: -.5em;
+}
