@@ -81,7 +81,7 @@ function theme_ctools_operation_group($element) {
   // Add changed flag
   $ul_attributes['class'][] = !empty($element['#changed']) ? 'operation-changed' : 'operation-not-changed';
 
-  $output .= '<ul ' . drupal_attributes($ul_attributes) . ">\n";
+  $output = '<ul ' . drupal_attributes($ul_attributes) . ">\n";
   $output .= $content;
   $output .= "</ul>\n";
 
@@ -97,6 +97,13 @@ function theme_ctools_operation_group($element) {
  */
 function template_preprocess_ctools_export_ui_operations_page(&$vars) {
   $element = $vars['element'];
+
+  ctools_include('ajax');
+  ctools_include('modal');
+  ctools_modal_add_js();
+  ctools_add_js('dependent');
+
+  ctools_add_css('export-ui-operations');
 
   $vars['operations'] = !empty($element['#operations']['operations']) ? $element['#operations']['operations'] : '';
   $vars['actions'] = !empty($element['#operations']['actions']) ? $element['#operations']['actions'] : '';
@@ -146,7 +153,7 @@ function theme_ctools_export_ui_operations_page($vars) {
       </div>
     </div>
   </div>
-  $save;
+  $save
 </div>
 EOF;
 

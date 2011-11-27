@@ -643,7 +643,7 @@ class ctools_export_ui {
   function edit_page($js, $input, $item, $step = NULL) {
     drupal_set_title($this->get_page_title('edit', $item));
 
-    // Check to see if there is a cached item to get if we're using the wizard.
+    // Check to see if there is a cached item to get if we're using a complex UI
     if (!empty($this->plugin['use wizard']) || !empty($this->plugin['use operations'])) {
       $cached = $this->edit_cache_get($item, 'edit');
       if (!empty($cached)) {
@@ -1088,6 +1088,16 @@ class ctools_export_ui {
       ),
     );
 
+    $operations['actions'] = array(
+      '#type' => 'ctools_operation_group',
+    );
+
+    $operations['actions']['disable'] = array(
+      '#type' => 'link',
+      '#title' => t('Disable'),
+      '#description' => t('Disable this pipeline'),
+    );
+
     drupal_alter('ctools_export_ui_operations', $operations, $this);
     return $operations;
   }
@@ -1234,7 +1244,7 @@ class ctools_export_ui {
 
     // Assume type 'form' if not specified.
     if (empty($operation['type'])) {
-      $operation['type'] == 'form';
+      $operation['type'] = 'form';
     }
 
     $method = 'render_operation_type_' . $operation['type'];
@@ -1288,7 +1298,7 @@ class ctools_export_ui {
       'show cancel' => FALSE,
       'next callback' => 'ctools_export_ui_operation_next',
       'finish callback' => 'ctools_export_ui_operation_finish',
-      'path' => $operation['path'] . "/%step",
+      'path' => $operation['#path'](empty($operation['#path']) ? ctools_export_ui_plugin_base_path($this->plugin) : $operation['#path']) . "/%step",
       // wrapper function to add an extra finish button.
       'wrapper' => 'ctools_export_operation_wrapper',
     );
@@ -2099,7 +2109,7 @@ function ctools_export_ui_operation_finish(&$form_state) {
  */
 function ctools_export_ui_save_object_form($form, &$form_state) {
   $item = $form_state['item'];
-  $export_key = $this->plugin['export']['key'];
+  $export_key = $form_state['object']->plugin['export']['key'];
 
   if (!empty($item->changed_operations)) {
     $message = str_replace('%title', check_plain($item->{$export_key}), $this->plugin['strings']['confirmation']['operation']['unsaved']);
