@@ -110,8 +110,8 @@ body form#ctools-export-ui-list-form {
   line-height: 2em;
 }
 
-#ctools-export-ui-edit .ctools-export-ui-edit-operations li.active,
-#ctools-export-ui-edit .ctools-export-ui-edit-operations li.active-group .ctools-export-ui-group-title {
+#ctools-export-ui-edit .ctools-export-ui-edit-operations li.operation-active,
+#ctools-export-ui-edit .ctools-export-ui-edit-operations li.operation-active-group .ctools-export-ui-group-title {
   background: #FFFFFF url(../images/arrow-active.png) no-repeat scroll right center;
 }
 

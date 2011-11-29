@@ -52,15 +52,15 @@ function theme_ctools_operation_group($elements) {
     // Automatically calculate href for operations if the are a link with no
     // #href already set:
     if (!empty($element[$key]['#type']) && $element[$key]['#type'] == 'link' && empty($element[$key]['#href'])) {
-      $element[$key]['#href'] = $element['#path'];
+      $element[$key]['#href'] = $element[$key]['#path'];
       $element[$key]['#attributes']['class'][] = 'use-ajax';
     }
 
     // Add active/not active flag.
-    $attributes['class'][] = !empty($element['#active']) ? 'operation-active' : 'operation-not-active';
+    $attributes['class'][] = !empty($element[$key]['#active']) ? 'operation-active' : 'operation-not-active';
 
     // Add changed flag
-    $attributes['class'][] = !empty($element['#changed']) ? 'operation-changed' : 'operation-not-changed';
+    $attributes['class'][] = !empty($element[$key]['#changed']) ? 'operation-changed' : 'operation-not-changed';
 
     $content .= '<li ' . drupal_attributes($attributes) . '>' . drupal_render($element[$key]) . "</li>\n";
   }

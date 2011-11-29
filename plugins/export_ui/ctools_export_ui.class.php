@@ -1011,7 +1011,7 @@ class ctools_export_ui {
     }
 
     // @todo -- we should move this to render() in the template
-//    $form = drupal_render($save_form);
+    $form = drupal_render($save_form);
 
     $output = $this->render_operation_page($save_form, $rendered_operations, $content);
 
@@ -1129,7 +1129,7 @@ class ctools_export_ui {
 
     // Set #active on each individual element by drilling down on the trail
     // loop. This is simpler than array splice operations in the main process.
-    $active = $operations;
+    $active = &$operations;
     foreach ($trail as $key) {
       if (empty($active[$key])) {
         break;
@@ -1140,8 +1140,8 @@ class ctools_export_ui {
     }
 
     $content = array();
-    foreach ($operations as $name => $group) {
-      $this->process_operations($item, $operations, $key, $default_path);
+    foreach ($operations as $name => &$group) {
+      $this->process_operations($item, $group, $name, $default_path);
       $content[$name] = drupal_render($group);
     }
 
@@ -1167,7 +1167,7 @@ class ctools_export_ui {
     }
 
     foreach (element_children($element) as $child) {
-      $this->process_operations($item, $element[$child], $key, $default_path, $trail);
+      $this->process_operations($item, $element[$child], $child, $default_path, $trail);
     }
   }
 
@@ -1426,8 +1426,8 @@ class ctools_export_ui {
     // form state so that the form will properly handle the next step.
     if (isset($form_state['new trail']) && empty($form_state['ajax'])) {
       $operation = drupal_array_get_nested_value($form_state['operations'], $form_state['new trail']);
-      if (!empty($operation['#uri'])) {
-        $form_state['redirect'] = $operation['#uri'];
+      if (!empty($operation['#path'])) {
+        $form_state['redirect'] = $operation['#path'];
       }
     }
   }
