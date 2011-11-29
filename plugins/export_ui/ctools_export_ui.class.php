@@ -1162,8 +1162,8 @@ class ctools_export_ui {
 
     $path = implode('/', $trail);
     $element['#changed'] = !empty($item->changed_operations[$path]);
-    if (!isset($element['#uri'])) {
-      $element['#uri'] = $default_path . '/' . $path;
+    if (!isset($element['#path'])) {
+      $element['#path'] = $default_path . '/' . $path;
     }
 
     foreach (element_children($element) as $child) {
@@ -1298,7 +1298,7 @@ class ctools_export_ui {
       'show cancel' => FALSE,
       'next callback' => 'ctools_export_ui_operation_next',
       'finish callback' => 'ctools_export_ui_operation_finish',
-      'path' => $operation['#path'](empty($operation['#path']) ? ctools_export_ui_plugin_base_path($this->plugin) : $operation['#path']) . "/%step",
+      'path' => $operation['#path'] . "/%step",
       // wrapper function to add an extra finish button.
       'wrapper' => 'ctools_export_operation_wrapper',
     );

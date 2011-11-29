@@ -23,9 +23,10 @@ function ctools_export_ui_theme(&$items) {
  * This turns all of the children into LI tags in a UL
  * as well as adding an optional title.
  */
-function theme_ctools_operation_group($element) {
+function theme_ctools_operation_group($elements) {
+  $element = $elements['element'];
   // Get the children of the element, sorted by weight.
-  $children = element_children($elements, TRUE);
+  $children = element_children($element, TRUE);
 
   $title = '';
   if (!empty($element['#title'])) {
@@ -40,7 +41,7 @@ function theme_ctools_operation_group($element) {
   foreach ($children as $count => $key) {
     // Use '#li attributes' if it exists, or an empty array otherwise.
     $attributes = !empty($element[$key]['#li attributes']) ? $element[$key]['#li attributes'] : array();
-    $attributes['class'] = 'operations-item';
+    $attributes['class'][] = 'operations-item';
     if ($key == $first) {
       $attributes['class'][] = 'operation-first';
     }
@@ -51,7 +52,7 @@ function theme_ctools_operation_group($element) {
     // Automatically calculate href for operations if the are a link with no
     // #href already set:
     if (!empty($element[$key]['#type']) && $element[$key]['#type'] == 'link' && empty($element[$key]['#href'])) {
-      $element[$key]['#href'] = $element['#uri'];
+      $element[$key]['#href'] = $element['#path'];
       $element[$key]['#attributes']['class'][] = 'use-ajax';
     }
 
