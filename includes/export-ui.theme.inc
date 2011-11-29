@@ -53,7 +53,10 @@ function theme_ctools_operation_group($elements) {
     // #href already set:
     if (!empty($element[$key]['#type']) && $element[$key]['#type'] == 'link' && empty($element[$key]['#href'])) {
       $element[$key]['#href'] = $element[$key]['#path'];
-      $element[$key]['#attributes']['class'][] = 'use-ajax';
+      // @TODO there a reason we can't use the d7 ajax api for this?
+      if (empty($element[$key]['#no-ajax'])) {
+        $element[$key]['#attributes']['class'][] = 'use-ajax';
+      }
     }
 
     // Add active/not active flag.
