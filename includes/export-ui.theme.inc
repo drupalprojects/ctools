@@ -59,11 +59,15 @@ function theme_ctools_operation_group($elements) {
       }
     }
 
-    // Add active/not active flag.
-    $attributes['class'][] = !empty($element[$key]['#active']) ? 'active' : 'not-active';
-
-    // Add changed flag
-    $attributes['class'][] = !empty($element[$key]['#changed']) ? 'changed' : 'not-changed';
+    // Manage active & changed flags.
+    if ($element[$key]['#type'] != 'ctools_operation_group') {
+      $attributes['class'][] = !empty($element[$key]['#active']) ? 'active' : 'not-active';
+      $attributes['class'][] = !empty($element[$key]['#changed']) ? 'changed' : 'not-changed';
+    }
+    else {
+      $attributes['class'][] = !empty($element[$key]['#active']) ? 'active-group' : 'not-active';
+      $attributes['class'][] = !empty($element[$key]['#changed']) ? 'changed-group' : 'not-changed';
+    }
 
     $content .= '<li ' . drupal_attributes($attributes) . '>' . drupal_render($element[$key]) . "</li>\n";
   }
@@ -81,9 +85,9 @@ function theme_ctools_operation_group($elements) {
   );
 
   // Add active flag
-  $ul_attributes['class'][] = !empty($element['#active']) ? 'active' : 'not-active';
+  $ul_attributes['class'][] = !empty($element['#active']) ? 'active-group' : 'not-active';
   // Add changed flag
-  $ul_attributes['class'][] = !empty($element['#changed']) ? 'changed' : 'not-changed';
+  $ul_attributes['class'][] = !empty($element['#changed']) ? 'changed-group' : 'not-changed';
 
   $output = '<ul ' . drupal_attributes($ul_attributes) . ">\n";
   $output .= $content;

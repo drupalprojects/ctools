@@ -111,19 +111,19 @@ body form#ctools-export-ui-list-form {
 }
 
 #ctools-export-ui-edit .ctools-export-ui-edit-operations li.active,
-#ctools-export-ui-edit .ctools-export-ui-edit-operations li.active-group .ctools-export-ui-group-title {
+#ctools-export-ui-edit .ctools-export-ui-edit-operations li.active-group .operations-group-title {
   background: #FFFFFF url(../images/arrow-active.png) no-repeat scroll right center;
 }
 
 #ctools-export-ui-edit .ctools-export-ui-edit-operations li.changed,
-#ctools-export-ui-edit .ctools-export-ui-edit-operations li.changed-group .ctools-export-ui-group-title {
+#ctools-export-ui-edit .ctools-export-ui-edit-operations li.changed-group .operations-group-title {
   background-color: #ffe;
   font-weight: bold;
 }
 
 /** provide a reset for non active stray paths */
-#ctools-export-ui-edit .ctools-export-ui-edit-operations li.active-group li.not-active .ctools-export-ui-group-title,
-#ctools-export-ui-edit .ctools-export-ui-edit-operations li.changed-group li.not-changed .ctools-export-ui-group-title {
+#ctools-export-ui-edit .ctools-export-ui-edit-operations li.active-group li.not-active .operations-group-title,
+#ctools-export-ui-edit .ctools-export-ui-edit-operations li.changed-group li.not-changed .operations-group-title {
   background: #F6F6F6;
 }
 
@@ -177,7 +177,7 @@ body form#ctools-export-ui-list-form {
 #ctools-export-ui-edit .ctools-export-ui-edit-operations li ul {
 }
 
-#ctools-export-ui-edit .ctools-export-ui-group-title {
+#ctools-export-ui-edit .operations-group-title {
   line-height: 2em;
   font-weight: bold;
   padding: 0 0 0 .5em;
@@ -234,7 +234,7 @@ body form#ctools-export-ui-list-form {
   float: right; /* LTR */
 }
 
-#ctools-export-ui-edit .actions .ctools-export-ui-group-title {
+#ctools-export-ui-edit .actions .operations-group-title {
   float: left; /* LTR */
   padding-left: 0;
 }

@@ -956,6 +956,13 @@ class ctools_export_ui {
     // considered the master.
     $operation_form_state = $form_state;
 
+    // This is the default operation trail if no operation was specified.
+    if (empty($trail)) {
+      $trail = $this->get_default_operation_trail($form_state['item'], $operations);
+    }
+
+    $operation_form_state['trail'] = $trail;
+
     // If this form was submitted build it early, because a successful
     // submit of this form will short circuit anything else we do here.
     if (!empty($_POST['form_id']) && $_POST['form_id'] == 'ctools_export_ui_save_object_form') {
@@ -971,11 +978,6 @@ class ctools_export_ui {
     }
 
     $operations = $this->get_operations($form_state['item']);
-
-    // This is the default operation trail if no operation was specified.
-    if (empty($trail)) {
-      $trail = $this->get_default_operation_trail($form_state['item'], $operations);
-    }
 
     // In the default scenario, there's a default "operation" and we get its
     // content on this page.
@@ -1022,10 +1024,10 @@ class ctools_export_ui {
       // $this->operations_ajax_render($output) perhaps?
       $commands[] = ajax_command_replace('#ctools-export-ui-edit', drupal_render($output));
 
-      $output = array(
-        '#type' => 'ajax',
-        '#commands' => $commands,
-      );
+      // FIXME easier to do ajax the older, shittier way for the moment
+      print ajax_render($commands);
+      ajax_footer();
+      return;
     }
     return $output;
   }
@@ -1247,6 +1249,12 @@ class ctools_export_ui {
       $operation['type'] = 'form';
     }
 
+    // FIXME Ensure the #path is set, as real processing hasn't occured yet
+    $export_key = $this->plugin['export']['key'];
+    $name = $form_state['item']->{$export_key};
+    $operation['#path'] = !empty($operation['#path']) ? $operation['#path'] :
+      ctools_export_ui_plugin_menu_path($this->plugin, 'edit', $name) . '/' . implode('/', $trail);
+
     $method = 'render_operation_type_' . $operation['type'];
     if (!method_exists($this, $method)) {
       $method = 'render_operation_type_form';
@@ -1354,7 +1362,7 @@ class ctools_export_ui {
 
     $step = reset($info['args']);
     // If step is unset, go with the basic step.
-    if (!isset($step)) {
+    if (empty($step)) {
       $step = current(array_keys($form_info['order']));
     }
 
@@ -2112,7 +2120,7 @@ function ctools_export_ui_save_object_form($form, &$form_state) {
   $export_key = $form_state['object']->plugin['export']['key'];
 
   if (!empty($item->changed_operations)) {
-    $message = str_replace('%title', check_plain($item->{$export_key}), $this->plugin['strings']['confirmation']['operation']['unsaved']);
+    $message = str_replace('%title', check_plain($item->{$export_key}), $form_state['object']->plugin['strings']['confirmation']['operation']['unsaved']);
     $form['markup'] = array(
       '#markup' => '<div class="changed-notification">' . $message . '</div>',
     );
