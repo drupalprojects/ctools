@@ -116,7 +116,7 @@ function template_preprocess_ctools_export_ui_operations_page(&$vars) {
   $vars['operations'] = !empty($element['#operations']['operations']) ? $element['#operations']['operations'] : '';
   $vars['actions'] = !empty($element['#operations']['actions']) ? $element['#operations']['actions'] : '';
   $vars['content'] = $element['#content'];
-  $vars['save'] = drupal_render($element['#save_form']);
+  $vars['save'] = drupal_render($element['#save']);
 }
 
 /**

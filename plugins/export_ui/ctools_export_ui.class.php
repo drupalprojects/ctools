@@ -956,6 +956,8 @@ class ctools_export_ui {
     // considered the master.
     $operation_form_state = $form_state;
 
+    $operations = $this->get_operations($form_state['item']);
+
     // This is the default operation trail if no operation was specified.
     if (empty($trail)) {
       $trail = $this->get_default_operation_trail($form_state['item'], $operations);
@@ -976,8 +978,6 @@ class ctools_export_ui {
         return $save_form;
       }
     }
-
-    $operations = $this->get_operations($form_state['item']);
 
     // In the default scenario, there's a default "operation" and we get its
     // content on this page.
@@ -1011,9 +1011,6 @@ class ctools_export_ui {
     if (!isset($save_form)) {
       $save_form = drupal_build_form('ctools_export_ui_save_object_form', $form_state);
     }
-
-    // @todo -- we should move this to render() in the template
-    $form = drupal_render($save_form);
 
     $output = $this->render_operation_page($save_form, $rendered_operations, $content);
 
@@ -1438,6 +1435,7 @@ class ctools_export_ui {
         $form_state['redirect'] = $operation['#path'];
       }
     }
+    $this->edit_cache_set($item, $form_state['op']);
   }
 
   /**
@@ -1447,7 +1445,8 @@ class ctools_export_ui {
    * the default implementation doesn't do anything here.
    */
   function edit_operation_save(&$form_state) {
-
+    $this->edit_save_form($form_state);
+    $this->edit_cache_clear($item, 'edit');
   }
 
   /**
@@ -1508,7 +1507,6 @@ class ctools_export_ui {
    * Figure out what the cache key is for this object.
    */
   function edit_cache_get_key($item, $op) {
-    $export_key = $this->plugin['export']['key'];
     return $op == 'edit' ? $item->{$this->plugin['export']['key']} : "::$op";
   }
 
