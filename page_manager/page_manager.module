@@ -1248,17 +1248,31 @@ function page_manager_addressable_content($address, $type) {
   }
 
   $task = page_manager_get_task($task_name);
-  $handler = page_manager_load_task_handler($task, $subtask_name, $handler_name);
-  $handler_plugin = page_manager_get_task_handler($handler->handler);
-  // ...
-  // Here would lie the nuts and bolts implementation of
-  // fetching the task and handler, then calling the function
-  // necessary to load it up and fetch the content.
+  if (!$task) {
+    return;
+  }
 
-  // Load the node into a context.
+  $handler = page_manager_load_task_handler($task, $subtask_name, $handler_name);
+  if (!$handler) {
+    return;
+  }
+
+  $handler_plugin = page_manager_get_task_handler($handler->handler);
+  if (!$handler_plugin) {
+    return;
+  }
+
+  // Load the contexts for the task.
   ctools_include('context');
   ctools_include('context-task-handler');
   $contexts = ctools_context_handler_get_task_contexts($task, $subtask_name, $arguments);
+
+  // With contexts loaded, ensure the task is accessible. Tasks without a callback
+  // are automatically accessible.
+  $function = ctools_plugin_get_function($task, 'access callback');
+  if ($function && !$function($task, $subtask_name, $contexts)) {
+    return;
+  }
 
   $function = ctools_plugin_get_function($handler_plugin, 'addressable callback');
   if ($function) {
