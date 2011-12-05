@@ -607,7 +607,7 @@ class ctools_export_ui {
 
     // If a step not set, they are trying to create a new item. If a step
     // is set, they're in the process of creating an item.
-    if ((!empty($this->plugin['use wizard']) || !empty($this->plugin['use operations'])) && !empty($step)) {
+    if ((!empty($this->plugin['use wizard']) && !empty($step)) || !empty($this->plugin['use operations'])) {
       $item = $this->edit_cache_get(NULL, 'add');
     }
     if (empty($item)) {
@@ -1248,7 +1248,7 @@ class ctools_export_ui {
       $operation['type'] = 'form';
     }
 
-    // FIXME Ensure the #path is set, as real processing hasn't occured yet
+    // FIXME Ensure the #path is set, as real processing hasn't occured yet - do this smarter, earlier
     $export_key = $this->plugin['export']['key'];
     $name = $form_state['item']->{$export_key};
     $operation['#path'] = !empty($operation['#path']) ? $operation['#path'] :
@@ -1437,6 +1437,7 @@ class ctools_export_ui {
         $form_state['redirect'] = $operation['#path'];
       }
     }
+
     $this->edit_cache_set($item, $form_state['op']);
   }
 
@@ -1447,8 +1448,7 @@ class ctools_export_ui {
    * the default implementation doesn't do anything here.
    */
   function edit_operation_save(&$form_state) {
-//     $this->edit_save_form($form_state);
-//     $this->edit_cache_clear($item, 'edit');
+
   }
 
   /**
