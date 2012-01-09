@@ -608,7 +608,7 @@ function views_content_views_panes_content_type_admin_info($subtype, $conf, $con
     $block->title = array_shift($info);
 
     $info[] = $view->display_handler->get_option('pane_description');
-    $block->content = theme('item_list', $info);
+    $block->content = theme('item_list', array('items' => $info));
   }
   else {
     $block->title = $view->display_handler->get_option('pane_description');

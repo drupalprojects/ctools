@@ -29,10 +29,10 @@ function ctools_vocabulary_terms_content_type_render($subtype, $conf, $panel_arg
     foreach ($terms as $term) {
       $items[] = l($term->name, 'taxonomy/term/' . $term->tid);
     }
-    $output = theme('item_list', $items);
+    $output = theme('item_list', array('items' => $items));
   }
   else {
-    $output = theme('item_list', _ctools_content_vocabulary_terms($vocab->vid, $max_depth));
+    $output = theme('item_list', array('items' => _ctools_content_vocabulary_terms($vocab->vid, $max_depth)));
   }
 
   $block = new stdClass();
