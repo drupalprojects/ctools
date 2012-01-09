@@ -886,7 +886,7 @@ function ctools_export_object($table, $object, $indent = '', $identifier = NULL,
     $identifier = $schema['export']['identifier'];
   }
 
-  $output = $indent . '$' . $identifier . ' = new ' . get_class($object) . ";\n";
+  $output = $indent . '$' . $identifier . ' = new ' . get_class($object) . "();\n";
 
   if ($schema['export']['can disable']) {
     $output .= $indent . '$' . $identifier . '->disabled = FALSE; /* Edit this to true to make a default ' . $identifier . ' disabled initially */' . "\n";
