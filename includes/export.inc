@@ -515,6 +515,7 @@ function ctools_export_load_object($table, $type = 'all', $args = array()) {
       if (!empty($cache[$table][$object->{$export['key']}])) {
         $cache[$table][$object->{$export['key']}]->{$export['export type string']} = t('Overridden');
         $cache[$table][$object->{$export['key']}]->export_type |= EXPORT_IN_CODE;
+        $cache[$table][$object->{$export['key']}]->export_module = isset($object->export_module) ? $object->export_module : NULL;
         if ($type == 'conditions') {
           $return[$object->{$export['key']}] = $cache[$table][$object->{$export['key']}];
         }
