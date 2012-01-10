@@ -89,7 +89,7 @@ function ctools_context_create_entity($empty, $data = NULL, $conf = FALSE, $plug
 
   if (!empty($data)) {
     $context->data     = $data;
-    if (isset($entity['entity keys']['label'])) {
+    if (!empty($entity['entity keys']['label'])) {
       $context->title    = $data->{$entity['entity keys']['label']};
     }
     $context->argument = $id;
