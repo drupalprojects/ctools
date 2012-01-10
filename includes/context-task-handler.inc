@@ -148,7 +148,7 @@ function ctools_context_handler_render_handler($task, $subtask, $handler, $conte
       case 305:
       case 307:
         $info += array(
-          'query' => '',
+          'query' => array(),
           'fragment' => '',
         );
         $options = array(
