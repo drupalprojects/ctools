@@ -417,6 +417,16 @@
     modalContentClose = function(){close(); return false;};
     $('.close').bind('click', modalContentClose);
 
+    // Bind a keypress on escape for closing the modalContent
+    modalEventEscapeCloseHandler = function(event) {
+      if (event.keyCode == 27) {
+        close();
+        return false;
+      }
+    };
+
+    $(document).bind('keypress', modalEventEscapeCloseHandler);
+
     // Close the open modal content and backdrop
     function close() {
       // Unbind the events
@@ -424,6 +434,7 @@
       $('body').unbind( 'focus', modalEventHandler);
       $('body').unbind( 'keypress', modalEventHandler );
       $('.close').unbind('click', modalContentClose);
+      $('body').unbind('keypress', modalEventEscapeCloseHandler);
       $(document).trigger('CToolsDetachBehaviors', $('#modalContent'));
 
       // Set our animation parameters and use them
