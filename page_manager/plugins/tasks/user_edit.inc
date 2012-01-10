@@ -131,7 +131,7 @@ function page_manager_user_edit_get_arguments($task, $subtask_id) {
       'keyword' => 'user',
       'identifier' => t('User being edited'),
       'id' => 1,
-      'name' => 'user_edit',
+      'name' => 'entity_id:user',
       'settings' => array(),
     ),
   );
