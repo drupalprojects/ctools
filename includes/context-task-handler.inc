@@ -162,7 +162,7 @@ function ctools_context_handler_render_handler($task, $subtask, $handler, $conte
 
   $plugin = page_manager_get_task_handler($handler->handler);
 
-  if (module_exists('contextual') && user_access('access contextual links') && user_access('administer page manager') && isset($handler->task)) {
+  if (module_exists('contextual') && user_access('access contextual links') && isset($handler->task)) {
     // Provide a contextual link to edit this, if we can:
     $callback = isset($plugin['contextual link']) ? $plugin['contextual link'] : 'ctools_task_handler_default_contextual_link';
     if ($callback && function_exists($callback)) {
@@ -223,6 +223,10 @@ function ctools_context_handler_render_handler($task, $subtask, $handler, $conte
  * this and setting it to FALSE will prevent a contextual link from appearing.
  */
 function ctools_task_handler_default_contextual_link($handler, $plugin, $contexts, $args) {
+  if (!user_access('administer page manager')) {
+    return;
+  }
+
   $task = page_manager_get_task($handler->task);
 
   $title = !empty($task['tab title']) ? $task['tab title'] : t('Edit @type', array('@type' => $plugin['title']));
