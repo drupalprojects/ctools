@@ -1201,7 +1201,7 @@ function ctools_export_to_hook_code(&$code, $table, $names = array(), $name = 'f
 function ctools_export_default_to_hook_code($schema, $table, $names, $name) {
   $export = $schema['export'];
   $output = '';
-  $objects = ctools_export_load_object($table, 'names', $names);
+  $objects = ctools_export_crud_load_multiple($table, $names);
   if ($objects) {
     $output = "/**\n";
     $output .= " * Implements hook_{$export['default hook']}().\n";
