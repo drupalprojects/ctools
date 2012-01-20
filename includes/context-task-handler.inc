@@ -244,6 +244,7 @@ function ctools_task_handler_default_contextual_link($handler, $plugin, $context
   $links = array(array(
     'href' => $path,
     'title' => $title,
+    'query' => drupal_get_destination(),
   ));
 
   return $links;
