@@ -80,7 +80,7 @@ function ctools_term_has_parent_ctools_access_settings($form, &$form_state, $con
   $form['settings']['include_self'] = array(
     '#title' => t('Include these term(s) as candidates?'),
     '#description' => t('When this rule is evaluated, should the term(s) you select be included as candidates for access?'),
-    '#default_value' => $conf['include_self'],
+    '#default_value' => !empty($conf['include_self']) ? $conf['include_self'] : FALSE,
     '#type' => 'checkbox',
   );
   return $form;
