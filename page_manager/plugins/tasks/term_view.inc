@@ -154,7 +154,7 @@ function page_manager_term_view_get_arguments($task, $subtask_id) {
       'keyword' => 'term',
       'identifier' => page_manager_term_view_get_type() == 'multiple' ? t('Term(s) being viewed') : t('Term being viewed'),
       'id' => 1,
-      'name' => page_manager_term_view_get_type() == 'multiple' ? 'argument_terms_1' : 'argument_term_1',
+      'name' => page_manager_term_view_get_type() == 'multiple' ? 'terms' : 'term',
       'settings' => array('input_form' => 'tid', 'breadcrumb' => variable_get('page_manager_taxonomy_breadcrumb', TRUE)),
       'default' => '404',
     ),
