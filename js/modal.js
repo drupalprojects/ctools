@@ -260,6 +260,15 @@
           });
 
         });
+
+      // Bind a click handler to allow elements with the 'ctools-close-modal'
+      // class to close the modal.
+      $('.ctools-close-modal', context).once('ctools-close-modal-processed', function () {
+        $(this).click(function() {
+          Drupal.CTools.Modal.dismiss();
+          return false;
+        });
+      });
     }
   };
 
