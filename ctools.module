@@ -329,6 +329,10 @@ function ctools_set_variable_token($token) {
  * $token = ctools_set_variable_token('id', 'mymodule_myfunction');
  */
 function ctools_set_callback_token($token, $callback) {
+  // If the callback uses arguments they are considered in the token.
+  if (is_array($callback)) {
+    $token .= '-' . md5(serialize($callback));
+  }
   $string = '<!-- ctools-page-' . $token . ' -->';
   ctools_set_page_token($string, 'callback', $callback);
   return $string;
