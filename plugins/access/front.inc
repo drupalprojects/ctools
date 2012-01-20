@@ -21,9 +21,8 @@ $plugin = array(
 /**
  * Settings form for the 'by parent term' access plugin
  */
-function ctools_front_ctools_access_settings($form, &$form_state, $conf) {
+function ctools_front_ctools_access_settings(&$form, &$form_state, $conf) {
   // No additional configuration necessary.
-  return $form;
 }
 
 /**
