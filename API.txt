@@ -5,6 +5,7 @@ Please note that the API version is an internal number and does not match releas
 This file contains a log of changes to the API.
 API Version 2.0.5
   Introduce ctools_fields_get_fields_by_type().
+  Add language.inc
 
 API Version 2.0.4
   Introduce ctools_form_include_file()
