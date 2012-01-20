@@ -1282,6 +1282,18 @@ class ctools_export_ui {
 // mostly just be pass-throughs back to the object.
 
 /**
+ * Add all appropriate includes to forms so that caching the form
+ * still loads the files that we need.
+ */
+function _ctools_export_ui_add_form_files($form, &$form_state) {
+  ctools_form_include($form_state, 'export');
+  ctools_form_include($form_state, 'export-ui');
+
+  // Also make sure the plugin .inc file is loaded.
+  ctools_form_include_file($form_state, $form_state['object']->plugin['path'] . '/' . $form_state['object']->plugin['file']);
+}
+
+/**
  * Form callback to handle the filter/sort form when listing items.
  *
  * This simply loads the object defined in the plugin and hands it off.
@@ -1313,9 +1325,8 @@ function ctools_export_ui_list_form_submit(&$form, &$form_state) {
 function ctools_export_ui_edit_item_form($form, &$form_state) {
   // When called using #ajax via ajax_form_callback(), 'export' may
   // not be included so include it here.
-  ctools_include('export');
+  _ctools_export_ui_add_form_files($form, $form_state);
 
-  $form = array();
   $form_state['object']->edit_form($form, $form_state);
   return $form;
 }
@@ -1340,6 +1351,8 @@ function ctools_export_ui_edit_item_form_submit(&$form, &$form_state) {
  * @todo Put this on a callback in the object.
  */
 function ctools_export_ui_edit_item_form_delete(&$form, &$form_state) {
+  _ctools_export_ui_add_form_files($form, $form_state);
+
   $export_key = $form_state['plugin']['export']['key'];
   $path = $form_state['item']->export_type & EXPORT_IN_CODE ? 'revert' : 'delete';
 
@@ -1378,6 +1391,8 @@ function ctools_export_ui_edit_name_exists($name, $element, &$form_state) {
  * @todo -- call back into the object instead.
  */
 function ctools_export_ui_delete_confirm_form($form, &$form_state) {
+  _ctools_export_ui_add_form_files($form, $form_state);
+
   $plugin = $form_state['plugin'];
   $item = $form_state['item'];
 
@@ -1405,9 +1420,7 @@ function ctools_export_ui_delete_confirm_form($form, &$form_state) {
  * This simply loads the object defined in the plugin and hands it off.
  */
 function ctools_export_ui_edit_item_wizard_form($form, &$form_state) {
-  // When called using #ajax via ajax_form_callback(), 'export' may
-  // not be included so include it here.
-  ctools_include('export');
+  _ctools_export_ui_add_form_files($form, $form_state);
 
   $method = 'edit_form_' . $form_state['step'];
   if (!method_exists($form_state['object'], $method)) {
