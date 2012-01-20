@@ -252,6 +252,14 @@
         }
       });
 
+    // Bind a click handler to allow elements with the 'ctools-close-modal'
+    // class to close the modal.
+    $('.ctools-close-modal:not(.ctools-close-modal-processed)', context)
+      .addClass('ctools-close-modal-processed')
+      .click(function() {
+        Drupal.CTools.Modal.dismiss();
+        return false;
+      });
   };
 
   // The following are implementations of AJAX responder commands.
