@@ -32,7 +32,7 @@ function ctools_custom_content_type_content_type($subtype_id) {
   if ($subtype_id == 'custom') {
     return _ctools_default_content_type_content_type();
   }
-  else {
+  elseif (module_exists('ctools_custom_content')) {
     ctools_include('export');
     $content = ctools_export_crud_load('ctools_custom_content', $subtype_id);
     if ($content) {
@@ -49,9 +49,12 @@ function ctools_custom_content_type_content_types() {
   $types = array();
   $types['custom'] = _ctools_default_content_type_content_type();
 
-  foreach (ctools_export_crud_load_all('ctools_custom_content') as $name => $content) {
-    $types[$name] = _ctools_custom_content_type_content_type($content);
+  if (module_exists('ctools_custom_content')) {
+    foreach (ctools_export_crud_load_all('ctools_custom_content') as $name => $content) {
+      $types[$name] = _ctools_custom_content_type_content_type($content);
+    }
   }
+
   return $types;
 }
 
@@ -112,7 +115,7 @@ function ctools_custom_content_type_get_conf($subtype, $conf) {
     // reusable. Since we're not allowed to change the subtype, we're
     // still stored as though we are local, but are pointing off to
     // non-local.
-    if (!empty($conf['name'])) {
+    if (!empty($conf['name']) && module_exists('ctools_custom_content')) {
       ctools_include('export');
       $content = ctools_export_crud_load('ctools_custom_content', $conf['name']);
       if ($content) {
@@ -383,6 +386,10 @@ function ctools_custom_content_type_edit_form_validate(&$form, &$form_state) {
     // Check for string identifier sanity
     if (!preg_match('!^[a-z0-9_]+$!', $form_state['values']['name'])) {
       form_error($form['name'], t('The name can only consist of lowercase letters, underscores, and numbers.'));
+      return;
+    }
+
+    if (!module_exists('ctools_custom_content')) {
       return;
     }
 
