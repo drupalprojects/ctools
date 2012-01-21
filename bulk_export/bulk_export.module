@@ -187,15 +187,15 @@ function bulk_export_export($cli = FALSE, $options = array()) {
  *
  */
 function bulk_export_export_form($form, &$form_state) {
-  $form['tables'] = array(
-    '#prefix' => '<div class="clearfix">',
-    '#suffix' => '</div>',
-    '#tree' => TRUE,
-  );
+
 
   $files = system_rebuild_module_data();
 
-  $options = array();
+  $form['additional_settings'] = array(
+    '#type' => 'vertical_tabs',
+  );
+
+  $options = $tables = array();
   foreach ($form_state['exportables'] as $table => $list) {
     if (empty($list)) {
       continue;
@@ -206,9 +206,19 @@ function bulk_export_export_form($form, &$form_state) {
     }
 
     $module = $form_state['export_tables'][$table];
-    $header = array("{$files[$module]->info['name']}: $table");
+    $header = array($table);
+    $module_name = $files[$module]->info['name'];
+    $tables[] = $table;
 
-    $form['tables'][$table] = array(
+    if (!isset($form[$module_name])) {
+      $form[$files[$module]->info['name']] = array(
+        '#type' => 'fieldset',
+        '#group' => 'additional_settings',
+        '#title' => $module_name,
+      );
+    }
+
+    $form[$module_name]['tables'][$table] = array(
       '#prefix' => '<div class="export-container">',
       '#suffix' => '</div>',
       '#type' => 'tableselect',
@@ -216,6 +226,11 @@ function bulk_export_export_form($form, &$form_state) {
       '#options' => $options[$table],
     );
   }
+
+  $form['tables'] = array(
+    '#type' => 'value',
+    '#value' => $tables,
+  );
 
   $form['name'] = array(
     '#type' => 'textfield',
@@ -239,9 +254,10 @@ function bulk_export_export_form($form, &$form_state) {
 function bulk_export_export_form_submit($form, &$form_state) {
   $code = array();
   $name = empty($form_state['values']['name']) ? 'foo' : $form_state['values']['name'];
+  $tables = $form_state['values']['tables'];
 
-  foreach ($form_state['values']['tables'] as $table => $names) {
-    $names = array_keys(array_filter($names));
+  foreach ($tables as $table) {
+    $names = array_keys(array_filter($form_state['values'][$table]));
     if ($names) {
       natcasesort($names);
       ctools_export_to_hook_code($code, $table, $names, $name);
