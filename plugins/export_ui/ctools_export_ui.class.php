@@ -602,6 +602,32 @@ class ctools_export_ui {
   // ------------------------------------------------------------------------
   // These methods are the API for adding/editing exportable items
 
+  /**
+   * Perform a drupal_goto() to the location provided by the plugin for the
+   * operation.
+   *
+   * @param $op
+   *   The operation to use. A string must exist in $this->plugin['redirect']
+   *   for this operation.
+   * @param $item
+   *   The item in use; this may be necessary as item IDs are often embedded in
+   *   redirects.
+   */
+  function redirect($op, $item = NULL) {
+    if (isset($this->plugin['redirect'][$op])) {
+      $destination = (array) $this->plugin['redirect'][$op];
+      if ($item) {
+        $export_key = $this->plugin['export']['key'];
+        $destination[0] = str_replace('%ctools_export_ui', $item->{$export_key}, $destination[0]);
+      }
+      call_user_func_array('drupal_goto', $destination);
+    }
+    else {
+      // If the operation isn't set, fall back to the plugin's base path.
+      drupal_goto(ctools_export_ui_plugin_base_path($this->plugin));
+    }
+  }
+
   function add_page($js, $input, $step = NULL) {
     drupal_set_title($this->get_page_title('add'));
 
@@ -630,8 +656,7 @@ class ctools_export_ui {
 
     $output = $this->edit_execute_form($form_state);
     if (!empty($form_state['executed'])) {
-      $export_key = $this->plugin['export']['key'];
-      drupal_goto(str_replace('%ctools_export_ui', $form_state['item']->{$export_key}, $this->plugin['redirect']['add']));
+      $this->redirect($form_state['op'], $form_state['item']);
     }
 
     return $output;
@@ -667,8 +692,7 @@ class ctools_export_ui {
 
     $output = $this->edit_execute_form($form_state);
     if (!empty($form_state['executed'])) {
-      $export_key = $this->plugin['export']['key'];
-      drupal_goto(str_replace('%ctools_export_ui', $form_state['item']->{$export_key}, $this->plugin['redirect']['edit']));
+      $this->redirect($form_state['op'], $form_state['item']);
     }
 
     return $output;
@@ -716,8 +740,7 @@ class ctools_export_ui {
 
     $output = $this->edit_execute_form($form_state);
     if (!empty($form_state['executed'])) {
-      $export_key = $this->plugin['export']['key'];
-      drupal_goto(str_replace('%ctools_export_ui', $form_state['item']->{$export_key}, $this->plugin['redirect']['clone']));
+      $this->redirect($form_state['op'], $form_state['item']);
     }
 
     return $output;
@@ -1214,8 +1237,7 @@ class ctools_export_ui {
     // import always uses the wizard.
     $output = $this->edit_execute_form_wizard($form_state);
     if (!empty($form_state['executed'])) {
-      $export_key = $this->plugin['export']['key'];
-      drupal_goto(str_replace('%ctools_export_ui', $form_state['item']->{$export_key}, $this->plugin['redirect']['add']));
+      $this->redirect($form_state['op'], $form_state['item']);
     }
 
     return $output;
