@@ -72,7 +72,7 @@ function drush_ctools_export($module = 'foo') {
   // We create an array, because maybe in the future we can pass in more
   // options to the export function (pre-selected modules and/or exportables).
   $options = array(
-    'module' => $module,
+    'name' => $module,
   );
   $files = bulk_export_export(TRUE, $options);
 
