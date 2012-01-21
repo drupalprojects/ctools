@@ -145,5 +145,6 @@ function ctools_jump_menu_submit($form, &$form_state) {
   // Parse the URL so that query strings and fragments are preserved in the
   // redirect.
   $redirect = drupal_parse_url($redirect);
+  $redirect['path'] = urldecode($redirect['path']);
   $form_state['redirect'] = array($redirect['path'], $redirect);
 }
