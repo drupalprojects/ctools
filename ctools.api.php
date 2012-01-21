@@ -14,6 +14,22 @@
  */
 
 /**
+ * Inform CTools about plugin types.
+ *
+ * @return array
+ *  An array of plugin types, keyed by the type name.
+ *  See the advanced help topic 'plugins-creating' for details of the array
+ *  properties.
+ */
+function hook_ctools_plugin_type() {
+  $plugins['my_type'] = array(
+    'load themes' => TRUE,
+  );
+
+  return $plugins;
+}
+
+/**
  * This hook is used to inform the CTools plugin system about the location of a
  * directory that should be searched for files containing plugins of a
  * particular type. CTools invokes this same hook for all plugins, using the
