@@ -1305,7 +1305,7 @@ class ctools_export_ui {
       'finish callback' => 'ctools_export_ui_operation_finish',
       'path' => $operation['#path'] . "/%step",
       // wrapper function to add an extra finish button.
-      'wrapper' => 'ctools_export_operation_wrapper',
+      'wrapper' => 'ctools_export_ui_operation_wrapper',
     );
 
     // If $operation['form'] is empty, then it's going to use our
