@@ -973,8 +973,6 @@ class ctools_export_ui {
       // If successfully submitted, just return; we'll be saved and a
       // a drupal goto will be performed.
       if (!empty($form_state['executed'])) {
-        $this->edit_save_form($form_state);
-        $this->edit_cache_clear($item, 'edit');
         // @todo -- set a goto location here so that a save comes back to
         // the last operation trail visited, regardless of ajax operations.
         return $save_form;
@@ -1448,7 +1446,8 @@ class ctools_export_ui {
    * the default implementation doesn't do anything here.
    */
   function edit_operation_save(&$form_state) {
-
+    $this->edit_save_form($form_state);
+    $this->edit_cache_clear($form_state['item'], 'edit');
   }
 
   /**
