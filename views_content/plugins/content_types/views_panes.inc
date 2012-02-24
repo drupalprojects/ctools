@@ -537,6 +537,9 @@ function views_content_views_panes_content_type_edit_form($form, &$form_state) {
     }
   }
 
+  // Add the view object to the form to allow additional customization
+  $form_state['view'] = $view;
+
   return $form;
 }
 
