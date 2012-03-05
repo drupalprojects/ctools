@@ -45,6 +45,18 @@ function ctools_drush_command() {
 }
 
 /**
+ * Implementation of hook_drush_help().
+ */
+function ctools_drush_help($section) {
+  switch ($section) {
+    case 'meta:ctools:title':
+      return dt("CTools commands");
+    case 'meta:entity:summary':
+      return dt("CTools drush commands.");
+  }
+}
+
+/**
  * Drush callback: export
  */
 function drush_ctools_export($module = 'foo') {
