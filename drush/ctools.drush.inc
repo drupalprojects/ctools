@@ -57,17 +57,31 @@ function ctools_drush_command() {
     ),
   );
 
+  $items['ctools-export-enable'] = array(
+    'aliases' => array('ctee'),
+    'description' => 'Enable CTools exportables.',
+    'arguments' => array(
+      'table name' => 'Base table of the exportable you want to enable.',
+      'machine names' => 'Space separated list of exportables you want to enable.',
+    ),
+    'options' => array(),
+    'examples' => array(
+      'drush ctools-export-revert views_view' => 'Enable all overridden views exportable objects.',
+      'drush ctools-export-revert views_view archive' => 'Enable overridden default archive view.',
+    ),
+  );
+
   $items['ctools-export-disable'] = array(
     'aliases' => array('cted'),
     'description' => 'Disable CTools exportables.',
     'arguments' => array(
-      'table name' => 'Base table of the exportable you want to revert.',
-      'machine names' => 'Space separated list of exportables you want to revert.',
+      'table name' => 'Base table of the exportable you want to disable.',
+      'machine names' => 'Space separated list of exportables you want to disable.',
     ),
     'options' => array(),
     'examples' => array(
-      'drush ctools-export-revert views_view' => 'Revert all overridden views exportable objects.',
-      'drush ctools-export-revert views_view archive' => 'Revert overridden default archive view.',
+      'drush ctools-export-revert views_view' => 'Disable all overridden views exportable objects.',
+      'drush ctools-export-revert views_view archive' => 'Disable overridden default archive view.',
     ),
   );
 
@@ -195,7 +209,7 @@ function drush_ctools_export_info() {
   if ($show_disabled) {
     foreach ($exportables as $table => $objects) {
       foreach ($objects as $key => $object) {
-        if (isset($object->disabled) && ($object->disabled == FALSE)) {
+        if ((!isset($object->disabled)) || ($object->disabled !== TRUE)) {
           unset($exportables[$table][$key]);
         }
       }
@@ -222,21 +236,16 @@ function drush_ctools_export_info() {
   }
   // Build a tabular output as default.
   else {
-    $header = $tables_only ? array() : array(dt("Base table\n"), dt("Exportables\n"));
+    $header = $tables_only ? array() : array(dt("Base table"), dt("Exportables"));
     $rows = array();
     foreach ($exportables as $table => $info) {
-      if (!is_array($info)) {
-        $row = array(
-          $info
-        );
-      }
-      else {
+      if (!empty($info)) {
         $row = array(
           $table,
           implode("\n", array_keys($info)) . "\n", // Machine name is better?
         );
+        $rows[] = $row;
       }
-      $rows[] = $row;
     }
     array_unshift($rows, $header);
     drush_print_table($rows, TRUE);
@@ -294,7 +303,7 @@ function drush_ctools_export_revert() {
 }
 
 /**
- * Drush callback: Export revert.
+ * Drush callback: Export disable.
  *
  * @param $table_name
  *  Each argument will be taken as a CTools exportable table name.
@@ -322,7 +331,7 @@ function drush_ctools_export_disable() {
    }
 
    if (empty($args)) {
-    $all = drush_confirm(dt('No object names entered. Would you like to disable all exportables of type !type', array('!type' => $table_name)));
+    $all = drush_confirm(dt('No object names entered. Would you like to try and disable all exportables of type !type', array('!type' => $table_name)));
     if (!$all) {
       drush_log('Command cancelled', 'success');
       return;
@@ -336,10 +345,60 @@ function drush_ctools_export_disable() {
      }
    }
 
-   //Revert objects
+   //Disable objects
    $objects = ctools_export_crud_load_multiple($table_name, array_keys($exportables));
    foreach ($objects as $object) {
     _drush_ctools_export_disable($table_name, $object);
+   }
+}
+
+/**
+ * Drush callback: Export disable.
+ *
+ * @param $table_name
+ *  Each argument will be taken as a CTools exportable table name.
+ * @param $exportables
+ *
+ */
+function drush_ctools_export_enable() {
+   $args = func_get_args();
+   // Table name should always be first arg...
+   $table_name = array_shift($args);
+   // Any additional args are assumed to be exportable names.
+   $object_names = $args;
+
+   if (!$table_name) {
+    drush_log('Exportable table name empty.', 'error');
+    return;
+   }
+
+   $info = _drush_ctools_export_info(array($table_name));
+   $exportables = $info[$table_name];
+
+   if (!$exportables) {
+    drush_log('Exportable table name not found.', 'error');
+    return;
+   }
+
+   if (empty($args)) {
+    $all = drush_confirm(dt('No object names entered. Would you like to try and enable all exportables of type !type', array('!type' => $table_name)));
+    if (!$all) {
+      drush_log('Command cancelled', 'success');
+      return;
+    }
+   }
+   else {
+     foreach (array_keys($exportables) as $exportable) {
+      if (!in_array($exportable, $object_names)) {
+        unset($exportables[$exportable]);
+      }
+     }
+   }
+
+   //Disable objects
+   $objects = ctools_export_crud_load_multiple($table_name, array_keys($exportables));
+   foreach ($objects as $object) {
+    _drush_ctools_export_enable($table_name, $object);
    }
 }
 
@@ -406,7 +465,7 @@ function _drush_ctools_export_revert($table_name, $object) {
 }
 
 /*
- * Revert a single object.
+ * Disable a single object.
  *
  * @param $table_name
  * @param $object
@@ -420,5 +479,23 @@ function _drush_ctools_export_disable($table_name, $object) {
   }
   else {
     drush_log("$object->name is already disabled", 'success');
+  }
+}
+
+/*
+ * Enabled a single object.
+ *
+ * @param $table_name
+ * @param $object
+ */
+function _drush_ctools_export_enable($table_name, $object) {
+  // type of 3 is overridden in db.
+  if($object->disabled == TRUE) {
+    // Disbale object.
+    ctools_export_crud_enable($table_name, $object);
+    drush_log("Enabled object: $object->name", 'success');
+  }
+  else {
+    drush_log("$object->name is already Enabled", 'success');
   }
 }
