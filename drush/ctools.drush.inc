@@ -41,6 +41,20 @@ function ctools_drush_command() {
     ),
   );
 
+  $items['ctools-export-revert'] = array(
+    'aliases' => array('cter'),
+    'description' => 'Revert CTools exportables from changes overridden in the database.',
+    'arguments' => array(
+      'table name' => 'Base table of the exportable you want to revert.',
+      'machine names' => 'Space separated list of exportables you want to revert.',
+    ),
+    'options' => array(),
+    'examples' => array(
+      'drush ctools-export-revert views_view' => 'Revert all overridden views exportable objects.',
+      'drush ctools-export-revert views_view archive' => 'Revert overridden default archive view.',
+    ),
+  );
+
   return $items;
 }
 
@@ -160,7 +174,7 @@ function drush_ctools_export_info() {
   }
   // Build a tabular output as default.
   else {
-    $header = $tables_only? array(dt("Base table")) : array(dt("Base table"), dt("Exportables"));
+    $header = $tables_only ? array() : array(dt("Base table"), dt("Exportables"));
     $rows = array();
     foreach ($exportables as $table => $info) {
       if (!is_array($info)) {
@@ -179,7 +193,54 @@ function drush_ctools_export_info() {
     array_unshift($rows, $header);
     drush_print_table($rows, TRUE);
   }
+}
 
+/**
+ * Drush callback: Export revert.
+ *
+ * @param $table_name
+ *  Each argument will be taken as a CTools exportable table name.
+ * @param $exportables
+ *
+ */
+function drush_ctools_export_revert() {
+   $args = func_get_args();
+   $table_name = array_shift($args);
+   $object_names = $args;
+
+   if (!$table_name) {
+    drush_log('Exportable table name empty.', 'error');
+    return;
+   }
+
+   $info = _drush_ctools_export_info(array($table_name));
+   $exportables = $info[$table_name];
+
+   if (!$exportables) {
+    drush_log('Exportable table name not found.', 'error');
+    return;
+   }
+
+   if (empty($args)) {
+    $all = drush_confirm(dt('No object names entered. Would you like to revert all exportables of type !type', array('!type' => $table_name)));
+    if (!$all) {
+      drush_log('Command cancelled', 'success');
+      return;
+    }
+   }
+   else {
+     foreach (array_keys($exportables) as $exportable) {
+      if (!in_array($exportable, $object_names)) {
+        unset($exportables[$exportable]);
+      }
+     }
+   }
+
+   //Revert objects
+   $objects = ctools_export_crud_load_multiple($table_name, array_keys($exportables));
+   foreach ($objects as $object) {
+    _drush_ctools_export_revert($table_name, $object);
+   }
 }
 
 /**
@@ -189,11 +250,13 @@ function drush_ctools_export_info() {
  *
  * @param $table_names
  *  Array of table names to return.
+ * @param $load
+ *  (bool) should ctools exportable objects be loaded for each type.
  *
  * @return
  *  Nested arrays of available exportables, keyed by table name.
  */
-function _drush_ctools_export_info($table_names = NULL) {
+function _drush_ctools_export_info($table_names = NULL, $load = FALSE) {
   ctools_include('export');
   // Get available schemas that declare exports.
   $schemas = ctools_export_get_schemas();
@@ -210,9 +273,34 @@ function _drush_ctools_export_info($table_names = NULL) {
     }
     // Load array of available exportables for each schema.
     foreach ($schemas as $table_name => $schema) {
-      $exportables[$table_name] = ctools_export_default_list($table_name, $schema);
+      // Load all objects.
+      if ($load) {
+        $exportables[$table_name] = ctools_export_crud_load_all($table_name);
+      }
+      // Get a list of exportable names.
+      else {
+        $exportables[$table_name] = ctools_export_default_list($table_name, $schema);
+      }
     }
   }
 
   return $exportables;
+}
+
+/*
+ * Revert a single object.
+ *
+ * @param $table_name
+ * @param $object
+ */
+function _drush_ctools_export_revert($table_name, $object) {
+  // type of 3 is overridden in db.
+  if($object->export_type == 3) {
+    // Remove from db.
+    ctools_export_crud_delete($table_name, $object);
+    drush_log("Reverted object: $object->name", 'success');
+  }
+  else {
+    drush_log("Nothing to revert for: $object->name", 'success');
+  }
 }
