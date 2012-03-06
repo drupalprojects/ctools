@@ -188,6 +188,7 @@ function drush_ctools_export_info() {
   $tables_only = drush_get_option('tables-only');
   $show_overridden = drush_get_option('show-overridden', FALSE);
   $show_disabled = drush_get_option('show-disabled', FALSE);
+  // Only load exportable objects fully if we need to.
   $load = ($show_overridden || $show_disabled) ? TRUE : FALSE;
 
   // Get info on these tables, or all if none specified.
@@ -198,14 +199,7 @@ function drush_ctools_export_info() {
     return;
   }
 
-  /*if ($show_overridden) {
-    foreach ($exportables as $table => $objects) {
-      foreach ($objects as $key => $object) {
-        $overridden = ($object->export_type == 3) ? '*' : NULL;
-        $exportables[$table][$key] = $key . $overridden;
-      }
-    }
-  }*/
+  // Show disabled exportables only.
   if ($show_disabled) {
     foreach ($exportables as $table => $objects) {
       foreach ($objects as $key => $object) {
@@ -215,6 +209,7 @@ function drush_ctools_export_info() {
       }
     }
   }
+  // Show overridden exportables only.
   elseif ($show_overridden) {
     foreach ($exportables as $table => $objects) {
       foreach ($objects as $key => $object) {
@@ -247,8 +242,13 @@ function drush_ctools_export_info() {
         $rows[] = $row;
       }
     }
-    array_unshift($rows, $header);
-    drush_print_table($rows, TRUE);
+    if (!empty($rows)) {
+      array_unshift($rows, $header);
+      drush_print_table($rows, TRUE);
+    }
+    else {
+      drush_log('There exportables matching this criteria', 'warning');
+    }
   }
 }
 
@@ -491,7 +491,7 @@ function _drush_ctools_export_disable($table_name, $object) {
 function _drush_ctools_export_enable($table_name, $object) {
   // type of 3 is overridden in db.
   if($object->disabled == TRUE) {
-    // Disbale object.
+    // Disable object.
     ctools_export_crud_enable($table_name, $object);
     drush_log("Enabled object: $object->name", 'success');
   }
