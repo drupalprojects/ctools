@@ -252,13 +252,17 @@ function drush_ctools_export_info() {
   }
 }
 
-function drush_ctools_export_op_command() {
+/**
+ * May use this as a hub for all op commands to keep all arg handling in one place.
+ * Could also just have this one one function that is called in each op function instead.
+ */
+/*function drush_ctools_export_op_command() {
   $args = func_get_args();
   // Table name should always be first arg...
   $table_name = array_shift($args);
   // Any additional args are assumed to be exportable names.
   $object_names = $args;
-}
+}*/
 
 /**
  * Drush callback: Export revert.
@@ -274,7 +278,6 @@ function drush_ctools_export_revert() {
   $table_name = array_shift($args);
   // Any additional args are assumed to be exportable names.
   $object_names = $args;
-
   $op = 'delete';
 
   $exportables = _drush_ctools_export_op_command_logic($op, $table_name, $object_names);
@@ -299,7 +302,6 @@ function drush_ctools_export_disable() {
   $table_name = array_shift($args);
   // Any additional args are assumed to be exportable names.
   $object_names = $args;
-
   $op = 'disable';
 
   $exportables = _drush_ctools_export_op_command_logic($op, $table_name, $object_names);
@@ -323,7 +325,6 @@ function drush_ctools_export_enable() {
   $table_name = array_shift($args);
   // Any additional args are assumed to be exportable names.
   $object_names = $args;
-
   $op = 'enable';
 
   $exportables = _drush_ctools_export_op_command_logic($op, $table_name, $object_names);
@@ -358,8 +359,9 @@ function drush_ctools_export_op($op = '', $table_name = '', $exportables = NULL)
 }
 
 /**
- * Helper function to abstract logic from individual commands
- * as they will all share this same error handling/arguments for returning list of exportables.
+ * Helper function to abstract logic for selecting exportable types/objects
+ * from individual commands as they will all share this same error
+ * handling/arguments for returning list of exportables.
  *
  * @param $table_name
  * @param $object_names
@@ -516,7 +518,6 @@ function _drush_ctools_export_op_aliases($op) {
   if (isset($aliases[$op])) {
     return $aliases[$op];
   }
-  else {
-    return $op;
-  }
+
+  return $op;
 }
