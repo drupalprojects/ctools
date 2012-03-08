@@ -23,6 +23,7 @@ function ctools_drush_command() {
     'drupal dependencies' => array('bulk_export'),
     'examples' => array(
       'drush ctex export_module' => 'Export CTools exportables to a module called "export_module".',
+      'drush ctex export_module --subdir=exports' => 'Same as above, but into the sites/all/modules/exports directory.',
     ),
   );
 
@@ -39,6 +40,22 @@ function ctools_drush_command() {
     'examples' => array(
       'drush ctools-export-info' => 'View export info on all exportables.',
       'drush ctools-export-info views_view variable' => 'View export info for views_view and variable exportable types only.',
+    ),
+  );
+
+  $items['ctools-export-view'] = array(
+    'aliases' => array('ctev'),
+    'description' => 'View CTools exportable output.',
+    'arguments' => array(
+      'table name' => 'Base table of the exportable you want to view.',
+      'machine names' => 'Space separated list of exportables you want to view.',
+    ),
+    'options' => array(
+      'format' => 'The format to output the exportable code as. This defaults to export. Available options are print_r, json, export.',
+    ),
+    'examples' => array(
+      'drush ctools-export-view views_view' => 'Revert all overridden views exportable objects.',
+      'drush ctools-export-view views_view archive' => 'Revert overridden default archive view.',
     ),
   );
 
@@ -265,6 +282,30 @@ function drush_ctools_export_info() {
 }*/
 
 /**
+ * Drush callback: Export view.
+ *
+ * @param $table_name
+ *  Each argument will be taken as a CTools exportable table name.
+ * @param $exportables
+ *
+ */
+function drush_ctools_export_view() {
+  $args = func_get_args();
+  // Table name should always be first arg...
+  $table_name = array_shift($args);
+  // Any additional args are assumed to be exportable names.
+  $object_names = $args;
+  $op = 'view';
+
+  $exportables = _drush_ctools_export_op_command_logic($op, $table_name, $object_names);
+
+  if ($exportables) {
+    // Revert is same as deleting as any objects in the db are deleted.
+    drush_ctools_export_op($op, $table_name, $exportables);
+  }
+}
+
+/**
  * Drush callback: Export revert.
  *
  * @param $table_name
@@ -289,20 +330,20 @@ function drush_ctools_export_revert() {
 }
 
 /**
- * Drush callback: Export disable.
+ * Drush callback: Export enable.
  *
  * @param $table_name
  *  Each argument will be taken as a CTools exportable table name.
  * @param $exportables
  *
  */
-function drush_ctools_export_disable() {
+function drush_ctools_export_enable() {
   $args = func_get_args();
   // Table name should always be first arg...
   $table_name = array_shift($args);
   // Any additional args are assumed to be exportable names.
   $object_names = $args;
-  $op = 'disable';
+  $op = 'enable';
 
   $exportables = _drush_ctools_export_op_command_logic($op, $table_name, $object_names);
 
@@ -319,13 +360,13 @@ function drush_ctools_export_disable() {
  * @param $exportables
  *
  */
-function drush_ctools_export_enable() {
+function drush_ctools_export_disable() {
   $args = func_get_args();
   // Table name should always be first arg...
   $table_name = array_shift($args);
   // Any additional args are assumed to be exportable names.
   $object_names = $args;
-  $op = 'enable';
+  $op = 'disable';
 
   $exportables = _drush_ctools_export_op_command_logic($op, $table_name, $object_names);
 
@@ -438,12 +479,28 @@ function _drush_ctools_export_info($table_names = array(), $load = FALSE) {
       }
       // Get a list of exportable names.
       else {
-        $exportables[$table_name] = ctools_export_default_list($table_name, $schema);
+        if (!empty($schema['export']['list callback']) && function_exists($schema['export']['list callback'])) {
+          $exportables[$table] = $schema['export']['list callback']();
+        }
+        else {
+          $exportables[$table] = ctools_export_default_list($table, $schema);
+        }
       }
     }
   }
 
   return $exportables;
+}
+
+/*
+ * View a single object.
+ *
+ * @param $table_name
+ * @param $object
+ */
+function _drush_ctools_export_export($table_name, $object) {
+  $export = ctools_export_crud_export($table_name, $object, $indent);
+  drush_print(drush_format($object, NULL, 'export'));
 }
 
 /*
