@@ -480,10 +480,10 @@ function _drush_ctools_export_info($table_names = array(), $load = FALSE) {
       // Get a list of exportable names.
       else {
         if (!empty($schema['export']['list callback']) && function_exists($schema['export']['list callback'])) {
-          $exportables[$table] = $schema['export']['list callback']();
+          $exportables[$table_name] = $schema['export']['list callback']();
         }
         else {
-          $exportables[$table] = ctools_export_default_list($table, $schema);
+          $exportables[$table_name] = ctools_export_default_list($table_name, $schema);
         }
       }
     }
@@ -498,9 +498,10 @@ function _drush_ctools_export_info($table_names = array(), $load = FALSE) {
  * @param $table_name
  * @param $object
  */
-function _drush_ctools_export_export($table_name, $object) {
+function _drush_ctools_export_view($table_name, $object) {
+  $indent = drush_get_option('indent', ' ');
   $export = ctools_export_crud_export($table_name, $object, $indent);
-  drush_print(drush_format($object, NULL, 'export'));
+  drush_print(drush_format($object, NULL, 'print_r'));
 }
 
 /*
