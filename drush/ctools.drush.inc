@@ -204,6 +204,7 @@ function drush_ctools_export_info() {
   $tables_only = drush_get_option('tables-only');
   $show_overridden = drush_get_option('show-overridden', FALSE);
   $show_disabled = drush_get_option('show-disabled', FALSE);
+
   // Only load exportable objects for each type fully if we need to.
   $load = ($show_overridden || $show_disabled) ? TRUE : FALSE;
 
@@ -220,7 +221,7 @@ function drush_ctools_export_info() {
   if ($show_disabled) {
     foreach ($exportables as $table => $objects) {
       foreach ($objects as $key => $object) {
-        if ((!isset($object->disabled)) || ($object->disabled !== TRUE)) {
+        if (!_ctools_drush_object_is_disabled($object)) {
           unset($exportables[$table][$key]);
         }
       }
@@ -230,7 +231,7 @@ function drush_ctools_export_info() {
   elseif ($show_overridden) {
     foreach ($exportables as $table => $objects) {
       foreach ($objects as $key => $object) {
-        if ($object->export_type !== 3) {
+        if (!_ctools_drush_object_is_overridden($object)) {
           unset($exportables[$table][$key]);
         }
       }
@@ -300,8 +301,9 @@ function drush_ctools_export_view() {
   $exportables = _drush_ctools_export_op_command_logic($op, $table_name, $object_names);
 
   if ($exportables) {
+    $indent = drush_get_option('indent', ' ');
     // Revert is same as deleting as any objects in the db are deleted.
-    drush_ctools_export_op($op, $table_name, $exportables);
+    drush_ctools_export_op($op, $table_name, $exportables, $indent);
   }
 }
 
@@ -498,8 +500,7 @@ function _drush_ctools_export_info($table_names = array(), $load = FALSE) {
  * @param $table_name
  * @param $object
  */
-function _drush_ctools_export_view($table_name, $object) {
-  $indent = drush_get_option('indent', ' ');
+function _drush_ctools_export_view($table_name, $object, $indent = ' ') {
   $export = ctools_export_crud_export($table_name, $object, $indent);
   drush_print(drush_format($object, NULL, 'print_r'));
 }
@@ -512,7 +513,7 @@ function _drush_ctools_export_view($table_name, $object) {
  */
 function _drush_ctools_export_delete($table_name, $object) {
   // type of 3 is overridden in db.
-  if($object->export_type == 3) {
+  if(_ctools_drush_object_is_overridden($object)) {
     // Remove from db.
     ctools_export_crud_delete($table_name, $object);
     drush_log("Reverted object: $object->name", 'success');
@@ -530,7 +531,7 @@ function _drush_ctools_export_delete($table_name, $object) {
  */
 function _drush_ctools_export_disable($table_name, $object) {
   // type of 3 is overridden in db.
-  if($object->disabled == FALSE) {
+  if(!_ctools_drush_object_is_disabled($object)) {
     // Disbale object.
     ctools_export_crud_disable($table_name, $object);
     drush_log("Disabled object: $object->name", 'success');
@@ -548,7 +549,7 @@ function _drush_ctools_export_disable($table_name, $object) {
  */
 function _drush_ctools_export_enable($table_name, $object) {
   // type of 3 is overridden in db.
-  if($object->disabled == TRUE) {
+  if(_ctools_drush_object_is_disabled($object)) {
     // Disable object.
     ctools_export_crud_enable($table_name, $object);
     drush_log("Enabled object: $object->name", 'success');
@@ -559,6 +560,30 @@ function _drush_ctools_export_enable($table_name, $object) {
 }
 
 /**
+ * Helper to determine if an object is disabled.
+ *
+ * @param $object
+ *  Loaded CTools exportable object.
+ *
+ * @return TRUE or FALSE
+ */
+function _ctools_drush_object_is_disabled($object) {
+  return (isset($object->disabled) && ($object->disabled == TRUE)) ? TRUE : FALSE;
+}
+
+/**
+ * Helper to determine if an object is overridden.
+ *
+ * @param $object
+ *  Loaded CTools exportable object.
+ *
+ * @return TRUE or FALSE
+ */
+function _ctools_drush_object_is_overridden($object) {
+  return ($object->export_type == 3) ? TRUE : FALSE;
+}
+
+/**
  * Return any aliases for an op, that will be used to show as output.
  * For now, this is mainly necessary for delete => revert alias.
  *
@@ -566,7 +591,7 @@ function _drush_ctools_export_enable($table_name, $object) {
  *  The op name. Such as 'enable', 'disable', or 'delete'.
  *
  * @return
- *  The matched alias value or the original $op if not found.
+ *  The matched alias value or the original $op passed in if not found.
  */
 function _drush_ctools_export_op_aliases($op) {
   $aliases = array(

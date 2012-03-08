@@ -19,7 +19,7 @@ echo 'Reading all export info'
 drush ctools-export-info
 
 stamp
-echo 'Reading all enabled exportables'
+echo 'Reading all disabled exportables'
 drush ctools-export-info --show-disabled
 
 stamp
@@ -27,7 +27,7 @@ echo 'Enabling all default views'
 drush ctools-export-enable views_view --yes
 
 stamp
-echo 'View default views export data'
+echo 'View all default views export data'
 drush ctools-export-view views_view --yes
 
 stamp
