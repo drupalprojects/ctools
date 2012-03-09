@@ -527,7 +527,8 @@ function _drush_ctools_export_info($table_names = array(), $load = FALSE) {
 function _drush_ctools_export_view($table_name, $object) {
   $indent = drush_get_option('indent', '');
   $export = ctools_export_crud_export($table_name, $object, $indent);
-  drush_print(shellColours::colourString("\n$export", 'light_green'));
+  //drush_print("\033[1;34m" . "\n$export" . "\033[0m");
+  drush_print(shellColours::getColouredOutput("\n$export", 'light_green'));
 }
 
 /*
@@ -648,32 +649,26 @@ function _drush_ctools_export_op_aliases($op) {
  */
 class shellColours {
 
-  private $foreground_colours = array();
-  private $background_colours = array();
-  private static $_instance;
+  private static $foreground_colours = array(
+    'black' => '0;30',
+    'dark_gray' => '1;30',
+    'blue' => '0;34',
+    'light_blue' => '1;34',
+    'green' => '0;32',
+    'light_green' => '1;32',
+    'cyan' => '0;36',
+    'light_cyan' => '1;36',
+    'red' => '0;31',
+    'light_red' => '1;31',
+    'purple' => '0;35',
+    'light_purple' => '1;35',
+    'brown' => '0;33',
+    'yellow' => '1;33',
+    'light_gray' => '0;37',
+    'white' => '1;37',
+  );
 
-  private function __construct() {
-    // Set up shell colours
-    $this->foreground_colours = array(
-      'black' => '0;30',
-      'dark_gray' => '1;30',
-      'blue' => '0;34',
-      'light_blue' => '1;34',
-      'green' => '0;32',
-      'light_green' => '1;32',
-      'cyan' => '0;36',
-      'light_cyan' => '1;36',
-      'red' => '0;31',
-      'light_red' => '1;31',
-      'purple' => '0;35',
-      'light_purple' => '1;35',
-      'brown' => '0;33',
-      'yellow' => '1;33',
-      'light_gray' => '0;37',
-      'white' => '1;37',
-    );
-
-    $this->background_colours = array(
+  private $background_colours = array(
     'black' => '40',
     'red' => '41',
     'green' => '42',
@@ -682,39 +677,21 @@ class shellColours {
     'magenta' => '45',
     'cyan' => '46',
     'light_gray' => '47',
-    );
-  }
+  );
 
-  /**
-   * Initialise the single instance of this class.
-   */
-  public static function init() {
-    if (!isset(self::$_instance)) {
-      self::$_instance = new self();
-    }
-    return self::$_instance;
-  }
-
-  /**
-   * Return a string wrapped with colour data.
-   */
-  public static function colourString($string = '', $foreground_colour = null, $background_colour = null) {
-    $instance = self::init();
-    $output = $instance->getColouredOutput($string, $foreground_colour, $background_colour);
-    return $output;
-  }
+  private function __construct() {}
 
   // Returns coloured string
-  public function getColouredOutput($string, $foreground_colour = null, $background_colour = null) {
+  public static function getColouredOutput($string, $foreground_colour = null, $background_colour = null) {
     $coloured_string = "";
 
     // Check if given foreground colour found
     if ($foreground_colour) {
-      $coloured_string .= "\033[" . $this->foreground_colours[$foreground_colour] . "m";
+      $coloured_string .= "\033[" . self::$foreground_colours[$foreground_colour] . "m";
     }
     // Check if given background colour found
     if ($background_colour) {
-      $coloured_string .= "\033[" . $this->background_colours[$background_colour] . "m";
+      $coloured_string .= "\033[" . self::$background_colours[$background_colour] . "m";
     }
 
     // Add string and end colouring
@@ -723,13 +700,13 @@ class shellColours {
   }
 
   // Returns all foreground colour names
-  public function getForegroundColours() {
-    return array_keys($this->foreground_colours);
+  public static function getForegroundColours() {
+    return array_keys(self::$foreground_colours);
   }
 
   // Returns all background colour names
-  public function getBackgroundColours() {
-    return array_keys($this->background_colours);
+  public static function getBackgroundColours() {
+    return array_keys(self::$background_colours);
   }
 
 } // shellColours
