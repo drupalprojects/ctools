@@ -34,8 +34,10 @@ function ctools_drush_command() {
     'options' => array(
       'format' => 'Display exportables info in a different format such as print_r, json, export. The default is to show in a tabular format.',
       'tables-only' => 'Only show list of exportable types/table names and not available objects.',
-      'show-overridden' => 'Only show exportables that have been overridden in the database.',
-      'show-disabled' => 'Only show exportables that are currently disabled.',
+      'enabled' => 'Only show exportables that are currently enabled.',
+      'disabled' => 'Only show exportables that are currently disabled.',
+      'overridden' => 'Only show exportables that have been overridden in the database.',
+      'database' => 'Only show exportables defined in the database (and not in code).',
     ),
     'examples' => array(
       'drush ctools-export-info' => 'View export info on all exportables.',
@@ -202,11 +204,13 @@ function drush_ctools_export_info() {
   // Get format option to allow for alternative output.
   $format = drush_get_option('format');
   $tables_only = drush_get_option('tables-only');
-  $show_overridden = drush_get_option('show-overridden', FALSE);
-  $show_disabled = drush_get_option('show-disabled', FALSE);
+  $show_overridden = drush_get_option('overridden', FALSE);
+  $show_enabled = drush_get_option('disabled', FALSE);
+  $show_disabled = drush_get_option('disabled', FALSE);
+  $show_database_only = drush_get_option('database', FALSE);
 
   // Only load exportable objects for each type fully if we need to.
-  $load = ($show_overridden || $show_disabled) ? TRUE : FALSE;
+  $load = ($show_overridden || $show_disabled || $show_db_only) ? TRUE : FALSE;
 
   // Get info on these tables, or all if none specified.
   $exportables = _drush_ctools_export_info($table_names, $load);
@@ -216,9 +220,19 @@ function drush_ctools_export_info() {
     return;
   }
 
-  // Show disabled exportables only. This is placed before $show_overridden
-  // in the conditionals so it has precidence if both options are run together.
-  if ($show_disabled) {
+  // The order of these conditionals set a hierarchy for options if there are mulitple.
+  // Show enabled exportables only.
+  if ($show_enabled) {
+    foreach ($exportables as $table => $objects) {
+      foreach ($objects as $key => $object) {
+        if (_ctools_drush_object_is_disabled($object)) {
+          unset($exportables[$table][$key]);
+        }
+      }
+    }
+  }
+  // Show disabled exportables only.
+  elseif ($show_disabled) {
     foreach ($exportables as $table => $objects) {
       foreach ($objects as $key => $object) {
         if (!_ctools_drush_object_is_disabled($object)) {
@@ -232,6 +246,16 @@ function drush_ctools_export_info() {
     foreach ($exportables as $table => $objects) {
       foreach ($objects as $key => $object) {
         if (!_ctools_drush_object_is_overridden($object)) {
+          unset($exportables[$table][$key]);
+        }
+      }
+    }
+  }
+  // Show database only exportables.
+  elseif ($show_db_only) {
+    foreach ($exportables as $table => $objects) {
+      foreach ($objects as $key => $object) {
+        if (!_ctools_drush_object_is_db_only($object)) {
           unset($exportables[$table][$key]);
         }
       }
@@ -301,9 +325,8 @@ function drush_ctools_export_view() {
   $exportables = _drush_ctools_export_op_command_logic($op, $table_name, $object_names);
 
   if ($exportables) {
-    $indent = drush_get_option('indent', ' ');
     // Revert is same as deleting as any objects in the db are deleted.
-    drush_ctools_export_op($op, $table_name, $exportables, $indent);
+    drush_ctools_export_op($op, $table_name, $exportables);
   }
 }
 
@@ -500,7 +523,8 @@ function _drush_ctools_export_info($table_names = array(), $load = FALSE) {
  * @param $table_name
  * @param $object
  */
-function _drush_ctools_export_view($table_name, $object, $indent = ' ') {
+function _drush_ctools_export_view($table_name, $object) {
+  $indent = drush_get_option('indent', ' ');
   $export = ctools_export_crud_export($table_name, $object, $indent);
   drush_print(drush_format($object, NULL, 'print_r'));
 }
@@ -581,6 +605,18 @@ function _ctools_drush_object_is_disabled($object) {
  */
 function _ctools_drush_object_is_overridden($object) {
   return ($object->export_type == 3) ? TRUE : FALSE;
+}
+
+/**
+ * Helper to determine if an object is only in the db.
+ *
+ * @param $object
+ *  Loaded CTools exportable object.
+ *
+ * @return TRUE or FALSE
+ */
+function _ctools_drush_object_is_db_only($object) {
+  return ($object->export_type == 1) ? TRUE : FALSE;
 }
 
 /**
