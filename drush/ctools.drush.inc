@@ -54,6 +54,7 @@ function ctools_drush_command() {
     ),
     'options' => array(
       'format' => 'The format to output the exportable code as. This defaults to export. Available options are print_r, json, export.',
+      'indent' => 'The string to use for indentation when dispalying the exportable export code. Defaults to \'\'.',
     ),
     'examples' => array(
       'drush ctools-export-view views_view' => 'Revert all overridden views exportable objects.',
@@ -205,12 +206,12 @@ function drush_ctools_export_info() {
   $format = drush_get_option('format');
   $tables_only = drush_get_option('tables-only');
   $show_overridden = drush_get_option('overridden', FALSE);
-  $show_enabled = drush_get_option('disabled', FALSE);
+  $show_enabled = drush_get_option('enabled', FALSE);
   $show_disabled = drush_get_option('disabled', FALSE);
   $show_database_only = drush_get_option('database', FALSE);
 
   // Only load exportable objects for each type fully if we need to.
-  $load = ($show_overridden || $show_disabled || $show_db_only) ? TRUE : FALSE;
+  $load = ($show_overridden || $show_enabled || $show_disabled || $show_database_only) ? TRUE : FALSE;
 
   // Get info on these tables, or all if none specified.
   $exportables = _drush_ctools_export_info($table_names, $load);
@@ -252,7 +253,7 @@ function drush_ctools_export_info() {
     }
   }
   // Show database only exportables.
-  elseif ($show_db_only) {
+  elseif ($show_database_only) {
     foreach ($exportables as $table => $objects) {
       foreach ($objects as $key => $object) {
         if (!_ctools_drush_object_is_db_only($object)) {
@@ -524,9 +525,9 @@ function _drush_ctools_export_info($table_names = array(), $load = FALSE) {
  * @param $object
  */
 function _drush_ctools_export_view($table_name, $object) {
-  $indent = drush_get_option('indent', ' ');
+  $indent = drush_get_option('indent', '');
   $export = ctools_export_crud_export($table_name, $object, $indent);
-  drush_print(drush_format($object, NULL, 'print_r'));
+  drush_print("\n$export");
 }
 
 /*
