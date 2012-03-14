@@ -6,6 +6,7 @@ This file contains a log of changes to the API.
 API Version 2.0.5
   Introduce ctools_fields_get_fields_by_type().
   Add language.inc
+  Introduce hook_ctools_content_subtype_alter($subtype, $plugin);
 
 API Version 2.0.4
   Introduce ctools_form_include_file()
