@@ -442,13 +442,15 @@ function _drush_ctools_export_op_command_logic($op = '', $table_name = NULL, $ob
     return FALSE;
   }
 
+  // Get export info based on table name.
   $info = _drush_ctools_export_info(array($table_name));
-  $exportables = $info[$table_name];
 
-  if (!$exportables) {
+  if (!isset($info[$table_name])) {
     drush_log(dt('Exportable table name not found.'), 'error');
     return FALSE;
   }
+
+  $exportables = $info[$table_name];
 
   if (empty($object_names)) {
     $all = drush_confirm(dt('No object names entered. Would you like to try and !op all exportables of type !type',
@@ -459,6 +461,15 @@ function _drush_ctools_export_op_command_logic($op = '', $table_name = NULL, $ob
     }
   }
   else {
+    // Iterate through object names and check they exist in exportables array.
+    // Log error and unset them if they don't.
+   foreach ($object_names as $object_name) {
+    if (!isset($exportables[$object_name])) {
+      drush_log(dt('Invalid exportable: !exportable', array('!exportable' => $object_name)), 'error');
+      unset($object_names[$object_name]);
+    }
+   }
+   // Iterate through exportables to get just a list of selected ones.
    foreach (array_keys($exportables) as $exportable) {
     if (!in_array($exportable, $object_names)) {
       unset($exportables[$exportable]);
