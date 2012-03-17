@@ -139,7 +139,15 @@ function _ctools_get_block_info($module, $delta) {
 function ctools_block_content_type_render($subtype, $conf) {
   list($module, $delta) = _ctools_block_get_module_delta($subtype, $conf);
 
-  $info = _ctools_get_block_info($module, $delta);
+  // Only fetch the full block info from the database if the block module is
+  // installed. Otherwise we build a partial info object that still will work
+  // well in most cases.
+  $info = new stdClass;
+  $info->module = $module;
+  $info->delta = $delta;
+  if (module_exists('block')) {
+    $info = _ctools_get_block_info($module, $delta);
+  }
   $block = module_invoke($module, 'block_view', $delta);
 
   // Allow modules to modify the block before it is viewed, via either
@@ -168,7 +176,7 @@ function ctools_block_content_type_render($subtype, $conf) {
     $block->title = NULL;
   }
 
-  if (user_access('administer blocks')) {
+  if (module_exists('block') && user_access('administer blocks')) {
     $block->admin_links = array(
       array(
         'title' => t('Configure block'),
