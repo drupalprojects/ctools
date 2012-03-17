@@ -825,7 +825,7 @@ function _ctools_export_unpack_object($schema, $data, $object = 'stdClass') {
       if (!empty($join['load'])) {
         foreach ($join['load'] as $field) {
           $info = $join_schema['fields'][$field];
-          $object->$field = empty($info['serialize']) ? $data->$field : unserialize(db_decode_blob($data->$field));
+          $object->$field = empty($info['serialize']) ? $data->$field : unserialize($data->$field);
         }
       }
     }
