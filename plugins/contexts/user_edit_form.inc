@@ -32,7 +32,7 @@ $plugin = array(
  */
 function ctools_context_create_user_edit_form($empty, $user = NULL, $conf = FALSE) {
   static $created;
-  $context = new ctools_context(array('form', 'user_edit', 'user_form', 'user_edit_form'));
+  $context = new ctools_context(array('form', 'user_edit', 'user_form', 'user_edit_form', 'user', 'entity:user'));
   $context->plugin = 'user_edit_form';
 
   if ($empty || (isset($created) && $created)) {
