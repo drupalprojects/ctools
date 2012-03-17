@@ -87,7 +87,7 @@ function bulk_export_export($cli = FALSE, $options = array()) {
     }
     else {
       $output = drupal_build_form('bulk_export_export_form', $form_state);
-      $module_name = $form_state['name'];
+      $module_name = $form_state['module'];
     }
 
     if (!empty($form_state['submitted']) || $cli) {
