@@ -306,3 +306,37 @@ function ctools_fields_get_fields_by_type($field_type) {
   }
   return $fields;
 }
+
+/**
+ * Derive the foreign keys that a field provides.
+ *
+ * @param $field_name
+ *   The name of the field.
+ *
+ * @return
+ *   An array of foreign keys according to Schema API.
+ */
+function ctools_field_foreign_keys($field_name) {
+  $foreign_keys = &drupal_static(__FUNCTION__, array());
+  if (!isset($foreign_keys[$field_name])) {
+    $foreign_keys[$field_name] = array();
+    $field = field_info_field($field_name);
+
+    if (!empty($field['foreign keys'])) {
+      $foreign_keys[$field_name] = $field['foreign keys'];
+    }
+    else {
+      // try to fetch foreign keys from schema, as not everything
+      // stores foreign keys properly in the field info.
+      $module = $field['module'];
+
+      module_load_install($module);
+      $schema = module_invoke($module, 'field_schema', $field);
+      if (!empty($schema['foreign keys'])) {
+        $foreign_keys[$field_name] = $schema['foreign keys'];
+      }
+    }
+  }
+
+  return $foreign_keys[$field_name];
+}
