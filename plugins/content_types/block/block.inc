@@ -78,76 +78,15 @@ function _ctools_block_content_type_content_type($module, $delta, $block) {
 }
 
 /**
- * Load block info from the database.
- *
- * This is copied from _block_load_blocks(). It doesn't use that
- * function because _block_load_blocks sorts by region, and it
- * doesn't cache its results anyway.
- */
-function _ctools_block_load_blocks() {
-  $blocks = &drupal_static(__FUNCTION__, NULL);
-  if (!isset($blocks)) {
-    global $theme_key;
-
-    $query = db_select('block', 'b');
-    $result = $query
-      ->fields('b')
-      ->condition('b.theme', $theme_key)
-      ->orderBy('b.region')
-      ->orderBy('b.weight')
-      ->orderBy('b.module')
-      ->addTag('block_load')
-      ->addTag('translatable')
-      ->execute();
-
-    $block_info = $result->fetchAllAssoc('bid');
-    // Allow modules to modify the block list.
-    drupal_alter('block_list', $block_info);
-
-    $blocks = array();
-    foreach ($block_info as $block) {
-      $blocks["{$block->module}_{$block->delta}"] = $block;
-    }
-  }
-
-  return $blocks;
-}
-
-/**
- * Fetch the stored info for a block.
- *
- * The primary reason to use this is so that modules which perform alters
- * can have their alters make it to the block.
- */
-function _ctools_get_block_info($module, $delta) {
-  $blocks = _ctools_block_load_blocks();
-
-  $key = $module . '_' . $delta;
-  if (isset($blocks[$key])) {
-    return $blocks[$key];
-  }
-  $info = new stdClass;
-  $info->module = $module;
-  $info->delta = $delta;
-  return $info;
-}
-
-/**
  * Output function for the 'block' content type. Outputs a block
  * based on the module and delta supplied in the configuration.
  */
 function ctools_block_content_type_render($subtype, $conf) {
   list($module, $delta) = _ctools_block_get_module_delta($subtype, $conf);
 
-  // Only fetch the full block info from the database if the block module is
-  // installed. Otherwise we build a partial info object that still will work
-  // well in most cases.
   $info = new stdClass;
   $info->module = $module;
   $info->delta = $delta;
-  if (module_exists('block')) {
-    $info = _ctools_get_block_info($module, $delta);
-  }
   $block = module_invoke($module, 'block_view', $delta);
 
   // Allow modules to modify the block before it is viewed, via either
@@ -162,14 +101,7 @@ function ctools_block_content_type_render($subtype, $conf) {
   $block->module = $module;
   $block->delta = $delta;
 
-  // $block->title is not set for the blocks returned by block_block() (the
-  // Block module adds the title in block_list() instead), so we look it up
-  // manually, unless the title is overridden and does not use the %title
-  // placeholder.
-  if ($module == 'block') {
-    $block->title = $info->title;
-  }
-  else if (isset($block->subject)) {
+  if (isset($block->subject)) {
     $block->title = $block->subject;
   }
   else {
@@ -405,6 +337,28 @@ function aggregator_ctools_block_info($module, $delta, &$info) {
 function block_ctools_block_info($module, $delta, &$info) {
   $info['icon'] = 'icon_core_block_empty.png';
   $info['category'] = t('Custom blocks');
+
+  // The title of custom blocks from the block module is stored in the
+  // {block} table. Look for it in the default theme as a reasonable
+  // default value for the title.
+  $block_info_cache = drupal_static(__FUNCTION__);
+  if (!isset($block_info_cache)) {
+    $block_info_cache = db_select('block', 'b')
+      ->fields('b')
+      ->condition('b.module', 'block')
+      ->condition('b.theme', variable_get('theme_default', 'bartik'))
+      ->addTag('block_load')
+      ->addTag('translatable')
+      ->execute()
+      ->fetchAllAssoc('delta');
+  }
+
+  if (isset($block_info_cache[$delta])) {
+    $info['defaults'] = array(
+      'override_title' => TRUE,
+      'override_title_text' => $block_info_cache[$delta]->title,
+    );
+  }
 }
 
 function user_ctools_block_info($module, $delta, &$info) {
