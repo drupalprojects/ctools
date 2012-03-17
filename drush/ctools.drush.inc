@@ -27,6 +27,20 @@ function ctools_drush_command() {
     ),
   );
 
+  $items['ctools-export-info'] = array(
+    'aliases' => array('ctei'),
+    'description' => 'Show available CTools exportables.',
+    'arguments' => array(),
+    'options' => array(
+      'format' => 'Display exportables info in a different format such as print_r, json, export. The default is to show in a tabular format.',
+      'tables-only' => 'Only show list of exportable types/table names and not available objects.',
+    ),
+    'examples' => array(
+      'drush ctools-export-info' => 'View export info on all exportables.',
+      'drush ctools-export-info views_view variable' => 'View export info for views_view and variable exportable types only.',
+    ),
+  );
+
   return $items;
 }
 
@@ -101,4 +115,92 @@ function drush_ctools_export($module = 'foo') {
   else {
     drush_log(dt('No files were found to be written.'), 'error');
   }
+}
+
+/**
+ * Drush callback: Export info.
+ *
+ * @params $table_names
+ *  Each argument will be taken as a CTools exportable table name.
+ */
+function drush_ctools_export_info() {
+  // Collect array of table names from args.
+  $table_names = func_get_args();
+  // Get info on these tables, or all if none specified.
+  $exportables = _drush_ctools_export_info($table_names);
+  // Get format option to allow for alternative output.
+  $format = drush_get_option('format');
+  $tables_only = drush_get_option('tables-only');
+
+  if (empty($exportables)) {
+    drush_log(dt('There are no exportables available.'), 'warning');
+    return;
+  }
+
+  // Only use array keys if --types-only option is set.
+  if ($tables_only) {
+    $exportables = array_keys($exportables);
+  }
+
+  // Use format from --format
+  if ($format) {
+    drush_print(drush_format($exportables, $format, NULL));
+  }
+  // Build a tabular output as default.
+  else {
+    $header = $tables_only? array(dt("Base table")) : array(dt("Base table"), dt("Exportables"));
+    $rows = array();
+    foreach ($exportables as $table => $info) {
+      if (!is_array($info)) {
+        $row = array(
+          $info
+        );
+      }
+      else {
+        $row = array(
+          $table,
+          implode("\n", $info) . "\n",
+        );
+      }
+      $rows[] = $row;
+    }
+    array_unshift($rows, $header);
+    drush_print_table($rows, TRUE);
+  }
+
+}
+
+/**
+ * Return array of CTools exportable info
+ * based on available tables returned from
+ * ctools_export_get_schemas().
+ *
+ * @param $table_names
+ *  Array of table names to return.
+ *
+ * @return
+ *  Nested arrays of available exportables, keyed by table name.
+ */
+function _drush_ctools_export_info($table_names = NULL) {
+  ctools_include('export');
+  // Get available schemas that declare exports.
+  $schemas = ctools_export_get_schemas();
+  $exportables = array();
+
+  if (!empty($schemas)) {
+    // Remove types we don't want, if any.
+    if (!empty($table_names)) {
+      foreach (array_keys($schemas) as $table_name) {
+        if (!in_array($table_name, $table_names)) {
+          unset($schemas[$table_name]);
+        }
+      }
+    }
+    // Load array of available exportables for each schema.
+    foreach ($schemas as $table_name => $schema) {
+      $exportables[$table_name] = ctools_export_default_list($table_name, $schema);
+    }
+  }
+
+  return $exportables;
 }
