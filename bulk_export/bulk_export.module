@@ -206,6 +206,7 @@ function bulk_export_export_form($form, &$form_state) {
 
     foreach ($list as $id => $title) {
       $options[$table][$id] = array($title);
+      $options[$table][$id]['#attributes'] = array('class' => array('bulk-selection'));
     }
 
     $module = $form_state['export_tables'][$table];
@@ -248,6 +249,7 @@ function bulk_export_export_form($form, &$form_state) {
 
   $form['#action'] = url('admin/structure/bulk-export/results');
   $form['#attached']['css'][] = drupal_get_path('module', 'bulk_export') . '/bulk_export.css';
+  $form['#attached']['js'][] = drupal_get_path('module', 'bulk_export') . '/bulk_export.js';
   return $form;
 }
 
