@@ -91,7 +91,7 @@ function ctools_fields_get_field_formatter_settings_form($field, $formatter_type
       '#size' => 5,
       '#field_prefix' => $prefix,
       '#field_suffix' => $suffix,
-      '#default_value' => $conf['delta_offset'],
+      '#default_value' => isset($conf['delta_offset']) ? $conf['delta_offset'] : 0,
     );
 
     list($prefix, $suffix) = explode('@count', t('Then display at most @count item(s)'));
@@ -101,13 +101,13 @@ function ctools_fields_get_field_formatter_settings_form($field, $formatter_type
       '#field_prefix' => $prefix,
       '#field_suffix' => $suffix,
       '#description' => t('Enter 0 to display all items.'),
-      '#default_value' => $conf['delta_limit'],
+      '#default_value' => isset($conf['delta_limit']) ? $conf['delta_limit'] : 0,
     );
 
     $form['delta_reversed'] = array(
       '#title' => t('Display in reverse order'),
       '#type' => 'checkbox',
-      '#default_value' => $conf['delta_reversed'],
+      '#default_value' => !empty($conf['delta_reversed']),
       '#description' => t('(start from last values)'),
     );
   }
