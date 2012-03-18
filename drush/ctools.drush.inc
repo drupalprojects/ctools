@@ -130,6 +130,21 @@ function drush_ctools_export($module = 'foo') {
     return;
   }
 
+  // Selection.
+  $options = array('all' => dt('Export everything'), 'select' => dt('Make selection'));
+  $selection = drush_choice($options, dt('Select to proceed'));
+
+  if (!$selection) {
+    return;
+  }
+  // Present the selection screens.
+  if ($selection == 'select') {
+    $selections = _drush_ctools_selection_screen();
+  }
+  else {
+    $selections = _drush_ctools_export_info();
+  }
+
   // Subdirectory.
   $dest_exists = FALSE;
   $subdir = drush_get_option('subdir', 'ctools_export');
@@ -162,6 +177,7 @@ function drush_ctools_export($module = 'foo') {
   // options to the export function (pre-selected modules and/or exportables).
   $options = array(
     'name' => $module,
+    'selections' => $selections,
   );
   $files = bulk_export_export(TRUE, $options);
 
@@ -189,6 +205,84 @@ function drush_ctools_export($module = 'foo') {
   }
   else {
     drush_log(dt('No files were found to be written.'), 'error');
+  }
+}
+
+/**
+ * Helper function to select the exportables. By default, all exportables
+ * will be selected, so it will be easier to deselect them.
+ */
+function _drush_ctools_selection_screen() {
+  $selections = $build = array();
+  $files = system_rebuild_module_data();
+
+  $selection_number = 0;
+  ctools_include('export');
+  $schemas = ctools_export_get_schemas(TRUE);
+  $exportables = $export_tables = array();
+  foreach ($schemas as $table => $schema) {
+    if (!empty($schema['export']['list callback']) && function_exists($schema['export']['list callback'])) {
+      $exportables[$table] = $schema['export']['list callback']();
+    }
+    else {
+      $exportables[$table] = ctools_export_default_list($table, $schema);
+    }
+    natcasesort($exportables[$table]);
+    $export_tables[$table] = $files[$schema['module']]->info['name'] . ' (' . $table .')';
+  }
+
+  foreach ($export_tables as $table => $table_title) {
+    if (!empty($exportables[$table])) {
+      $table_count = count($exportables[$table]);
+      $selection_number += $table_count;
+      foreach ($exportables[$table] as $key => $title) {
+        $build[$table]['title'] = $table_title;
+        $build[$table]['items'][$key] = $title;
+        $build[$table]['count'] = $table_count;
+        $selections[$table][$key] = $key;
+      }
+    }
+  }
+
+  drush_print(dt('Number of exportables selected: !number', array('!number' => $selection_number)));
+  drush_print(dt('By default all exportables are selected. Select a table to deselect exportables. Select "cancel" to start writing the files.'));
+  drush_print("");
+
+  // Let's go into a loop.
+  $return = FALSE;
+  while (!$return) {
+
+    // Present the tables choice.
+    $table_rows = array();
+    foreach ($build as $table => $info) {
+      $table_rows[$table] = $info['title'] . ' (' . dt($info['count']) . ')';
+    }
+    $table_choice = drush_choice($table_rows, dt('Select a table. Select cancel to start writing files.'));
+
+    // Bail out.
+    if (!$table_choice) {
+      drush_print(dt('Selection mode done, starting to write the files.'));
+      $return = TRUE;
+      return $selections;
+    }
+
+    // Present the exportables choice, using the drush_choice_multiple.
+    $max = count($build[$table_choice]['items']);
+    $exportable_rows = array();
+    foreach ($build[$table_choice]['items'] as $key => $title) {
+      $exportable_rows[$key] = $title;
+    }
+    drush_print(dt('Exportables from !table', array('!table' => $build[$table_choice]['title'])));
+    $multi_select = drush_choice_multiple($exportable_rows, $selections[$table_choice], dt('Select exportables.'), '!value', '!value (selected)', 0, $max);
+
+    // Update selections.
+    if (is_array($multi_select)) {
+      $build[$table_choice]['count'] = count($multi_select);
+      $selections[$table_choice] = array();
+      foreach ($multi_select as $key) {
+         $selections[$table_choice][$key] = $key;
+      }
+    }
   }
 }
 
