@@ -246,7 +246,6 @@ function _drush_ctools_selection_screen() {
 
   drush_print(dt('Number of exportables selected: !number', array('!number' => $selection_number)));
   drush_print(dt('By default all exportables are selected. Select a table to deselect exportables. Select "cancel" to start writing the files.'));
-  drush_print("");
 
   // Let's go into a loop.
   $return = FALSE;
@@ -261,7 +260,7 @@ function _drush_ctools_selection_screen() {
 
     // Bail out.
     if (!$table_choice) {
-      drush_print(dt('Selection mode done, starting to write the files.'));
+      drush_log(dt('Selection mode done, starting to write the files.'), 'notice');
       $return = TRUE;
       return $selections;
     }
@@ -357,26 +356,32 @@ function drush_ctools_export_info() {
     }
   }
 
-  // Only use array keys if --types-only option is set.
+  $exportables = array_filter($exportables);
+
+  // Only use array keys if --tables-only option is set.
   if ($tables_only) {
     $exportables = array_keys($exportables);
   }
 
   // Use format from --format option if it's present, and send to drush_format.
   if ($format) {
-    drush_print(drush_format($exportables, $format, NULL));
+    drush_print(drush_format($exportables, NULL, $format));
   }
   // Build a tabular output as default.
   else {
-    $header = $tables_only ? array() : array(dt("Base table"), dt("Exportables"));
+    $header = $tables_only ? array() : array(dt('Base table'), dt('Exportables'));
     $rows = array();
     foreach ($exportables as $table => $info) {
-      if (!empty($info)) {
+      if (is_array($info)) {
         $row = array(
           $table,
-          implode("\n", array_keys($info)) . "\n", // Machine name is better?
+          // Machine name is better for this?
+          shellColours::getColouredOutput(implode("\n", array_keys($info)), 'light_green') . "\n",
         );
         $rows[] = $row;
+      }
+      else {
+        $rows[] = array($info);
       }
     }
     if (!empty($rows)) {
@@ -632,7 +637,6 @@ function _drush_ctools_export_info($table_names = array(), $load = FALSE) {
 function _drush_ctools_export_view($table_name, $object) {
   $indent = drush_get_option('indent', '');
   $export = ctools_export_crud_export($table_name, $object, $indent);
-  //drush_print("\033[1;34m" . "\n$export" . "\033[0m");
   drush_print(shellColours::getColouredOutput("\n$export", 'light_green'));
 }
 
@@ -801,6 +805,7 @@ class shellColours {
 
     // Add string and end colouring
     $coloured_string .=  $string . "\033[0m";
+
     return $coloured_string;
   }
 
