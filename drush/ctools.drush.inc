@@ -562,18 +562,18 @@ function _drush_ctools_export_op_command_logic($op = '', $table_name = NULL, $ob
   else {
     // Iterate through object names and check they exist in exportables array.
     // Log error and unset them if they don't.
-   foreach ($object_names as $object_name) {
-    if (!isset($exportables[$object_name])) {
-      drush_log(dt('Invalid exportable: !exportable', array('!exportable' => $object_name)), 'error');
-      unset($object_names[$object_name]);
+    foreach ($object_names as $object_name) {
+      if (!isset($exportables[$object_name])) {
+        drush_log(dt('Invalid exportable: !exportable', array('!exportable' => $object_name)), 'error');
+        unset($object_names[$object_name]);
+      }
     }
-   }
-   // Iterate through exportables to get just a list of selected ones.
-   foreach (array_keys($exportables) as $exportable) {
-    if (!in_array($exportable, $object_names)) {
-      unset($exportables[$exportable]);
+    // Iterate through exportables to get just a list of selected ones.
+    foreach (array_keys($exportables) as $exportable) {
+      if (!in_array($exportable, $object_names)) {
+        unset($exportables[$exportable]);
+      }
     }
-   }
   }
 
   return $exportables;
