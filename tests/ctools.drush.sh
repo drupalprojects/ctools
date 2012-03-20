@@ -9,6 +9,10 @@ function stamp {
   echo ==============
 }
 
+DRUPAL_ROOT=`drush dd`
+MODULE_DIR="$DRUPAL_ROOT/sites/all/modules"
+MODULE_NAME="ctools_drush_test"
+
 stamp
 
 echo 'Enabling views module.'
@@ -54,14 +58,14 @@ stamp
 echo 'Revert all default views'
 drush ctools-export-revert views_view --yes
 
-#stamp
-#echo 'Bulk export all objects'
-#drush ctools-export $EXPORT_DIR --subdir='tests'
+stamp
+echo 'Bulk export all objects'
+drush ctools-export $MODULE_NAME --subdir='tests' --choice=1
 
-#stamp
-#echo 'Show all files in created folder'
-#ls -lAR /tests/$EXPORT_DIR
+stamp
+echo 'Show all files in created folder'
+ls -lAR "$MODULE_DIR/tests/$MODULE_NAME"
 
-#stamp
-#echo 'Removing exported object files'
-#rm -Rf /tests/$EXPORT_DIR
+stamp
+echo 'Removing exported object files'
+rm -Rf $MODULE_DIR/tests
