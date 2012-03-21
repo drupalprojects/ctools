@@ -67,6 +67,7 @@ function bulk_export_export($cli = FALSE, $options = array()) {
       'export_tables' => $export_tables,
       'name' => '',
       'code' => '',
+      'module' => '',
     );
 
     // If called from drush_ctools_export, get the module name and
