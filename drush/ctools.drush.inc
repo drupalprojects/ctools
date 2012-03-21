@@ -205,6 +205,7 @@ function drush_ctools_export($module = 'foo') {
         drush_log(dt('Error writing !filename', array('!filename' => $filename)), 'error');
       }
     }
+    drush_log("\n" . dt('No penguins were harmed in the generation of this code.') . "\n", 'success');
   }
   else {
     drush_log(dt('No files were found to be written.'), 'error');
