@@ -47,6 +47,7 @@ function ctools_drush_command() {
 
   $items['ctools-export-view'] = array(
     'aliases' => array('ctev'),
+    'callback' => 'drush_ctools_export_op_command',
     'description' => 'View CTools exportable output.',
     'arguments' => array(
       'table name' => 'Base table of the exportable you want to view.',
@@ -64,6 +65,7 @@ function ctools_drush_command() {
 
   $items['ctools-export-revert'] = array(
     'aliases' => array('cter'),
+    'callback' => 'drush_ctools_export_op_command',
     'description' => 'Revert CTools exportables from changes overridden in the database.',
     'arguments' => array(
       'table name' => 'Base table of the exportable you want to revert.',
@@ -78,6 +80,7 @@ function ctools_drush_command() {
 
   $items['ctools-export-enable'] = array(
     'aliases' => array('ctee'),
+    'callback' => 'drush_ctools_export_op_command',
     'description' => 'Enable CTools exportables.',
     'arguments' => array(
       'table name' => 'Base table of the exportable you want to enable.',
@@ -92,6 +95,7 @@ function ctools_drush_command() {
 
   $items['ctools-export-disable'] = array(
     'aliases' => array('cted'),
+    'callback' => 'drush_ctools_export_op_command',
     'description' => 'Disable CTools exportables.',
     'arguments' => array(
       'table name' => 'Base table of the exportable you want to disable.',
@@ -395,104 +399,39 @@ function drush_ctools_export_info() {
 }
 
 /**
- * May use this as a hub for all op commands to keep all arg handling in one place.
- * Could also just have this one one function that is called in each op function instead.
+ * Drush callback: Acts as the hub for all op commands to keep all arg handling etc in one place.
  */
-/*function drush_ctools_export_op_command() {
-  $args = func_get_args();
-  // Table name should always be first arg...
-  $table_name = array_shift($args);
-  // Any additional args are assumed to be exportable names.
-  $object_names = $args;
-}*/
+function drush_ctools_export_op_command() {
+  // Get all info for the current drush command.
+  $command = drush_get_command();
+  $op = '';
 
-/**
- * Drush callback: Export view.
- *
- * @param $table_name
- *  Each argument will be taken as a CTools exportable table name.
- * @param $exportables
- *
- */
-function drush_ctools_export_view() {
-  $args = func_get_args();
-  // Table name should always be first arg...
-  $table_name = array_shift($args);
-  // Any additional args are assumed to be exportable names.
-  $object_names = $args;
-  $op = 'view';
-
-  $exportables = _drush_ctools_export_op_command_logic($op, $table_name, $object_names);
-
-  if ($exportables) {
-    // Revert is same as deleting as any objects in the db are deleted.
-    drush_ctools_export_op($op, $table_name, $exportables);
+  switch ($command['command']) {
+    case 'ctools-export-view':
+      $op = 'view';
+    break;
+    case 'ctools-export-revert':
+      // Revert is same as deleting. As any objects in the db are deleted.
+      $op = 'delete';
+    break;
+    case 'ctools-export-enable':
+      $op = 'enable';
+    break;
+    case 'ctools-export-disable':
+      $op = 'disable';
+    break;
   }
-}
 
-/**
- * Drush callback: Export revert.
- *
- * @param $table_name
- *  Each argument will be taken as a CTools exportable table name.
- * @param $exportables
- *
- */
-function drush_ctools_export_revert() {
-  $args = func_get_args();
-  // Table name should always be first arg...
-  $table_name = array_shift($args);
-  // Any additional args are assumed to be exportable names.
-  $object_names = $args;
-  $op = 'delete';
-
-  $exportables = _drush_ctools_export_op_command_logic($op, $table_name, $object_names);
-
-  if ($exportables) {
-    // Revert is same as deleting as any objects in the db are deleted.
-    drush_ctools_export_op($op, $table_name, $exportables);
+  if (!$op) {
+    return;
   }
-}
 
-/**
- * Drush callback: Export enable.
- *
- * @param $table_name
- *  Each argument will be taken as a CTools exportable table name.
- * @param $exportables
- *
- */
-function drush_ctools_export_enable() {
   $args = func_get_args();
   // Table name should always be first arg...
   $table_name = array_shift($args);
   // Any additional args are assumed to be exportable names.
   $object_names = $args;
-  $op = 'enable';
-
-  $exportables = _drush_ctools_export_op_command_logic($op, $table_name, $object_names);
-
-  if ($exportables) {
-    drush_ctools_export_op($op, $table_name, $exportables);
-  }
-}
-
-/**
- * Drush callback: Export disable.
- *
- * @param $table_name
- *  Each argument will be taken as a CTools exportable table name.
- * @param $exportables
- *
- */
-function drush_ctools_export_disable() {
-  $args = func_get_args();
-  // Table name should always be first arg...
-  $table_name = array_shift($args);
-  // Any additional args are assumed to be exportable names.
-  $object_names = $args;
-  $op = 'disable';
-
+  // Return any exportables based on table name, object names, options.
   $exportables = _drush_ctools_export_op_command_logic($op, $table_name, $object_names);
 
   if ($exportables) {
