@@ -13,7 +13,7 @@ function ctools_drush_command() {
 
   $items['ctools-export'] = array(
     'aliases' => array('ctex'),
-    'description' => 'Export multiple CTools-handled data objects directly to code.',
+    'description' => 'Export multiple CTools exportable objects directly to code.',
     'arguments' => array(
       'module'    => 'Name of your module.',
     ),
@@ -29,7 +29,7 @@ function ctools_drush_command() {
 
   $items['ctools-export-info'] = array(
     'aliases' => array('ctei'),
-    'description' => 'Show available CTools exportables.',
+    'description' => 'Show available CTools exportable objects.',
     'arguments' => array(),
     'options' => array(
       'format' => 'Display exportables info in a different format such as print_r, json, export. The default is to show in a tabular format.',
@@ -48,7 +48,7 @@ function ctools_drush_command() {
   $items['ctools-export-view'] = array(
     'aliases' => array('ctev'),
     'callback' => 'drush_ctools_export_op_command',
-    'description' => 'View CTools exportable output.',
+    'description' => 'View CTools exportable object code output.',
     'arguments' => array(
       'table name' => 'Base table of the exportable you want to view.',
       'machine names' => 'Space separated list of exportables you want to view.',
@@ -58,8 +58,8 @@ function ctools_drush_command() {
       'indent' => 'The string to use for indentation when dispalying the exportable export code. Defaults to \'\'.',
     ),
     'examples' => array(
-      'drush ctools-export-view views_view' => 'Revert all overridden views exportable objects.',
-      'drush ctools-export-view views_view archive' => 'Revert overridden default archive view.',
+      'drush ctools-export-view views_view' => 'View all views exportable objects.',
+      'drush ctools-export-view views_view archive' => 'View default views archive view.',
     ),
   );
 
@@ -74,7 +74,7 @@ function ctools_drush_command() {
     'options' => array(),
     'examples' => array(
       'drush ctools-export-revert views_view' => 'Revert all overridden views exportable objects.',
-      'drush ctools-export-revert views_view archive' => 'Revert overridden default archive view.',
+      'drush ctools-export-revert views_view archive' => 'Revert overridden default views archive view.',
     ),
   );
 
@@ -89,7 +89,7 @@ function ctools_drush_command() {
     'options' => array(),
     'examples' => array(
       'drush ctools-export-enable views_view' => 'Enable all overridden views exportable objects.',
-      'drush ctools-export-enable views_view archive' => 'Enable overridden default archive view.',
+      'drush ctools-export-enable views_view archive' => 'Enable overridden default views archive view.',
     ),
   );
 
@@ -104,7 +104,7 @@ function ctools_drush_command() {
     'options' => array(),
     'examples' => array(
       'drush ctools-export-disable views_view' => 'Disable all overridden views exportable objects.',
-      'drush ctools-export-disable views_view archive' => 'Disable overridden default archive view.',
+      'drush ctools-export-disable views_view archive' => 'Disable overridden default views archive view.',
     ),
   );
 
@@ -431,6 +431,7 @@ function drush_ctools_export_op_command() {
   $table_name = array_shift($args);
   // Any additional args are assumed to be exportable names.
   $object_names = $args;
+
   // Return any exportables based on table name, object names, options.
   $exportables = _drush_ctools_export_op_command_logic($op, $table_name, $object_names);
 
@@ -586,7 +587,6 @@ function _drush_ctools_export_view($table_name, $object) {
  * @param $object
  */
 function _drush_ctools_export_delete($table_name, $object) {
-  // type of 3 is overridden in db.
   if(_ctools_drush_object_is_overridden($object)) {
     // Remove from db.
     ctools_export_crud_delete($table_name, $object);
@@ -598,38 +598,36 @@ function _drush_ctools_export_delete($table_name, $object) {
 }
 
 /*
- * Disable a single object.
- *
- * @param $table_name
- * @param $object
- */
-function _drush_ctools_export_disable($table_name, $object) {
-  // type of 3 is overridden in db.
-  if(!_ctools_drush_object_is_disabled($object)) {
-    // Disbale object.
-    ctools_export_crud_disable($table_name, $object);
-    drush_log("Disabled object: $object->name", 'success');
-  }
-  else {
-    drush_log("$object->name is already disabled", 'notice');
-  }
-}
-
-/*
  * Enable a single object.
  *
  * @param $table_name
  * @param $object
  */
 function _drush_ctools_export_enable($table_name, $object) {
-  // type of 3 is overridden in db.
   if(_ctools_drush_object_is_disabled($object)) {
-    // Disable object.
+    // Enable object.
     ctools_export_crud_enable($table_name, $object);
     drush_log("Enabled object: $object->name", 'success');
   }
   else {
     drush_log("$object->name is already Enabled", 'notice');
+  }
+}
+
+/*
+ * Disable a single object.
+ *
+ * @param $table_name
+ * @param $object
+ */
+function _drush_ctools_export_disable($table_name, $object) {
+  if(!_ctools_drush_object_is_disabled($object)) {
+    // Disable object.
+    ctools_export_crud_disable($table_name, $object);
+    drush_log("Disabled object: $object->name", 'success');
+  }
+  else {
+    drush_log("$object->name is already disabled", 'notice');
   }
 }
 
@@ -716,7 +714,7 @@ class shellColours {
     'white' => '1;37',
   );
 
-  private $background_colours = array(
+  private static $background_colours = array(
     'black' => '40',
     'red' => '41',
     'green' => '42',
@@ -730,7 +728,7 @@ class shellColours {
   private function __construct() {}
 
   // Returns coloured string
-  public static function getColouredOutput($string, $foreground_colour = null, $background_colour = null) {
+  public static function getColouredOutput($string, $foreground_colour = NULL, $background_colour = NULL) {
     $coloured_string = "";
 
     // Check if given foreground colour found

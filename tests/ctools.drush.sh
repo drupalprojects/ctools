@@ -23,6 +23,18 @@ echo 'Reading all export info'
 drush ctools-export-info
 
 stamp
+echo 'Reading all export info with format'
+drush ctools-export-info --format=json
+
+stamp
+echo 'Reading tables only from export info'
+drush ctools-export-info --tables-only
+
+stamp
+echo 'Reading tables only from export info with format'
+drush ctools-export-info --tables-only --format=json
+
+stamp
 echo 'Reading all disabled exportables'
 drush ctools-export-info --disabled
 
