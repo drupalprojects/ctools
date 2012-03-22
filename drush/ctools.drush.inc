@@ -54,7 +54,6 @@ function ctools_drush_command() {
       'machine names' => 'Space separated list of exportables you want to view.',
     ),
     'options' => array(
-      'format' => 'The format to output the exportable code as. This defaults to export. Available options are print_r, json, export.',
       'indent' => 'The string to use for indentation when dispalying the exportable export code. Defaults to \'\'.',
     ),
     'examples' => array(
@@ -232,7 +231,7 @@ function _drush_ctools_selection_screen() {
       $exportables[$table] = ctools_export_default_list($table, $schema);
     }
     natcasesort($exportables[$table]);
-    $export_tables[$table] = $files[$schema['module']]->info['name'] . ' (' . $table .')';
+    $export_tables[$table] = $files[$schema['module']]->info['name'] . ' (' . $table . ')';
   }
 
   foreach ($export_tables as $table => $table_title) {
@@ -587,7 +586,7 @@ function _drush_ctools_export_view($table_name, $object) {
  * @param $object
  */
 function _drush_ctools_export_delete($table_name, $object) {
-  if(_ctools_drush_object_is_overridden($object)) {
+  if (_ctools_drush_object_is_overridden($object)) {
     // Remove from db.
     ctools_export_crud_delete($table_name, $object);
     drush_log("Reverted object: $object->name", 'success');
@@ -604,7 +603,7 @@ function _drush_ctools_export_delete($table_name, $object) {
  * @param $object
  */
 function _drush_ctools_export_enable($table_name, $object) {
-  if(_ctools_drush_object_is_disabled($object)) {
+  if (_ctools_drush_object_is_disabled($object)) {
     // Enable object.
     ctools_export_crud_enable($table_name, $object);
     drush_log("Enabled object: $object->name", 'success');
@@ -621,7 +620,7 @@ function _drush_ctools_export_enable($table_name, $object) {
  * @param $object
  */
 function _drush_ctools_export_disable($table_name, $object) {
-  if(!_ctools_drush_object_is_disabled($object)) {
+  if (!_ctools_drush_object_is_disabled($object)) {
     // Disable object.
     ctools_export_crud_disable($table_name, $object);
     drush_log("Disabled object: $object->name", 'success');
