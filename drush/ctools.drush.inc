@@ -55,6 +55,7 @@ function ctools_drush_command() {
     ),
     'options' => array(
       'indent' => 'The string to use for indentation when dispalying the exportable export code. Defaults to \'\'.',
+      'no-colour' => 'Remove any colour formatting from export string output. Ideal if you are sending the output of this command to a file.',
     ),
     'examples' => array(
       'drush ctools-export-view views_view' => 'View all views exportable objects.',
@@ -221,16 +222,10 @@ function _drush_ctools_selection_screen() {
   $files = system_rebuild_module_data();
 
   $selection_number = 0;
-  ctools_include('export');
-  $schemas = ctools_export_get_schemas(TRUE);
-  $exportables = $export_tables = array();
-  foreach ($schemas as $table => $schema) {
-    if (!empty($schema['export']['list callback']) && function_exists($schema['export']['list callback'])) {
-      $exportables[$table] = $schema['export']['list callback']();
-    }
-    else {
-      $exportables[$table] = ctools_export_default_list($table, $schema);
-    }
+  $exportables = _drush_ctools_export_info();
+  $export_tables = array();
+
+  foreach (array_keys($exportables) as $table) {
     natcasesort($exportables[$table]);
     $export_tables[$table] = $files[$schema['module']]->info['name'] . ' (' . $table . ')';
   }
@@ -535,7 +530,7 @@ function _drush_ctools_export_op_command_logic($op = '', $table_name = NULL, $ob
 function _drush_ctools_export_info($table_names = array(), $load = FALSE) {
   ctools_include('export');
   // Get available schemas that declare exports.
-  $schemas = ctools_export_get_schemas();
+  $schemas = ctools_export_get_schemas(TRUE);
   $exportables = array();
 
   if (!empty($schemas)) {
@@ -576,8 +571,14 @@ function _drush_ctools_export_info($table_names = array(), $load = FALSE) {
  */
 function _drush_ctools_export_view($table_name, $object) {
   $indent = drush_get_option('indent', '');
+  $no_colour = drush_get_option('no-colour', FALSE);
   $export = ctools_export_crud_export($table_name, $object, $indent);
-  drush_print(shellColours::getColouredOutput("\n$export", 'light_green'));
+  if ($no_colour) {
+    drush_print($export);
+  }
+  else {
+    drush_print(shellColours::getColouredOutput("\n$export", 'light_green'));
+  }
 }
 
 /*
