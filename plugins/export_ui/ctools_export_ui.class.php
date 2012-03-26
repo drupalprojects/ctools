@@ -184,6 +184,13 @@ class ctools_export_ui {
       unset($_SESSION['ctools_export_ui'][$this->plugin['name']]['q']);
     }
 
+    // We rely on list_form_submit() to build the table rows. Clean out any
+    // AJAX markers that would prevent list_form() from automatically
+    // submitting the form.
+    if ($js) {
+      unset($input['js'], $input['ctools_ajax']);
+    }
+
     // This is where the form will put the output.
     $this->rows = array();
     $this->sorts = array();
