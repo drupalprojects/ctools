@@ -428,7 +428,7 @@
     });
 
     var html = '';
-    for (i in data.argument) {
+    for (var i = 0; i < data.argument.length; i++) {
       var link = Drupal.CTools.AJAX.getPath(data.argument[i].file);
       if (!Drupal.CTools.AJAX.css[link]) {
         html += '<link class="ctools-temporary-css" type="text/css" rel="stylesheet" media="' + data.argument[i].media +
@@ -458,7 +458,7 @@
 
     var html = '';
     var head = document.getElementsByTagName('head')[0];
-    for (i in data.argument) {
+    for (var i = 0; i < data.argument.length; i++) {
       var link = Drupal.CTools.AJAX.getPath(data.argument[i]);
       if (!Drupal.CTools.AJAX.scripts[link]) {
         Drupal.CTools.AJAX.scripts[link] = link;
