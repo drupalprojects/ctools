@@ -19,11 +19,13 @@ function ctools_drush_command() {
     ),
     'options' => array(
       'subdir' => 'The name of the sub directory to create the module in. Defaults to ctools_export which will be placed into sites/all/modules.',
+      'remove' => 'Remove existing files before writing, except the .module file.',
     ),
     'drupal dependencies' => array('bulk_export'),
     'examples' => array(
       'drush ctex export_module' => 'Export CTools exportables to a module called "export_module".',
       'drush ctex export_module --subdir=exports' => 'Same as above, but into the sites/all/modules/exports directory.',
+      'drush ctex export_module --subdir=exports --remove' => 'Same as above, but automatically removing all files, except for the .module file.',
     ),
   );
 
@@ -141,6 +143,7 @@ function drush_ctools_export($module = 'foo') {
   if (!$selection) {
     return;
   }
+
   // Present the selection screens.
   if ($selection == 'select') {
     $selections = _drush_ctools_selection_screen();
@@ -154,16 +157,27 @@ function drush_ctools_export($module = 'foo') {
   $subdir = drush_get_option('subdir', 'ctools_export');
   $dest = 'sites/all/modules/' . $subdir . '/' . $module;
 
-  // Check if module or folder exists.
-  if (module_exists($module) || file_exists($dest)) {
+  // Overwriting files can be set with 'remove' argument.
+  $remove = drush_get_option('remove', FALSE);
+
+  // Check if folder exists.
+  if (file_exists($dest)) {
     $dest_exists = TRUE;
-    if (drush_confirm(dt('Are you sure to overwrite files in folder !module ? An extra confirmation will be asked for the module file.', array('!module' => $module)))) {
-      drush_log(dt('Files will be overwritten'), 'success');
+    if ($remove) {
+      if (drush_confirm(dt('All files except for the .info and .module files in !module will be removed. You can choose later if you want to overwrite these files as well. Are you sure you want to proceed ?', array('!module' => $module)))) {
+        $remove = TRUE;
+        drush_log(dt('Files will be removed'), 'success');
+      }
+      else {
+        drush_log(dt('Export aborted.'), 'success');
+        return;
+      }
     }
-    else {
-      drush_log(dt('Export aborted.'), 'success');
-      return;
-    }
+  }
+
+  // Remove files (except for the .module file) if the destination folder exists.
+  if ($remove && $dest_exists) {
+    _drush_ctools_file_delete($dest);
   }
 
   // Create new dir if needed.
@@ -190,11 +204,11 @@ function drush_ctools_export($module = 'foo') {
     foreach ($files as $base_file => $data) {
       $filename = $dest . '/' . $base_file;
       // Extra check for .module file.
-      if ($base_file == $module . '.module' && file_exists($filename)) {
+      if ($base_file == ($module . '.module' || $module . '.info') && file_exists($filename)) {
         if (!drush_confirm(dt('Do you want to overwrite !module_file', array('!module_file' => $base_file)))) {
-          drush_log(dt('Writing of !filename skipped. This is the code that was supposed to be written.', array('!filename' => $filename)), 'success');
+          drush_log(dt('Writing of !filename skipped. This is the code that was supposed to be written:', array('!filename' => $filename)), 'success');
           drush_print('---------');
-          drush_print($data);
+          drush_print(shellColours::getColouredOutput("\n$data", 'light_green'));
           drush_print('---------');
           continue;
         }
@@ -222,6 +236,7 @@ function _drush_ctools_selection_screen() {
   $files = system_rebuild_module_data();
 
   $selection_number = 0;
+
   $exportables = _drush_ctools_export_info();
   $export_tables = array();
 
@@ -285,6 +300,23 @@ function _drush_ctools_selection_screen() {
 }
 
 /**
+ * Delete files in a directory, keeping the .module  and .info files.
+ *
+ * @param $path
+ *   Path to directory in which to remove files.
+ */
+function _drush_ctools_file_delete($path) {
+  if (is_dir($path)) {
+    $files = new DirectoryIterator($path);
+    foreach ($files as $fileInfo) {
+      if (!$fileInfo->isDot() && !in_array($fileInfo->getExtension(), array('module', 'info'))) {
+        unlink($fileInfo->getPathname());
+      }
+    }
+  }
+}
+
+/**
  * Drush callback: Export info.
  *
  * @params $table_names
@@ -295,8 +327,8 @@ function drush_ctools_export_info() {
   $table_names = func_get_args();
 
   // Get format option to allow for alternative output.
-  $format = drush_get_option('format');
-  $tables_only = drush_get_option('tables-only');
+  $format = drush_get_option('format', FALSE);
+  $tables_only = drush_get_option('tables-only', FALSE);
   $show_overridden = drush_get_option('overridden', FALSE);
   $show_enabled = drush_get_option('enabled', FALSE);
   $show_disabled = drush_get_option('disabled', FALSE);
