@@ -36,10 +36,7 @@ function ctools_drush_command() {
     'options' => array(
       'format' => 'Display exportables info in a different format such as print_r, json, export. The default is to show in a tabular format.',
       'tables-only' => 'Only show list of exportable types/table names and not available objects.',
-      'enabled' => 'Only show exportables that are currently enabled.',
-      'disabled' => 'Only show exportables that are currently disabled.',
-      'overridden' => 'Only show exportables that have been overridden in the database.',
-      'database' => 'Only show exportables defined in the database (and not in code).',
+      'filter' => 'Filter the list of exportables by status. Available options are enabled, disabled, overridden, and database.',
     ),
     'examples' => array(
       'drush ctools-export-info' => 'View export info on all exportables.',
@@ -268,7 +265,7 @@ function _drush_ctools_selection_screen() {
     // Present the tables choice.
     $table_rows = array();
     foreach ($build as $table => $info) {
-      $table_rows[$table] = $info['title'] . ' (' . dt($info['count']) . ')';
+      $table_rows[$table] = $info['title'] . ' (' . $info['count'] . ')';
     }
     $table_choice = drush_choice($table_rows, dt('Select a table. Select cancel to start writing files.'));
 
@@ -329,65 +326,72 @@ function drush_ctools_export_info() {
   // Get format option to allow for alternative output.
   $format = drush_get_option('format', FALSE);
   $tables_only = drush_get_option('tables-only', FALSE);
-  $show_overridden = drush_get_option('overridden', FALSE);
-  $show_enabled = drush_get_option('enabled', FALSE);
-  $show_disabled = drush_get_option('disabled', FALSE);
-  $show_database_only = drush_get_option('database', FALSE);
-
-  // Only load exportable objects for each type fully if we need to.
-  $load = ($show_overridden || $show_enabled || $show_disabled || $show_database_only) ? TRUE : FALSE;
+  $filter = drush_get_option('filter', FALSE);
 
   // Get info on these tables, or all if none specified.
-  $exportables = _drush_ctools_export_info($table_names, $load);
+  $exportables = _drush_ctools_export_info($table_names, TRUE);
 
   if (empty($exportables)) {
     drush_log(dt('There are no exportables available.'), 'warning');
     return;
   }
 
-  // The order of these conditionals set a hierarchy for options if there are mulitple.
-  // Show enabled exportables only.
-  if ($show_enabled) {
-    foreach ($exportables as $table => $objects) {
-      foreach ($objects as $key => $object) {
-        if (_ctools_drush_object_is_disabled($object)) {
-          unset($exportables[$table][$key]);
+  if (is_string($filter)) {
+    switch ($filter) {
+      // Show enabled exportables only.
+      case 'enabled':
+        foreach ($exportables as $table => $objects) {
+          foreach ($objects as $key => $object) {
+            if (_ctools_drush_object_is_disabled($object)) {
+              unset($exportables[$table][$key]);
+            }
+          }
         }
-      }
-    }
-  }
-  // Show disabled exportables only.
-  elseif ($show_disabled) {
-    foreach ($exportables as $table => $objects) {
-      foreach ($objects as $key => $object) {
-        if (!_ctools_drush_object_is_disabled($object)) {
-          unset($exportables[$table][$key]);
+      break;
+      // Show disabled exportables only.
+      case 'disabled':
+        foreach ($exportables as $table => $objects) {
+          foreach ($objects as $key => $object) {
+            if (!_ctools_drush_object_is_disabled($object)) {
+              unset($exportables[$table][$key]);
+            }
+          }
         }
-      }
-    }
-  }
-  // Show overridden exportables only.
-  elseif ($show_overridden) {
-    foreach ($exportables as $table => $objects) {
-      foreach ($objects as $key => $object) {
-        if (!_ctools_drush_object_is_overridden($object)) {
-          unset($exportables[$table][$key]);
+      break;
+      // Show overridden exportables only.
+      case 'overridden':
+        foreach ($exportables as $table => $objects) {
+          foreach ($objects as $key => $object) {
+            if (!_ctools_drush_object_is_overridden($object)) {
+              unset($exportables[$table][$key]);
+            }
+          }
         }
-      }
-    }
-  }
-  // Show database only exportables.
-  elseif ($show_database_only) {
-    foreach ($exportables as $table => $objects) {
-      foreach ($objects as $key => $object) {
-        if (!_ctools_drush_object_is_db_only($object)) {
-          unset($exportables[$table][$key]);
+      break;
+      // Show database only exportables.
+      case 'database':
+        foreach ($exportables as $table => $objects) {
+          foreach ($objects as $key => $object) {
+            if (!_ctools_drush_object_is_db_only($object)) {
+              unset($exportables[$table][$key]);
+            }
+          }
         }
-      }
+      break;
+      default:
+        drush_log(dt('Invalid filter option. Available options are: enabled, disabled, overridden, and database.'), 'error');
+        return;
     }
   }
 
   $exportables = array_filter($exportables);
+
+  if (empty($exportables)) {
+    drush_log(dt('There are no exportables matching this criteria.'), 'notice');
+    return;
+  }
+
+  $exportable_counts = _drush_ctools_count_exportables($exportables);
 
   // Only use array keys if --tables-only option is set.
   if ($tables_only) {
@@ -396,7 +400,12 @@ function drush_ctools_export_info() {
 
   // Use format from --format option if it's present, and send to drush_format.
   if ($format) {
-    drush_print(drush_format($exportables, NULL, $format));
+    // Create array with all exportable info and counts in one.
+    $output = array(
+      'exportables' => $exportables,
+      'count' => $exportable_counts,
+    );
+    drush_print(drush_format($output, NULL, $format));
   }
   // Build a tabular output as default.
   else {
@@ -416,11 +425,14 @@ function drush_ctools_export_info() {
       }
     }
     if (!empty($rows)) {
+      drush_print("\n");
       array_unshift($rows, $header);
       drush_print_table($rows, TRUE);
-    }
-    else {
-      drush_log(dt('There are no exportables matching this criteria.'), 'notice');
+      drush_print(dt('Total exportables found: !total', array('!total' => $exportable_counts['total'])));
+      foreach ($exportable_counts['exportables'] as $table_name => $count) {
+        drush_print(dt('!table_name (!count)', array('!table_name' => $table_name, '!count' => $count)), 2);
+      }
+      drush_print("\n");
     }
   }
 }
@@ -520,7 +532,7 @@ function _drush_ctools_export_op_command_logic($op = '', $table_name = NULL, $ob
 
   if (empty($object_names)) {
     $all = drush_confirm(dt('No object names entered. Would you like to try and !op all exportables of type !type',
-      array('!op' => _drush_ctools_export_op_aliases($op), '!type' => $table_name)));
+      array('!op' => _drush_ctools_export_op_alias($op), '!type' => $table_name)));
     if (!$all) {
       drush_log(dt('Command cancelled'), 'success');
       return FALSE;
@@ -701,7 +713,32 @@ function _ctools_drush_object_is_db_only($object) {
 }
 
 /**
- * Return any aliases for an op, that will be used to show as output.
+ * Return an array of count information based on exportables array.
+ *
+ * @param $exportables
+ *  Array of exportables.
+ *
+ * @return
+ *  Array of count data containing the following:
+ *   'total' - A total count of all exportables.
+ *   'exportables' - An array of exportable counts per table.
+ */
+function _drush_ctools_count_exportables($exportables) {
+  $count = array('exportables' => array());
+
+  foreach ($exportables as $table => $objects) {
+    // Add the object count for each table.
+    $count['exportables'][$table] = count($objects);
+  }
+
+  // Once all tables have been counted, total these up.
+  $count['total'] = array_sum($count['exportables']);
+
+  return $count;
+}
+
+/**
+ * Return an alias for an op, that will be used to show as output.
  * For now, this is mainly necessary for delete => revert alias.
  *
  * @param $op
@@ -710,7 +747,7 @@ function _ctools_drush_object_is_db_only($object) {
  * @return
  *  The matched alias value or the original $op passed in if not found.
  */
-function _drush_ctools_export_op_aliases($op) {
+function _drush_ctools_export_op_alias($op) {
   $aliases = array(
     'delete' => 'revert',
   );
