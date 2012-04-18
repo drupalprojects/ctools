@@ -41,6 +41,8 @@ function ctools_drush_command() {
     'examples' => array(
       'drush ctools-export-info' => 'View export info on all exportables.',
       'drush ctools-export-info views_view variable' => 'View export info for views_view and variable exportable types only.',
+      'drush ctei --filter=enabled' => 'Show all enabled exportables.',
+      'drush ctei views_view --filter=disabled' => 'Show all enabled exportables.',
     ),
   );
 
@@ -328,8 +330,8 @@ function drush_ctools_export_info() {
   $tables_only = drush_get_option('tables-only', FALSE);
   $filter = drush_get_option('filter', FALSE);
 
-  // Get info on these tables, or all if none specified.
-  $exportables = _drush_ctools_export_info($table_names, TRUE);
+  // Get info on these tables, or all tables if none specified.
+  $exportables = _drush_ctools_export_info($table_names, (bool) $filter);
 
   if (empty($exportables)) {
     drush_log(dt('There are no exportables available.'), 'warning');
