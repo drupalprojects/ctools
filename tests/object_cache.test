@@ -4,10 +4,12 @@
  * Tests for different parts of the ctools object caching system.
  */
 
+use Drupal\simpletest\WebTestBase;
+
 /**
  * Test object cache storage.
  */
-class CtoolsObjectCache extends DrupalWebTestCase {
+class CtoolsObjectCache extends WebTestBase {
   public static function getInfo() {
     return array(
       'name' => 'Ctools object cache storage',

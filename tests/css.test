@@ -4,10 +4,12 @@
  * Tests for different parts of the ctools plugin system.
  */
 
+use Drupal\simpletest\WebTestBase;
+
 /**
  * Test menu links depending on user permissions.
  */
-class CtoolsCssTestCase extends DrupalWebTestCase {
+class CtoolsCssTestCase extends WebTestBase {
   public static function getInfo() {
     return array(
       'name' => 'CSS Tools tests',

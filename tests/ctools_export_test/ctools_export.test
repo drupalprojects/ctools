@@ -5,10 +5,12 @@
  * Tests for the CTools export system.
  */
 
+use Drupal\simpletest\WebTestBase;
+
 /**
  * Tests export CRUD.
  */
-class CtoolsExportCrudTestCase extends DrupalWebTestCase {
+class CtoolsExportCrudTestCase extends WebTestBase {
 
   public static function getInfo() {
     return array(
