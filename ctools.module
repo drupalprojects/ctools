@@ -383,7 +383,7 @@ function ctools_init() {
 
   // Clear plugin cache on the module page submit.
   if (current_path() == 'admin/modules/list/confirm' && !empty($_POST)) {
-    cache_clear_all('ctools_plugin_files:', 'cache', TRUE);
+    cache()->deletePrefix('ctools_plugin_files:');
   }
 }
 
