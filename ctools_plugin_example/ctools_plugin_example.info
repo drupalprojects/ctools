@@ -5,4 +5,4 @@ dependencies[] = ctools
 dependencies[] = panels
 dependencies[] = page_manager
 dependencies[] = advanced_help
-core = 7.x
+core = 8.x
