@@ -152,7 +152,7 @@ class ctools_export_ui {
     if (isset($input['op']) && $input['op'] == t('Reset')) {
       unset($_SESSION['ctools_export_ui'][$this->plugin['name']]);
       if (!$js) {
-        return drupal_goto($_GET['q']);
+        return drupal_goto(current_path());
       }
       // clear everything but form id, form build id and form token:
       $keys = array_keys($input);
@@ -237,7 +237,7 @@ class ctools_export_ui {
     if (!variable_get('clean_url', FALSE)) {
       $form['q'] = array(
         '#type' => 'hidden',
-        '#value' => $_GET['q'],
+        '#value' => current_path(),
       );
     }
 
@@ -1380,7 +1380,7 @@ function ctools_export_ui_edit_item_form_delete(&$form, &$form_state) {
   $export_key = $form_state['plugin']['export']['key'];
   $path = $form_state['item']->export_type & EXPORT_IN_CODE ? 'revert' : 'delete';
 
-  drupal_goto(ctools_export_ui_plugin_menu_path($form_state['plugin'], $path, $form_state['item']->{$export_key}), array('cancel_path' => $_GET['q']));
+  drupal_goto(ctools_export_ui_plugin_menu_path($form_state['plugin'], $path, $form_state['item']->{$export_key}), array('cancel_path' => current_path()));
 }
 
 /**
