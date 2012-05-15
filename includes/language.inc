@@ -37,7 +37,7 @@ function ctools_language_list_all() {
   $languages = array(
     '***CURRENT_LANGUAGE***' => t("Current user's language"),
     '***DEFAULT_LANGUAGE***' => t("Default site language"),
-    LANGUAGE_NONE => t('Language neutral'),
+    LANGUAGE_NOT_SPECIFIED => t('Language neutral'),
   );
   $languages = array_merge($languages, ctools_language_list());
   return $languages;
