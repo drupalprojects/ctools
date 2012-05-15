@@ -698,11 +698,12 @@ function _ctools_export_get_defaults($table, $export) {
       if (!empty($lock)) {
         // Cache the index.
         $index = array_keys($cache[$table]);
-        cache_set('ctools_export_index:' . $table, $index, $export['default cache bin']);
+        $cache_object = cache($export['default cache bin']);
+        $cache_object->set('ctools_export_index:' . $table, $index);
 
         // Cache each object.
         foreach ($cache[$table] as $name => $object) {
-          cache_set('ctools_export:' . $table . ':' . $name, $object, $export['default cache bin']);
+          $cache_object->set('ctools_export:' . $table . ':' . $name, $object);
         }
         lock_release('ctools_export:' . $table);
       }
@@ -723,7 +724,8 @@ function _ctools_export_get_defaults($table, $export) {
  *   rebuild is necessary.
  */
 function _ctools_export_get_defaults_from_cache($table, $export) {
-  $data = cache_get('ctools_export_index:' . $table, $export['default cache bin']);
+  $cache_object = cache($export['default cache bin']);
+  $data = $cache_object->get('ctools_export_index:' . $table);
   if (!$data || !is_array($data->data)) {
     return;
   }
@@ -739,7 +741,7 @@ function _ctools_export_get_defaults_from_cache($table, $export) {
     $keys[] = 'ctools_export:' . $table . ':' . $name;
   }
 
-  $data = cache_get_multiple($keys, $export['default cache bin']);
+  $data = $cache_object->getMultiple($keys);
 
   // If any of our indexed keys missed, then we have a fail and we need to
   // rebuild.
@@ -771,7 +773,7 @@ function _ctools_export_get_some_defaults($table, $export, $names) {
     $keys[] = 'ctools_export:' . $table . ':' . $name;
   }
 
-  $data = cache_get_multiple($keys, $export['default cache bin']);
+  $data = cache($export['default cache bin'])->getMultiple($keys);
 
   // Cache hits remove the $key from $keys by reference. Cache
   // misses do not. A cache miss indicates we may have to rebuild.

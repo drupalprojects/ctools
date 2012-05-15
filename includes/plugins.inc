@@ -243,7 +243,7 @@ function ctools_get_plugins($module, $type, $id = NULL) {
 
   // If the plugin info says this can be cached, check cache first.
   if ($info[$module][$type]['cache'] && empty($setup[$module][$type])) {
-    $cache = cache_get("plugins:$module:$type", $info[$module][$type]['cache table']);
+    $cache = cache($info[$module][$type]['cache table'])->get("plugins:$module:$type");
 
     if (!empty($cache->data)) {
       // Cache load succeeded so use the cached plugin list.
@@ -292,7 +292,7 @@ function ctools_get_plugins($module, $type, $id = NULL) {
   // If we were told earlier that this is cacheable and the cache was
   // empty, give something back.
   if ($build_cache) {
-    cache_set("plugins:$module:$type", $plugins[$module][$type], $info[$module][$type]['cache table']);
+    cache($info[$module][$type]['cache table'])->set("plugins:$module:$type", $plugins[$module][$type]);
   }
 
   // If no id was requested, we are finished here:
@@ -352,7 +352,7 @@ function ctools_plugin_get_plugin_type_info($flush = FALSE) {
   }
   $info_loaded = TRUE;
 
-  $cache = cache_get('ctools_plugin_type_info');
+  $cache = cache()->get('ctools_plugin_type_info');
   if (!empty($cache->data) && !$flush) {
     // Plugin type info cache is warm, use it.
     $all_type_info = $cache->data;
@@ -384,7 +384,7 @@ function ctools_plugin_get_plugin_type_info($flush = FALSE) {
         $all_type_info[$module][$plugin_type_name] = $plugin_type_info;
       }
     }
-    cache_set('ctools_plugin_type_info', $all_type_info);
+    cache()->set('ctools_plugin_type_info', $all_type_info);
   }
 
   return $all_type_info;
@@ -430,7 +430,7 @@ function ctools_plugin_load_includes($info, $filename = NULL) {
     // cache. This is considered normal operation and we try to reduce
     // the time spent finding files.
     if (isset($filename)) {
-      $cache = cache_get("ctools_plugin_files:$info[module]:$info[type]");
+      $cache = cache()->get("ctools_plugin_files:$info[module]:$info[type]");
       if ($cache) {
         $all_files[$info['module']][$info['type']] = $cache->data;
       }
@@ -446,7 +446,7 @@ function ctools_plugin_load_includes($info, $filename = NULL) {
         $all_files[$info['module']][$info['type']][$module] = file_scan_directory($path, '/\.' . $extension . '$/', array('key' => 'name'));
       }
 
-      cache_set("ctools_plugin_files:$info[module]:$info[type]", $all_files[$info['module']][$info['type']]);
+      cache()->set("ctools_plugin_files:$info[module]:$info[type]", $all_files[$info['module']][$info['type']]);
     }
   }
   $file_list = $all_files[$info['module']][$info['type']];
