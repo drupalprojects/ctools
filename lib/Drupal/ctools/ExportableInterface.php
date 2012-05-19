@@ -40,6 +40,21 @@ interface ExportableInterface {
   /**
    * @todo.
    */
+  public function isInDatabase();
+
+  /**
+   * @todo.
+   */
+  public function isInCode();
+
+  /**
+   * @todo.
+   */
+  public function isOverridden();
+
+  /**
+   * @todo.
+   */
   public function export($indent = '');
 
   /**
