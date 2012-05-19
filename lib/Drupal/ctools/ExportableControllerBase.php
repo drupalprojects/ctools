@@ -10,7 +10,7 @@ namespace Drupal\ctools;
 /**
  * @todo.
  */
-abstract class ExportableControllerBase implements ExportableInterface {
+abstract class ExportableControllerBase implements ExportableControllerInterface {
   /**
    * @todo.
    */
