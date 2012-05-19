@@ -10,7 +10,7 @@ namespace Drupal\ctools;
 /**
  * @todo.
  */
-abstract class ExportableControllerBase implements ExportableInterface {
+abstract class ExportableControllerBase implements ExportableControllerInterface {
 
   /**
    * @todo.
@@ -21,43 +21,31 @@ abstract class ExportableControllerBase implements ExportableInterface {
   /**
    * @todo.
    */
-  public function save() {
+  public function load($key) {
   }
 
   /**
    * @todo.
    */
-  public function delete() {
+  public function loadMultiple($key, $conditions) {
   }
 
   /**
    * @todo.
    */
-  public function enable() {
+  public function loadAll(/* $pageSize, $pageNumber */) {
   }
 
   /**
    * @todo.
    */
-  public function disable() {
+  public function import($code) {
   }
 
   /**
    * @todo.
    */
-  public function setStatus() {
-  }
-
-  /**
-   * @todo.
-   */
-  public function export($indent = '') {
-  }
-
-  /**
-   * @todo.
-   */
-  public function createDuplicate() {
+  public function create() {
   }
 
 }
