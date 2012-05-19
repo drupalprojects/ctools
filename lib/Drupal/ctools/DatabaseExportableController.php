@@ -242,7 +242,7 @@ class DatabaseExportableController extends ExportableControllerBase {
   /**
    * @todo.
    */
-  public function save($this->infoable) {
+  public function save($exportable) {
   }
 
   /**
@@ -254,16 +254,16 @@ class DatabaseExportableController extends ExportableControllerBase {
   /**
    * @todo.
    */
-  public function setStatus($this->infoable, $status) {
+  public function setStatus($exportable, $status) {
     $status = variable_get($this->info['status'], array());
     $key = $this->info['key'];
 
     // Compare
-    if (!$new_status && $this->infoable->isInDatabase()) {
-      unset($status[$this->infoable->{$key}]);
+    if (!$new_status && $exportable->isInDatabase()) {
+      unset($status[$exportable->{$key}]);
     }
     else {
-      $status[$this->infoable->{$key}] = $new_status;
+      $status[$exportable->{$key}] = $new_status;
     }
 
     variable_set($this->info['status'], $status);
