@@ -18,6 +18,104 @@ define('EXPORT_IN_DATABASE', 0x01);
 define('EXPORT_IN_CODE', 0x02);
 
 /**
+ * Constructs a new exportable object, without permanently saving it.
+ *
+ * @param $exportable_type
+ *   The type of the exportable.
+ * @param $values
+ *   An array of values to set, keyed by property name.
+ *
+ * @return Drupal\ctools\ExportableInterface
+ *   A new exportable object.
+ */
+function ctools_exportable_create($exportable_type, array $values) {
+  return ctools_exportable_get_controller($exportable_type)->create($values);
+}
+
+/**
+ * Loads an exportable.
+ *
+ * @param string $exportable_type
+ *   The exportable type to load, e.g. views_view.
+ * @param int $id
+ *   The ID of the exportable to load.
+ *
+ * @return Drupal\ctools\ExportableControllerInterface|false
+ *   The exportable object, or FALSE if there is no exportable with the given ID.
+ *
+ * @see hook_ctools_exportable_info()
+ * @see ctools_exportable_load_multiple()
+ * @see Drupal\ctools\ExportableControllerInterface
+ * @see Drupal\ctools\ExportableController
+ */
+function ctools_exportable_load($exportable_type, $id) {
+  return ctools_exportable_get_controller($exportable_type)->load($id);
+}
+
+/**
+ * Loads multiple exportables.
+ *
+ * @param string $exportable_type
+ *   The entity type to load, e.g. views_view.
+ * @param array|bool $ids
+ *   An array of entity IDs, or FALSE to load all entities.
+ * @param array $conditions
+ *   @todo.
+ *
+ * @return array
+ *   An array of exportable objects indexed by their IDs.
+ */
+function ctools_exportable_load_multiple($exportable_type, $ids = FALSE, $conditions = array()) {
+  return ctools_exportable_get_controller($exportable_type)->loadMultiple($ids, $conditions);
+}
+
+/**
+ * Gets the exportable controller class for an exportable type.
+ *
+ * @return Drupal\ctools\ExportableControllerInterface
+ */
+function ctools_exportable_get_controller($exportable_type) {
+  $controllers = &drupal_static(__FUNCTION__, array());
+  if (!isset($controllers[$exportable_type])) {
+    $type_info = ctools_exportable_get_info($exportable_type);
+    $class = $type_info['controller class'];
+    $controllers[$exportable_type] = new $class($exportable_type);
+  }
+  return $controllers[$exportable_type];
+}
+
+/**
+ * Gets the exportable info array of an exportable type.
+ *
+ * @param string|null $exportable_type
+ *   The exportable type, e.g. views_view, for which the info shall be
+ *   returned, or NULL to return an array with info about all types.
+ *
+ * @see hook_ctools_exportable_info()
+ * @see hook_ctools_exportable_info_alter()
+ */
+function ctools_exportable_get_info($exportable_type = NULL) {
+  $exportable_info = module_invoke_all('ctools_exportable_info');
+  // Merge in default values.
+  foreach ($exportable_info as $name => $data) {
+    $exportable_info[$name] += array(
+      'controller class' => 'Drupal\ctools\ExportableController',
+      'load hook' => $name . '_load',
+    );
+  }
+
+  // Let other modules alter the exportable info.
+  drupal_alter('ctools_exportable_info', $exportable_info);
+
+  if (empty($exportable_type)) {
+    return $exportable_info;
+  }
+  elseif (isset($exportable_info[$exportable_type])) {
+    return $exportable_info[$exportable_type];
+  }
+}
+
+/**
  * @defgroup export_crud CRUD functions for export.
  * @{
  * export.inc supports a small number of CRUD functions that should always
