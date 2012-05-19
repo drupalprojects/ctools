@@ -35,7 +35,7 @@ interface ExportableControllerInterface {
   /**
    * @todo.
    */
-  public function loadMultiple($key, $conditions);
+  public function loadMultiple(array $keys);
 
   /**
    * @todo.

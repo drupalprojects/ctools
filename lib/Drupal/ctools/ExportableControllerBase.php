@@ -29,7 +29,7 @@ abstract class ExportableControllerBase implements ExportableControllerInterface
 
     // @todo How do we deal with $type not existing? Either an exception or
     // some way to mark the class as unusable.
-    $this->info = exportable_get_info($type);
+    $this->info = ctools_exportable_get_info($type);
   }
 
   /**
