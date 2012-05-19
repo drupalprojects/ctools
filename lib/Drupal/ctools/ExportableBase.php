@@ -43,24 +43,28 @@ abstract class ExportableBase implements ExportableInterface {
    * @todo.
    */
   public function save() {
+    ctools_exportable_get_controller($this->exportableType)->save($this);
   }
 
   /**
    * @todo.
    */
   public function delete() {
+    ctools_exportable_get_controller($this->exportableType)->delete(array($this->id()));
   }
 
   /**
    * @todo.
    */
   public function enable() {
+    ctools_exportable_get_controller($this->exportableType)->enable($this);
   }
 
   /**
    * @todo.
    */
   public function disable() {
+    ctools_exportable_get_controller($this->exportableType)->disable($this);
   }
 
   /**
@@ -88,12 +92,14 @@ abstract class ExportableBase implements ExportableInterface {
    * @todo.
    */
   public function export($indent = '') {
+    ctools_exportable_get_controller($this->exportableType)->export($this, $indent);
   }
 
   /**
    * @todo.
    */
   public function createDuplicate() {
+    ctools_exportable_get_controller($this->exportableType)->createDuplicate($this);
   }
 
 }
