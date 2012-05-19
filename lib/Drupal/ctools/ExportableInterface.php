@@ -40,11 +40,6 @@ interface ExportableInterface {
   /**
    * @todo.
    */
-  public function setStatus();
-
-  /**
-   * @todo.
-   */
   public function export($indent = '');
 
   /**
