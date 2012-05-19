@@ -15,7 +15,17 @@ interface ExportableControllerInterface {
   /**
    * @todo.
    */
-  public function __construct($data);
+  public function __construct($type);
+
+  /**
+   * @todo.
+   */
+  public function getType();
+
+  /**
+   * @todo.
+   */
+  public function getInfo();
 
   /**
    * @todo.
@@ -42,4 +52,38 @@ interface ExportableControllerInterface {
    */
   public function create();
 
+  /**
+   * @todo.
+   */
+  public function save($exportable);
+
+  /**
+   * @param $keys Array
+   */
+  public function delete($keys);
+
+  /**
+   * @todo.
+   */
+  public function enable($exportable);
+
+  /**
+   * @todo.
+   */
+  public function disable($exportable);
+
+  /**
+   * @todo.
+   */
+  public function setStatus($exportable, $status);
+
+  /**
+   * @todo.
+   */
+  public function export($exportable, $indent = '');
+
+  /**
+   * @todo.
+   */
+  public function createDuplicate($exportable);
 }
