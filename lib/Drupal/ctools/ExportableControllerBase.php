@@ -57,12 +57,6 @@ abstract class ExportableControllerBase implements ExportableInterface {
   /**
    * @todo.
    */
-  public function create() {
-  }
-
-  /**
-   * @todo.
-   */
   public function enable($exportable) {
     return $this->setStatus($exportable, FALSE);
   }
@@ -86,6 +80,10 @@ abstract class ExportableControllerBase implements ExportableInterface {
    * @todo.
    */
   public function createDuplicate($exportable) {
+    // The cleanest way to duplicate is to export and import which will
+    // ensure all IDs are wiped.
+    $code = $this->export($exportable);
+    return $this->import($code);
   }
 
 }
