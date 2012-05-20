@@ -10,7 +10,7 @@ use Drupal\simpletest\WebTestBase;
 /**
  * Tests export CRUD.
  */
-class CtoolsExportCrudTestCase extends WebTestBase {
+class CToolsExportCrudTestCase extends WebTestBase {
 
   public static function getInfo() {
     return array(

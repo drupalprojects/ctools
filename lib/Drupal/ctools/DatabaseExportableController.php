@@ -19,10 +19,30 @@ class DatabaseExportableController extends ExportableControllerBase {
   /**
    * @todo.
    */
+  public function __construct($type) {
+    parent::__construct($type);
+    $this->type = $type;
+
+    // @todo CTools had some code to work around schema caching issues
+    // that we may need to replicate. These were particularly difficult
+    // issues during the module enable process.
+    $this->schema = drupal_get_schema($this->info['schema']);
+  }
+
+  /**
+   * @todo.
+   */
+  public function getSchema() {
+    return $this->schema;
+  }
+
+  /**
+   * @todo.
+   */
   public function load($key) {
     $result = $this->loadExportables('keys', array($key));
-    if (isset($result[$name])) {
-      return $result[$name];
+    if (isset($result[$key])) {
+      return $result[$key];
     }
   }
 
@@ -63,7 +83,7 @@ class DatabaseExportableController extends ExportableControllerBase {
    * @param $args
    *   An array of arguments whose actual use is defined by the $type argument.
    */
-  public function loadObjects($type = 'all', $args = array()) {
+  public function loadExportables($type = 'all', $args = array()) {
     // If fetching all and cached all, we've done so and we are finished.
     if ($type == 'all' && !empty($this->cacheAll)) {
       return $this->cache;
@@ -87,7 +107,7 @@ class DatabaseExportableController extends ExportableControllerBase {
     }
 
     // Build the query
-    $query = db_select($this->info['table'], 't__0')->fields('t__0');
+    $query = db_select($this->info['schema'], 't__0')->fields('t__0');
 
     /** Hate this code
      * maybe we can just get rid of it
@@ -129,8 +149,8 @@ class DatabaseExportableController extends ExportableControllerBase {
 
     $status = variable_get($this->info['status'], array());
     // Unpack the results of the query onto objects and cache them.
-    foreach ($result as $data) {
-      $object = new $this->info['exportable class']($data);
+    while ($data = $result->fetchAssoc()) {
+      $object = new $this->info['exportable class']($data, $this->type);
 
       // @todo -- these need to be fixed
 //      $object->{$this->info['export type string']} = t('Normal');
@@ -197,15 +217,15 @@ class DatabaseExportableController extends ExportableControllerBase {
         if (!empty($this->cache[$object->{$this->info['key']}])) {
 //          $this->cache[$object->{$this->info['key']}]->{$this->info['export type string']} = t('Overridden');
           $this->cache[$object->{$this->info['key']}]->setIsInCode(TRUE);
-          $this->cache[$object->{$this->info['key']}]->setExportModule(isset($object->export_module) ? $object->export_module : NULL);
+          $this->cache[$object->{$this->info['key']}]->setExportModule($object->getExportModule);
           if ($type == 'conditions') {
             $return[$object->{$this->info['key']}] = $this->cache[$object->{$this->info['key']}];
           }
         }
         else {
 //          $object->{$this->info['export type string']} = t('Default');
-          $object->export_type = EXPORT_IN_CODE;
-          $this->cache[$object->{$this->info['key']}]->setIsInCode(TRUE);
+//          $object->export_type = EXPORT_IN_CODE;
+          $object->setIsInCode(TRUE);
 
           $this->cache[$object->{$this->info['key']}] = $object;
           if ($type == 'conditions') {
@@ -231,6 +251,52 @@ class DatabaseExportableController extends ExportableControllerBase {
 
     // For conditions,
     return $return;
+  }
+
+  function getDefaultExportables($args = NULL) {
+    if (isset($this->cachedDefaults)) {
+      return $this->cachedDefaults;
+    }
+
+    if ($this->info['default hook']) {
+      if (!empty($this->info['api'])) {
+        ctools_include('plugins');
+        $info = ctools_plugin_api_include($this->info['api']['owner'], $this->info['api']['api'],
+          $this->info['api']['minimum_version'], $this->info['api']['current_version']);
+        $modules = array_keys($info);
+      }
+      else {
+        $modules = module_implements($this->info['default hook']);
+      }
+
+      foreach ($modules as $module) {
+        $function = $module . '_' . $this->info['default hook'];
+        if (function_exists($function)) {
+          foreach ((array) $function($this->info) as $name => $data) {
+            $object = new $this->info['exportable class']($data, $this->type);
+
+            // Record the module that provides this exportable.
+            $object->setExportModule($module);
+
+            if (empty($this->info['api'])) {
+              $this->cachedDefaults[$name] = $object;
+            }
+            else {
+              // If version checking is enabled, ensure that the object can be used.
+              print($this->info['api']);
+              if (isset($object->api_version) &&
+                version_compare($object->api_version, $this->info['api']['minimum_version']) >= 0 &&
+                version_compare($object->api_version, $this->info['api']['current_version']) <= 0) {
+                $this->cachedDefaults[$name] = $object;
+              }
+            }
+          }
+        }
+      }
+
+      drupal_alter($this->info['default hook'], $this->cachedDefaults);
+    }
+    return $this->cachedDefaults;
   }
 
   /**

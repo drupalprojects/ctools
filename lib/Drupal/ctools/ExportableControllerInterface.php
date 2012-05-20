@@ -30,6 +30,11 @@ interface ExportableControllerInterface {
   /**
    * @todo.
    */
+  public function getSchema();
+
+  /**
+   * @todo.
+   */
   public function load($key);
 
   /**

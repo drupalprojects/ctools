@@ -15,7 +15,7 @@ interface ExportableInterface {
   /**
    * @todo.
    */
-  public function __construct($data);
+  public function __construct($data, $exportableType = NULL);
 
   /**
    * @todo.
@@ -45,7 +45,24 @@ interface ExportableInterface {
   /**
    * @todo.
    */
+  public function setIsInDatabase($status);
+
+  /**
+   * @todo.
+   */
   public function isInCode();
+
+  /**
+   * @todo.
+   */
+  public function setIsInCode($status);
+
+  public function getExportModule();
+
+  /**
+   * @todo.
+   */
+  public function setExportModule($module);
 
   /**
    * @todo.

@@ -100,7 +100,21 @@ function ctools_exportable_get_info($exportable_type = NULL) {
   foreach ($exportable_info as $name => $data) {
     $exportable_info[$name] += array(
       'controller class' => 'Drupal\ctools\ExportableController',
+      'exportable class' => 'Drupal\ctools\ExportableBase',
       'load hook' => $name . '_load',
+      // @todo a lot of this should not be relevant now.
+      'key' => 'name',
+      'key name' => 'Name',
+      'status' => 'default_' . $name,
+      'default hook' => 'default_' . $name,
+      'can disable' => TRUE,
+      'identifier' => $name,
+//      'primary key' => !empty($schema['primary key']) ? $schema['primary key'][0] : '',
+      'bulk export' => TRUE,
+//      'to hook code callback' => "$schema[module]_{$table}_to_hook_code",
+      'cache defaults' => FALSE,
+      'default cache bin' => 'cache',
+      'export type string' => 'type',
     );
   }
 

@@ -8,3 +8,22 @@ function ctools_export_test_ctools_plugin_api($module, $api) {
     return array('version' => 1);
   }
 }
+
+function ctools_export_test_ctools_exportable_info() {
+  return array(
+    'ctools_export_test' => array(
+      'controller class' => 'Drupal\ctools\DatabaseExportableController',
+      'key' => 'machine',
+      'identifier' => 'ctools_export_test',
+      'default hook' => 'default_ctools_export_tests',
+      'bulk export' => TRUE,
+      'api' => array(
+        'owner' => 'ctools_export_test',
+        'api' => 'default_ctools_export_tests',
+        'minimum_version' => 1,
+        'current_version' => 1,
+      ),
+      'schema' => 'ctools_export_test',
+    ),
+  );
+}

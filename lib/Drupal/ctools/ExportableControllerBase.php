@@ -35,14 +35,14 @@ abstract class ExportableControllerBase implements ExportableControllerInterface
   /**
    * @todo.
    */
-  public function getType($exportable) {
+  public function getType() {
     return $this->type;
   }
 
   /**
    * @todo.
    */
-  public function getInfo($exportable) {
+  public function getInfo() {
     return $this->info;
   }
 

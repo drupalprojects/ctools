@@ -10,7 +10,7 @@ namespace Drupal\ctools;
 /**
  * @todo.
  */
-abstract class ExportableBase implements ExportableInterface {
+class ExportableBase implements ExportableInterface {
 
   /**
    * @todo.
@@ -35,8 +35,27 @@ abstract class ExportableBase implements ExportableInterface {
 
   /**
    * @todo.
+   *
+   * @var bool
    */
-  public function __construct($data) {
+  protected $exportableModule;
+
+  /**
+   * @todo.
+   */
+  public function __construct($data, $exportableType = NULL) {
+    if (isset($exportableType)) {
+      $this->exportableType = $exportableType;
+    }
+
+    // This unpack is particularly naive. We should actually try to use
+    // something based on ctools_export_unpack_object for defaults and
+    // stuff.
+    // We should also use an unpack method rather than the constructor to
+    // make it more straightforward to override for specialized behavior.
+    foreach ($data as $key => $value) {
+      $this->$key = $value;
+    }
   }
 
   /**
@@ -77,8 +96,36 @@ abstract class ExportableBase implements ExportableInterface {
   /**
    * @todo.
    */
+  public function setIsInDatabase($status) {
+    $this->exportableInDatabase = $status;
+  }
+
+  /**
+   * @todo.
+   */
   public function isInCode() {
     return $this->exportableInCode;
+  }
+
+  /**
+   * @todo.
+   */
+  public function setIsInCode($status){
+    $this->exportableInCode = $status;
+  }
+
+  /**
+   * @todo.
+   */
+  public function getExportModule() {
+    return $this->exportableModule;
+  }
+
+  /**
+   * @todo.
+   */
+  public function setExportModule($module){
+    $this->exportableModule = $module;
   }
 
   /**

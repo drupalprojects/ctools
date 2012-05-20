@@ -6,3 +6,4 @@ dependencies[] = ctools
 hidden = TRUE
 
 files[] = ctools_export.test
+files[] = ctools_exportable.test
