@@ -38,7 +38,7 @@ function ctools_drush_command() {
     'options' => array(
       'format' => 'Display exportables info in a different format such as print_r, json, export. The default is to show in a tabular format.',
       'tables-only' => 'Only show list of exportable types/table names and not available objects.',
-      'filter' => 'Filter the list of exportables by status. Available options are enabled, disabled, overridden, and database.',
+      'filter' => 'Filter the list of exportables by status. Available options are enabled, disabled, overridden, database, and code.',
     ),
     'examples' => array(
       'drush ctools-export-info' => 'View export info on all exportables.',
@@ -366,8 +366,12 @@ function drush_ctools_export_info() {
       case 'database':
         $eval = '_ctools_drush_object_is_not_db_only';
       break;
+      // Show code only exportables.
+      case 'code':
+        $eval = '_ctools_drush_object_is_not_code_only';
+      break;
       default:
-        drush_log(dt('Invalid filter option. Available options are: enabled, disabled, overridden, and database.'), 'error');
+        drush_log(dt('Invalid filter option. Available options are: enabled, disabled, overridden, database, and code.'), 'error');
         return;
     }
 
@@ -674,7 +678,7 @@ function _drush_ctools_export_disable($table_name, $object) {
 }
 
 /**
- * Helper to determine if an object is disabled.
+ * Determine if an object is disabled.
  *
  * @param $object
  *   Loaded CTools exportable object.
@@ -686,7 +690,7 @@ function _ctools_drush_object_is_disabled($object) {
 }
 
 /**
- * Helper to determine if an object is enabled.
+ * Determine if an object is enabled.
  *
  * @see _ctools_drush_object_is_disabled.
  */
@@ -695,12 +699,7 @@ function _ctools_drush_object_is_enabled($object) {
 }
 
 /**
- * Helper to determine if an object is overridden.
- *
- * @param $object
- *   Loaded CTools exportable object.
- *
- * @return TRUE or FALSE
+ * Determine if an object is overridden.
  */
 function _ctools_drush_object_is_overridden($object) {
   $status = EXPORT_IN_CODE + EXPORT_IN_DATABASE;
@@ -708,9 +707,7 @@ function _ctools_drush_object_is_overridden($object) {
 }
 
 /**
- * Helper to determine if an object is not overridden.
- *
- * @see _ctools_drush_object_is_overridden.
+ * Determine if an object is not overridden.
  */
 function _ctools_drush_object_is_not_overridden($object) {
   $status = EXPORT_IN_CODE + EXPORT_IN_DATABASE;
@@ -718,24 +715,31 @@ function _ctools_drush_object_is_not_overridden($object) {
 }
 
 /**
- * Helper to determine if an object is only in the db.
- *
- * @param $object
- *   Loaded CTools exportable object.
- *
- * @return TRUE or FALSE
+ * Determine if an object is only in the db.
  */
 function _ctools_drush_object_is_db_only($object) {
   return ($object->export_type == EXPORT_IN_DATABASE) ? TRUE : FALSE;
 }
 
 /**
- * Helper to determine if an object is not in the db.
- *
- * @see _ctools_drush_object_is_db_only.
+ * Determine if an object is not in the db.
  */
 function _ctools_drush_object_is_not_db_only($object) {
   return ($object->export_type == EXPORT_IN_DATABASE) ? FALSE : TRUE;
+}
+
+/**
+ * Determine if an object is a code only default.
+ */
+function _ctools_drush_object_is_code_only($object) {
+  return ($object->export_type == EXPORT_IN_CODE) ? TRUE : FALSE;
+}
+
+/**
+ * Determine if an object is not a code only default.
+ */
+function _ctools_drush_object_is_not_code_only($object) {
+  return ($object->export_type == EXPORT_IN_CODE) ? FALSE : TRUE;
 }
 
 /**
