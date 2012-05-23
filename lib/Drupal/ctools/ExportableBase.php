@@ -48,14 +48,14 @@ class ExportableBase implements ExportableInterface {
       $this->exportableType = $exportableType;
     }
 
-    // This unpack is particularly naive. We should actually try to use
-    // something based on ctools_export_unpack_object for defaults and
-    // stuff.
-    // We should also use an unpack method rather than the constructor to
-    // make it more straightforward to override for specialized behavior.
-    foreach ($data as $key => $value) {
-      $this->$key = $value;
-    }
+    $this->unpack($data);
+  }
+
+  /**
+   * @todo.
+   */
+  public function unpack($data) {
+    ctools_exportable_get_controller($this->exportableType)->unpack($this, $data);
   }
 
   /**

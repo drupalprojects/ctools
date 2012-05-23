@@ -14,7 +14,7 @@ class CToolsExportableTestCase extends WebTestBase {
 
   public static function getInfo() {
     return array(
-      'name' => 'CTools export CRUD tests',
+      'name' => 'CTools exportable CRUD tests',
       'description' => 'Test the CRUD functionality for the ctools export system.',
       'group' => 'Chaos Tools Suite',
     );
@@ -39,7 +39,6 @@ class CToolsExportableTestCase extends WebTestBase {
     $schema = $controller->getSchema();
     $this->assertEqual($schema['fields']['machine']['type'], 'varchar', 'Exportable schema loaded correctly.');
 
-    $loaded_export = $controller->load('default_test');
     $expected_export = new $info['exportable class'](array(
       'disabled' => FALSE,
       'api_version' => 1,
@@ -51,7 +50,27 @@ class CToolsExportableTestCase extends WebTestBase {
     $expected_export->setIsInCode(TRUE);
     $expected_export->setExportModule('ctools_export_test');
 
+    $loaded_export = $controller->load('default_test');
+
     $this->assertEqual($expected_export, $loaded_export, 'An exportable object has been loaded correctly from defaults.');
+
+    $expected_export = new $info['exportable class'](array(
+      'disabled' => FALSE,
+      'api_version' => 1,
+      'machine' => 'database_test',
+      'title' => 'Database test',
+      'number' => 0,
+      'data' => serialize(array(
+        'test_1' => 'Test 1',
+        'test_2' => 'Test 2',
+      )),
+    ), $exportable_type);
+    $expected_export->setIsInDatabase(TRUE);
+    $expected_export->setExportModule('ctools_export_test');
+
+    $loaded_export = $controller->load('database_test');
+
+    $this->assertEqual($expected_export, $loaded_export, 'An exportable object has been loaded correctly from the database.');
   }
 
 }

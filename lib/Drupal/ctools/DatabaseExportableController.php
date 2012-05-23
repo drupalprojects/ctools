@@ -159,6 +159,14 @@ class DatabaseExportableController extends ExportableControllerBase {
       if (isset($status[$object->{$this->info['key']}])) {
         $object->disabled = $status[$object->{$this->info['key']}];
       }
+      else {
+        $object->disabled = FALSE;
+      }
+
+      // Set the API version.
+      $object->api_version = $this->info['api']['current_version'];
+      // Set the export module name.
+      $object->setExportModule($this->schema['module']);
 
       $this->cache[$object->{$this->info['key']}] = $object;
       if ($type == 'conditions') {
@@ -333,6 +341,34 @@ class DatabaseExportableController extends ExportableControllerBase {
     }
 
     variable_set($this->info['status'], $status);
+  }
+
+  /**
+   * @todo.
+   */
+  public function unpack($exportable, $data) {
+    // Go through our schema and build correlations.
+    foreach ($data as $field => $value) {
+      if (isset($this->schema[$field])) {
+        $exportable->$field = !empty($this->schema[$field]['serialize']) ? unserialize($data[$field]) : $data[$field];
+      }
+      else {
+        $exportable->$field = $value;
+      }
+    }
+
+    if (isset($this->schema['join'])) {
+      foreach ($this->schema['join'] as $join_key => $join) {
+        if (!empty($join['load'])) {
+          // Might just want drupal_get_schema here later on?
+          $join_schema = ctools_export_get_schema($join['table']);
+          foreach ($join['load'] as $field) {
+            $exportable->$field = !empty($join_schema['fields'][$field]['serialize']) ? unserialize($data[$field]) : $data[$field];
+          }
+        }
+      }
+    }
+
   }
 
 }
