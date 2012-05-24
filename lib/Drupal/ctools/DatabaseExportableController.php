@@ -326,6 +326,22 @@ class DatabaseExportableController extends ExportableControllerBase {
    * @todo.
    */
   public function save($exportable) {
+    // Objects should have a serial primary key. If not, simply fail to write.
+    if (empty($this->schema['primary key'])) {
+      return FALSE;
+    }
+
+    if ($exportable->isInDatabase()) {
+      // Existing record.
+      $update = $this->schema['primary key'];
+    }
+    else {
+      // New record.
+      $update = array();
+      $exportable->setIsInDatabase(TRUE);
+    }
+
+    return drupal_write_record($this->info['schema'], $exportable, $update);
   }
 
   /**
