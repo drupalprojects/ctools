@@ -332,6 +332,9 @@ class DatabaseExportableController extends ExportableControllerBase {
    * @param $keys Array
    */
   public function delete($keys) {
+    db_delete($this->info['schema'])
+      ->condition($this->info['key'], $keys)
+      ->execute();
   }
 
   /**
