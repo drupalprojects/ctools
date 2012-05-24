@@ -310,7 +310,16 @@ class DatabaseExportableController extends ExportableControllerBase {
   /**
    * @todo.
    */
-  public function create() {
+  public function create(array $data = array()) {
+    // Populate default values.
+    foreach ($this->schema['fields'] as $field => $info) {
+      // Get a default if nothing exists.
+      if (!isset($data[$field])) {
+        $data[$field] = !empty($info['default']) ? $info['default'] : NULL;
+      }
+    }
+
+    return new $this->info['exportable class']($data, $this->type);
   }
 
   /**

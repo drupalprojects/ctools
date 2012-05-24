@@ -55,7 +55,7 @@ interface ExportableControllerInterface {
   /**
    * @todo.
    */
-  public function create();
+  public function create(array $data = array());
 
   /**
    * @todo.
