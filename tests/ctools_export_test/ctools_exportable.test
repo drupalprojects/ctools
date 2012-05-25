@@ -71,6 +71,8 @@ class CToolsExportableTestCase extends WebTestBase {
     $loaded_export = $controller->load('database_test');
 
     $this->assertEqual($expected_export, $loaded_export, 'An exportable object has been loaded correctly from the database.');
+
+    $this->assertTrue(is_array($loaded_export->data), 'Serialized data has been unserialized on the exportable.');
   }
 
 }

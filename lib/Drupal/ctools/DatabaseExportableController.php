@@ -377,8 +377,8 @@ class DatabaseExportableController extends ExportableControllerBase {
   public function unpack($exportable, $data) {
     // Go through our schema and build correlations.
     foreach ($data as $field => $value) {
-      if (isset($this->schema[$field])) {
-        $exportable->$field = !empty($this->schema[$field]['serialize']) ? unserialize($data[$field]) : $data[$field];
+      if (isset($this->schema['fields'][$field])) {
+        $exportable->$field = !empty($this->schema['fields'][$field]['serialize']) ? unserialize($data[$field]) : $data[$field];
       }
       else {
         $exportable->$field = $value;
