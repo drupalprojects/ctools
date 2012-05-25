@@ -71,8 +71,8 @@ function ctools_export_test_install() {
   // Put this default in the database, so we have this in code and in the database.
   $ctools_export_test = new stdClass();
   $ctools_export_test->machine = 'overridden_test';
-  $ctools_export_test->title = 'Overridden test';
-  $ctools_export_test->number = 1;
+  $ctools_export_test->title = 'Overridden test (database value)';
+  $ctools_export_test->number = 2;
   $ctools_export_test->data = array(
     'test_1' => 'Test 1',
     'test_2' => 'Test 2',

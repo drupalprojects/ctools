@@ -73,6 +73,27 @@ class CToolsExportableTestCase extends WebTestBase {
     $this->assertEqual($expected_export, $loaded_export, 'An exportable object has been loaded correctly from the database.');
 
     $this->assertTrue(is_array($loaded_export->data), 'Serialized data has been unserialized on the exportable.');
+
+    // Load an overridden exportable.
+    $expected_export = new $info['exportable class'](array(
+      'disabled' => FALSE,
+      'api_version' => 1,
+      'machine' => 'overridden_test',
+      'title' => 'Overridden test (database value)',
+      // Overridden value is 2, default is 1.
+      'number' => 2,
+      'data' => serialize(array(
+        'test_1' => 'Test 1',
+        'test_2' => 'Test 2',
+      )),
+    ), $exportable_type);
+    $expected_export->setIsInDatabase(TRUE);
+    $expected_export->setIsInCode(TRUE);
+    $expected_export->setExportModule('ctools_export_test');
+
+    $loaded_export = $controller->load('overridden_test');
+
+    $this->assertEqual($expected_export, $loaded_export, 'An overridden exportable object has been loaded correctly from the database.');
   }
 
 }

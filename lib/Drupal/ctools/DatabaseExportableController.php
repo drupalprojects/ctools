@@ -225,7 +225,7 @@ class DatabaseExportableController extends ExportableControllerBase {
         if (!empty($this->cache[$object->{$this->info['key']}])) {
 //          $this->cache[$object->{$this->info['key']}]->{$this->info['export type string']} = t('Overridden');
           $this->cache[$object->{$this->info['key']}]->setIsInCode(TRUE);
-          $this->cache[$object->{$this->info['key']}]->setExportModule($object->getExportModule);
+          $this->cache[$object->{$this->info['key']}]->setExportModule($object->getExportModule());
           if ($type == 'conditions') {
             $return[$object->{$this->info['key']}] = $this->cache[$object->{$this->info['key']}];
           }
