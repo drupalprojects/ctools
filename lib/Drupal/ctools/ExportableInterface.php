@@ -79,4 +79,9 @@ interface ExportableInterface {
    */
   public function createDuplicate();
 
+  /**
+   * @todo.
+   */
+  public function id();
+
 }

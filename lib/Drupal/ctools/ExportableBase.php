@@ -149,4 +149,12 @@ class ExportableBase implements ExportableInterface {
     ctools_exportable_get_controller($this->exportableType)->createDuplicate($this);
   }
 
+  /**
+   * @todo.
+   */
+  public function id() {
+    $info = ctools_exportable_get_controller($this->exportableType)->getInfo();
+    return $this->{$info['key']};
+  }
+
 }
