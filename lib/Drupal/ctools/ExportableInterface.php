@@ -57,6 +57,9 @@ interface ExportableInterface {
    */
   public function setIsInCode($status);
 
+  /**
+   * @todo.
+   */
   public function getExportModule();
 
   /**
