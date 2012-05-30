@@ -156,8 +156,8 @@ class DatabaseExportableController extends ExportableControllerBase {
 //      $object->{$this->info['export type string']} = t('Normal');
       $object->setIsInDatabase(TRUE);
       // Determine if default object is enabled or disabled.
-      if (isset($status[$object->{$this->info['key']}])) {
-        $object->disabled = $status[$object->{$this->info['key']}];
+      if (isset($status[$object->id()])) {
+        $object->disabled = $status[$object->id()];
       }
       else {
         $object->disabled = FALSE;
@@ -168,9 +168,9 @@ class DatabaseExportableController extends ExportableControllerBase {
       // Set the export module name.
       $object->setExportModule($this->schema['module']);
 
-      $this->cache[$object->{$this->info['key']}] = $object;
+      $this->cache[$object->id()] = $object;
       if ($type == 'conditions') {
-        $return[$object->{$this->info['key']}] = $object;
+        $return[$object->id()] = $object;
       }
     }
 
@@ -211,23 +211,23 @@ class DatabaseExportableController extends ExportableControllerBase {
           }
         }
         else if ($type == 'keys') {
-          if (!in_array($object->{$this->info['key']}, $args)) {
+          if (!in_array($object->id(), $args)) {
             continue;
           }
         }
 
         // Determine if default object is enabled or disabled.
-        if (isset($status[$object->{$this->info['key']}])) {
-          $object->disabled = $status[$object->{$this->info['key']}];
+        if (isset($status[$object->id()])) {
+          $object->disabled = $status[$object->id()];
         }
 
         // If we found a default but it's in the dtabase, mark it so.
-        if (!empty($this->cache[$object->{$this->info['key']}])) {
-//          $this->cache[$object->{$this->info['key']}]->{$this->info['export type string']} = t('Overridden');
-          $this->cache[$object->{$this->info['key']}]->setIsInCode(TRUE);
-          $this->cache[$object->{$this->info['key']}]->setExportModule($object->getExportModule());
+        if (!empty($this->cache[$object->id()])) {
+//          $this->cache[$object->id()]->{$this->info['export type string']} = t('Overridden');
+          $this->cache[$object->id()]->setIsInCode(TRUE);
+          $this->cache[$object->id()]->setExportModule($object->getExportModule());
           if ($type == 'conditions') {
-            $return[$object->{$this->info['key']}] = $this->cache[$object->{$this->info['key']}];
+            $return[$object->id()] = $this->cache[$object->id()];
           }
         }
         else {
@@ -235,9 +235,9 @@ class DatabaseExportableController extends ExportableControllerBase {
 //          $object->export_type = EXPORT_IN_CODE;
           $object->setIsInCode(TRUE);
 
-          $this->cache[$object->{$this->info['key']}] = $object;
+          $this->cache[$object->id()] = $object;
           if ($type == 'conditions') {
-            $return[$object->{$this->info['key']}] = $object;
+            $return[$object->id()] = $object;
           }
         }
       }
