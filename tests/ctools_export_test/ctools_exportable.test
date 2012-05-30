@@ -39,6 +39,36 @@ class CToolsExportableTestCase extends WebTestBase {
     $schema = $controller->getSchema();
     $this->assertEqual($schema['fields']['machine']['type'], 'varchar', 'Exportable schema loaded correctly.');
 
+    // Create a new exportable from defaults.
+    $expected_export = new $info['exportable class'](array(
+      'machine' => '',
+      'title' => '',
+      'number' => 0,
+      'data' => '',
+    ), $exportable_type);
+
+    $created_export = $controller->create();
+
+    $this->assertEqual($expected_export, $created_export, 'An exportable object has been created correctly from defaults.');
+
+    // Create a new exportable from data.
+    $expected_export = new $info['exportable class'](array(
+      'machine' => 'created',
+      'title' => 'Created exportable',
+      'number' => 0,
+      'data' => '',
+    ), $exportable_type);
+
+    $data = array(
+      'machine' => 'created',
+      'title' => 'Created exportable',
+      'number' => 0,
+      'data' => '',
+    );
+    $created_export = $controller->create($data);
+
+    $this->assertEqual($expected_export, $created_export, 'An exportable object has been created correctly from data.');
+
     $expected_export = new $info['exportable class'](array(
       'disabled' => FALSE,
       'api_version' => 1,
@@ -94,6 +124,33 @@ class CToolsExportableTestCase extends WebTestBase {
     $loaded_export = $controller->load('overridden_test');
 
     $this->assertEqual($expected_export, $loaded_export, 'An overridden exportable object has been loaded correctly from the database.');
+
+    // Save an exportable to the database.
+    $default_export = $controller->load('default_test');
+    $default_export->save();
+
+    $loaded_export = $controller->load('default_test');
+
+    $this->assertTrue($loaded_export->isInDatabase(), 'A default exportable has been saved and loaded from the database.');
+
+    $this->assertEqual($default_export, $loaded_export, 'A saved exportable object matches it\'s default.');
+
+    // Delete an overridden exportable from the database.
+    $loaded_export->delete();
+
+    // TODO: Replace with reloading the exportable when we can clear the caches in controller.
+    $result = db_query("SELECT title from {ctools_export_test} WHERE machine = 'default_test'")->fetchField();
+
+    $this->assertFalse($result, 'An overridden exportable has been deleted from the database and reverted to it\'s default.');
+
+    // Delete an exportable from the database.
+    $loaded_export = $controller->load('database_test');
+    $loaded_export->delete();
+
+    // TODO: Replace with reloading the exportable when we can clear the caches in controller.
+    $result = db_query("SELECT title from {ctools_export_test} WHERE machine = 'database_test'")->fetchField();
+
+    $this->assertFalse($result, 'A saved exportable has been deleted from the database.');
   }
 
 }
