@@ -219,9 +219,10 @@ function ctools_entity_field_content_type_formatter_styles($form, &$form_state) 
   $subtype = $form_state['subtype_name'];
   list($entity_type, $field_name) = explode(':', $subtype, 2);
   $field = field_info_field($field_name);
-  module_load_include('inc', 'field_ui', 'field_ui.admin');
 
-  ctools_include('fields');
+  ctools_form_include($form_state, 'field_ui.admin', 'field_ui', '');
+  ctools_form_include($form_state, 'fields');
+
   $form['ctools_field_list'] = array(
     '#type' => 'value',
     '#value' => array(),
