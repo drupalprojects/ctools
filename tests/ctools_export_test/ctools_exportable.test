@@ -130,6 +130,22 @@ class CToolsExportableTestCase extends WebTestBase {
 
     $this->assertTrue(count($all_exportables) == 3, 'All exportables have been loaded');
 
+    // Disable an exportable
+    $loaded_export = $controller->load('database_test');
+    $loaded_export->disable();
+
+    $status = variable_get($info['status'], array());
+
+    $this->assertTrue(!empty($status[$loaded_export->id()]), 'An exportable has been disabled.');
+
+    // Enable an exportable
+    $loaded_export = $controller->load('database_test');
+    $loaded_export->enable();
+
+    $status = variable_get($info['status'], array());
+
+    $this->assertTrue(empty($status[$loaded_export->id()]), 'An exportable has been enabled.');
+
     // Save an exportable to the database.
     $default_export = $controller->load('default_test');
     $default_export->save();

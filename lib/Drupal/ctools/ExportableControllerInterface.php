@@ -80,7 +80,7 @@ interface ExportableControllerInterface {
   /**
    * @todo.
    */
-  public function setStatus($exportable, $status);
+  public function setStatus($exportable, $new_status);
 
   /**
    * @todo.

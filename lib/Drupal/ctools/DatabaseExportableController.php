@@ -356,16 +356,15 @@ class DatabaseExportableController extends ExportableControllerBase {
   /**
    * @todo.
    */
-  public function setStatus($exportable, $status) {
+  public function setStatus($exportable, $new_status) {
     $status = variable_get($this->info['status'], array());
-    $key = $this->info['key'];
 
     // Compare
     if (!$new_status && $exportable->isInDatabase()) {
-      unset($status[$exportable->{$key}]);
+      unset($status[$exportable->id()]);
     }
     else {
-      $status[$exportable->{$key}] = $new_status;
+      $status[$exportable->id()] = $new_status;
     }
 
     variable_set($this->info['status'], $status);
