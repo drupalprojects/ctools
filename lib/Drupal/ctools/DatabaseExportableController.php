@@ -60,7 +60,7 @@ class DatabaseExportableController extends ExportableControllerBase {
    * @todo.
    */
   public function loadAll(/* $pageSize, $pageNumber */) {
-    $result = $this->loadExportables('all');
+    return $this->loadExportables('all');
   }
 
   /**
