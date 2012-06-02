@@ -42,7 +42,7 @@ class CToolsExportableTestCase extends WebTestBase {
     // Create a new exportable from defaults.
     $expected_export = new $info['exportable class'](array(
       'machine' => '',
-      'title' => '',
+      'title' => 'default_title',
       'number' => 0,
       'data' => '',
     ), $exportable_type);
@@ -50,6 +50,18 @@ class CToolsExportableTestCase extends WebTestBase {
     $created_export = $controller->create();
 
     $this->assertEqual($expected_export, $created_export, 'An exportable object has been created correctly from defaults.');
+
+    // Create a new exportable with no defaults.
+    $expected_export = new $info['exportable class'](array(
+      'machine' => NULL,
+      'title' => NULL,
+      'number' => NULL,
+      'data' => NULL,
+    ), $exportable_type);
+
+    $created_export = $controller->create(array(), FALSE);
+
+    $this->assertEqual($expected_export, $created_export, 'An exportable object has been created correctly with no defaults.');
 
     // Create a new exportable from data.
     $expected_export = new $info['exportable class'](array(

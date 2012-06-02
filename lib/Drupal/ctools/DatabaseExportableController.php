@@ -310,12 +310,12 @@ class DatabaseExportableController extends ExportableControllerBase {
   /**
    * @todo.
    */
-  public function create(array $data = array()) {
+  public function create(array $data = array(), $set_defaults = TRUE) {
     // Populate default values.
     foreach ($this->schema['fields'] as $field => $info) {
       // Get a default if nothing exists.
       if (!isset($data[$field])) {
-        $data[$field] = !empty($info['default']) ? $info['default'] : NULL;
+        $data[$field] = ($set_defaults && !empty($info['default'])) ? $info['default'] : NULL;
       }
     }
 

@@ -31,7 +31,7 @@ function ctools_export_test_schema() {
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
-        'default' => '',
+        'default' => 'default_title',
       ),
       'number' => array(
         'description' => "A number.",
