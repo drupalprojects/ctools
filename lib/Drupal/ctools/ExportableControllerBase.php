@@ -24,6 +24,11 @@ abstract class ExportableControllerBase implements ExportableControllerInterface
   /**
    * @todo.
    */
+  protected $exporter;
+
+  /**
+   * @todo.
+   */
   public function __construct($type) {
     $this->type = $type;
 
@@ -51,7 +56,7 @@ abstract class ExportableControllerBase implements ExportableControllerInterface
    */
   public function import($code) {
     // @todo validate the object actually exists.
-    return $this->info['exporter']->import($code);
+    return $this->getExporter()->import($code);
   }
 
   /**
@@ -72,8 +77,23 @@ abstract class ExportableControllerBase implements ExportableControllerInterface
    * @todo.
    */
   public function export($exportable, $indent = '') {
-    // @todo validate the object actually exists.
-    return $this->info['exporter']->export($exportable, $indent);
+    return $this->getExporter->export($exportable, $indent);
+  }
+
+  /**
+   * @todo.
+   */
+  protected function getExporter() {
+    if (empty($this->exporter)) {
+      if (class_exists($this->info['exporter class'])) {
+        $this->exporter = new $this->info['exporter class']();
+      }
+      else {
+        return FALSE;
+      }
+    }
+
+    return $this->exporter;
   }
 
   /**
