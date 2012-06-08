@@ -77,7 +77,7 @@ abstract class ExportableControllerBase implements ExportableControllerInterface
    * @todo.
    */
   public function export($exportable, $indent = '') {
-    return $this->getExporter->export($exportable, $indent);
+    return $this->getExporter()->export($exportable, $indent);
   }
 
   /**
