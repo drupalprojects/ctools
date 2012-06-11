@@ -52,7 +52,14 @@ class ExportableBase implements ExportableInterface {
   }
 
   /**
-   * @todo.
+   * Extracts properties from the exportable as an array of data.
+   */
+  public function pack() {
+    return ctools_exportable_get_controller($this->exportableType)->pack($this);
+  }
+
+  /**
+   * Unpacks an array of data as properties on the exportable.
    */
   public function unpack($data) {
     ctools_exportable_get_controller($this->exportableType)->unpack($this, $data);

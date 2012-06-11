@@ -88,6 +88,28 @@ interface ExportableControllerInterface {
   public function export($exportable, $indent = '');
 
   /**
+   * Unpacks an array of data into properties on an exportable.
+   *
+   * @param \Drupal\ctools\ExportableInterface $exportable
+   *   The exportable to unpack the data into.
+   * @param array $data
+   *   An array of data to unpack onto the exportable.
+   */
+  public function unpack(ExportableInterface $exportable, array $data);
+
+  /**
+   * Extracts properties from an exportable.
+   *
+   * @param \Drupal\ctools\ExportableInterface $exportable
+   *   The exportable to pack data from.
+   *
+   * @return
+   *   An array of data from the exportable, as used by
+   *   \Drupal\ctools\ExporterInterface methods.
+   */
+  public function pack(ExportableInterface $exportable);
+
+  /**
    * @todo.
    */
   public function createDuplicate($exportable);

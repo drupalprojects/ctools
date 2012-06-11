@@ -371,9 +371,9 @@ class DatabaseExportableController extends ExportableControllerBase {
   }
 
   /**
-   * @todo.
+   * Implements \Drupal\ctools\ExportableControllerInterface::unpack().
    */
-  public function unpack($exportable, $data) {
+  public function unpack(ExportableInterface $exportable, array $data) {
     // Go through our schema and build correlations.
     foreach ($data as $field => $value) {
       if (isset($this->schema['fields'][$field])) {
@@ -395,7 +395,30 @@ class DatabaseExportableController extends ExportableControllerBase {
         }
       }
     }
+  }
 
+  /**
+   * Implements \Drupal\ctools\ExportableControllerInterface::pack().
+   */
+  public function pack(ExportableInterface $exportable) {
+    $data = array();
+
+    foreach ($this->reserved_keys as $property) {
+      if (isset($exportable->{$property})) {
+        $data[$property] = $exportable->{$property};
+      }
+    }
+
+    foreach ($this->schema['fields'] as $field => $info) {
+      if (isset($exportable->{$field})) {
+        $data[$field] = $exportable->{$field};
+      }
+      else {
+        $data[$field] = !empty($info['default']) ? $info['default'] : NULL;
+      }
+    }
+
+    return $data;
   }
 
 }

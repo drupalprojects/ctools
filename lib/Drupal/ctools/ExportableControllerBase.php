@@ -29,6 +29,14 @@ abstract class ExportableControllerBase implements ExportableControllerInterface
   /**
    * @todo.
    */
+  protected $reserved_keys = array(
+    'disabled',
+    'api_version',
+  );
+
+  /**
+   * @todo.
+   */
   public function __construct($type) {
     $this->type = $type;
 
@@ -77,7 +85,7 @@ abstract class ExportableControllerBase implements ExportableControllerInterface
    * @todo.
    */
   public function export($exportable, $indent = '') {
-    return $this->getExporter()->export($exportable, $indent);
+    return $this->getExporter()->export($exportable->pack(), $indent);
   }
 
   /**

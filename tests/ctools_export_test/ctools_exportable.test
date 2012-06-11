@@ -81,20 +81,29 @@ class CToolsExportableTestCase extends WebTestBase {
 
     $this->assertEqual($expected_export, $created_export, 'An exportable object has been created correctly from data.');
 
-    $expected_export = new $info['exportable class'](array(
+    $this->assertEqual($data, $created_export->pack(), 'Data has been successfully packed as an array from a created exportable.');
+
+    $default_data = array(
       'disabled' => FALSE,
       'api_version' => 1,
       'machine' => 'default_test',
       'title' => 'Default test',
       'number' => 2,
       'data' => serialize(''),
-    ), $exportable_type);
+    );
+
+    $expected_export = new $info['exportable class']($default_data, $exportable_type);
     $expected_export->setIsInCode(TRUE);
     $expected_export->setExportModule('ctools_export_test');
 
     $loaded_export = $controller->load('default_test');
 
     $this->assertEqual($expected_export, $loaded_export, 'An exportable object has been loaded correctly from defaults.');
+
+    // When data is packed, it will expect the unserialized empty string.
+    $default_data['data'] = '';
+
+    $this->assertEqual($default_data, $loaded_export->pack(), 'Data has been successfully packed as an array from a default exportable.');
 
     $expected_export = new $info['exportable class'](array(
       'disabled' => FALSE,
