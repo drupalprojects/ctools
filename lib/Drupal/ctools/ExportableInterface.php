@@ -58,6 +58,11 @@ interface ExportableInterface {
   public function setIsInCode($status);
 
   /**
+   * Returns the exportable type, as used in ctools_exportable_get_info().
+   */
+  public function getExportableType();
+
+  /**
    * @todo.
    */
   public function getExportModule();

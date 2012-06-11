@@ -122,6 +122,13 @@ class ExportableBase implements ExportableInterface {
   }
 
   /**
+   * Implements \Drupal\ctools\ExportableInterface::getExportableType().
+   */
+  public function getExportableType() {
+    return $this->exportableType;
+  }
+
+  /**
    * @todo.
    */
   public function getExportModule() {
