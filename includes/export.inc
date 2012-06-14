@@ -101,7 +101,7 @@ function ctools_exportable_get_info($exportable_type = NULL) {
     $exportable_info[$name] += array(
       'controller class' => 'Drupal\ctools\ExportableController',
       'exportable class' => 'Drupal\ctools\ExportableBase',
-      'exporter class' => 'Drupal\ctools\ExporterPHP',
+      'exporter class' => 'Drupal\ctools\PhpExporter',
       'load hook' => $name . '_load',
       // @todo a lot of this should not be relevant now.
       'key' => 'name',
