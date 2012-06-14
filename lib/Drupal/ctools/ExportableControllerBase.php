@@ -27,7 +27,10 @@ abstract class ExportableControllerBase implements ExportableControllerInterface
   protected $exporter;
 
   /**
-   * @todo.
+   * An array of reserved keys.
+   *
+   * These will apply to the exportable properties, and the data array that is
+   * exported.
    */
   protected $reserved_keys = array(
     'disabled',

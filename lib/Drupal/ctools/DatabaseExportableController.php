@@ -155,13 +155,6 @@ class DatabaseExportableController extends ExportableControllerBase {
       // @todo -- these need to be fixed
 //      $object->{$this->info['export type string']} = t('Normal');
       $object->setIsInDatabase(TRUE);
-      // Determine if default object is enabled or disabled.
-      if (isset($status[$object->id()])) {
-        $object->disabled = $status[$object->id()];
-      }
-      else {
-        $object->disabled = FALSE;
-      }
 
       // Set the API version.
       $object->api_version = $this->info['api']['current_version'];
@@ -214,11 +207,6 @@ class DatabaseExportableController extends ExportableControllerBase {
           if (!in_array($object->id(), $args)) {
             continue;
           }
-        }
-
-        // Determine if default object is enabled or disabled.
-        if (isset($status[$object->id()])) {
-          $object->disabled = $status[$object->id()];
         }
 
         // If we found a default but it's in the dtabase, mark it so.
@@ -402,6 +390,8 @@ class DatabaseExportableController extends ExportableControllerBase {
    */
   public function pack(ExportableInterface $exportable) {
     $data = array();
+
+    $data['disabled'] = !$exportable->isEnabled();
 
     foreach ($this->reserved_keys as $property) {
       if (isset($exportable->{$property})) {

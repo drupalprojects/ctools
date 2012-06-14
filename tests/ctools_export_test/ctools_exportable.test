@@ -65,6 +65,7 @@ class CToolsExportableTestCase extends WebTestBase {
 
     // Create a new exportable from data.
     $expected_export = new $info['exportable class'](array(
+      'disabled' => FALSE,
       'machine' => 'created',
       'title' => 'Created exportable',
       'number' => 0,
@@ -72,6 +73,7 @@ class CToolsExportableTestCase extends WebTestBase {
     ), $exportable_type);
 
     $data = array(
+      'disabled' => FALSE,
       'machine' => 'created',
       'title' => 'Created exportable',
       'number' => 0,
@@ -104,6 +106,10 @@ class CToolsExportableTestCase extends WebTestBase {
     $default_data['data'] = '';
 
     $this->assertEqual($default_data, $loaded_export->pack(), 'Data has been successfully packed as an array from a default exportable.');
+
+    $loaded_export = $controller->load('default_test_disabled');
+
+    $this->assertFalse($loaded_export->isEnabled(), 'A disabled exportable object has been loaded correctly from defaults');
 
     $expected_export = new $info['exportable class'](array(
       'disabled' => FALSE,
@@ -149,23 +155,19 @@ class CToolsExportableTestCase extends WebTestBase {
     // Load all exportables.
     $all_exportables = $controller->loadAll();
 
-    $this->assertTrue(count($all_exportables) == 3, 'All exportables have been loaded');
+    $this->assertTrue(count($all_exportables) == 4, 'All exportables have been loaded');
 
     // Disable an exportable
     $loaded_export = $controller->load('database_test');
     $loaded_export->disable();
 
-    $status = variable_get($info['status'], array());
-
-    $this->assertTrue(!empty($status[$loaded_export->id()]), 'An exportable has been disabled.');
+    $this->assertFalse($loaded_export->isEnabled(), 'An exportable has been disabled.');
 
     // Enable an exportable
     $loaded_export = $controller->load('database_test');
     $loaded_export->enable();
 
-    $status = variable_get($info['status'], array());
-
-    $this->assertTrue(empty($status[$loaded_export->id()]), 'An exportable has been enabled.');
+    $this->assertTrue($loaded_export->isEnabled(), 'An exportable has been enabled.');
 
     // Save an exportable to the database.
     $default_export = $controller->load('default_test');

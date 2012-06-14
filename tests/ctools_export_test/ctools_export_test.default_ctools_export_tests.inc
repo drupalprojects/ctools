@@ -27,5 +27,14 @@ function ctools_export_test_default_ctools_export_tests() {
     'data' => serialize(''),
   );
 
+  $ctools_export_tests['default_test_disabled'] = array(
+    'disabled' => TRUE,
+    'api_version' => 1,
+    'machine' => 'default_test_disabled',
+    'title' => 'Default test (disabled)',
+    'number' => 2,
+    'data' => serialize(''),
+  );
+
   return $ctools_export_tests;
 }

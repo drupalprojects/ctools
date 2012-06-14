@@ -41,6 +41,13 @@ class ExportableBase implements ExportableInterface {
   protected $exportableModule;
 
   /**
+   * Stores the disabled state of the exportable.
+   *
+   * @var bool
+   */
+  protected $disabled = FALSE;
+
+  /**
    * @todo.
    */
   public function __construct($data, $exportableType = NULL) {
@@ -48,7 +55,18 @@ class ExportableBase implements ExportableInterface {
       $this->exportableType = $exportableType;
     }
 
+    $disabled = FALSE;
+
+    if (isset($data['disabled'])) {
+      $disabled = $data['disabled'];
+      unset($data['disabled']);
+    }
+
     $this->unpack($data);
+
+    $info = ctools_exportable_get_controller($this->exportableType)->getInfo();
+    $status = variable_get($info['status'], array());
+    $this->disabled = isset($status[$this->id()]) ? $status[$this->id()] : $disabled;
   }
 
   /**
@@ -83,6 +101,7 @@ class ExportableBase implements ExportableInterface {
    * @todo.
    */
   public function enable() {
+    $this->disabled = FALSE;
     ctools_exportable_get_controller($this->exportableType)->enable($this);
   }
 
@@ -90,7 +109,15 @@ class ExportableBase implements ExportableInterface {
    * @todo.
    */
   public function disable() {
+    $this->disabled = TRUE;
     ctools_exportable_get_controller($this->exportableType)->disable($this);
+  }
+
+  /**
+   * Implements Drupal\ctools\ExportableInterface::isEnabled().
+   */
+  public function isEnabled() {
+    return !$this->disabled;
   }
 
   /**

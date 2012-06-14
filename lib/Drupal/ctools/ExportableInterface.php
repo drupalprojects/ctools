@@ -38,6 +38,14 @@ interface ExportableInterface {
   public function disable();
 
   /**
+   * Returns whether the exportable is enabled.
+   *
+   * @return bool
+   *   TRUE if the exportable is enabled and FALSE otherwise.
+   */
+  public function isEnabled();
+
+  /**
    * @todo.
    */
   public function isInDatabase();
