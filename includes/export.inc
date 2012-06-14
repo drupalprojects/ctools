@@ -18,18 +18,42 @@ define('EXPORT_IN_DATABASE', 0x01);
 define('EXPORT_IN_CODE', 0x02);
 
 /**
+ * Creates a new object for the given $table.
+ *
+ * This is the same as ctools_exportable_new but does not have a values
+ * parameter.
+ *
+ * @param string $exportable_type
+ *   The name of the table to use to retrieve $schema values. This table
+ *   must have an 'export' section containing data or this function
+ *   will fail.
+ * @param bool $set_defaults
+ *   If TRUE, then default values will be retrieved from schema fields and set
+ *   on the object. If FALSE, no default values will be used.
+ *
+ * @return Drupal\ctools\ExportableInterface
+ *   The loaded exportable object.
+ */
+function ctools_exportable_new($exportable_type, $set_defaults = TRUE) {
+  return ctools_exportable_get_controller($exportable_type)->create(array(), $set_defaults);
+}
+
+/**
  * Constructs a new exportable object, without permanently saving it.
  *
- * @param $exportable_type
+ * @param string $exportable_type
  *   The type of the exportable.
- * @param $values
+ * @param array $values
  *   An array of values to set, keyed by property name.
+ * @param bool $set_defaults
+ *   If TRUE, then default values will be retrieved from schema fields and set
+ *   on the object. If FALSE, no default values will be used.
  *
  * @return Drupal\ctools\ExportableInterface
  *   A new exportable object.
  */
-function ctools_exportable_create($exportable_type, array $values) {
-  return ctools_exportable_get_controller($exportable_type)->create($values);
+function ctools_exportable_create($exportable_type, array $values, $set_defaults = TRUE) {
+  return ctools_exportable_get_controller($exportable_type)->create($values, $set_defaults);
 }
 
 /**
@@ -67,6 +91,82 @@ function ctools_exportable_load($exportable_type, $id) {
  */
 function ctools_exportable_load_multiple($exportable_type, $ids = FALSE, $conditions = array()) {
   return ctools_exportable_get_controller($exportable_type)->loadMultiple($ids, $conditions);
+}
+
+/**
+ * Loads all exportable objects of a given type.
+ *
+ * @param string $exportable_type
+ *   The name of the table to use to retrieve $schema values. This table
+ *   must have an 'export' section containing data or this function
+ *   will fail.
+ *
+ * @return array
+ *   An array of all loaded objects, keyed by the unique IDs of the export key.
+ */
+function ctools_exportable_load_all($exportable_type) {
+  return ctools_exportable_get_controller($exportable_type)->loadAll();
+}
+
+/**
+ * Saves a single exportable object.
+ *
+ * @param Drupal\ctools\ExportableInterface $exportable
+ *   The fully populated exportable object to save.
+ *
+ * @return int|bool
+ *   Failure to write a record will return FALSE. Otherwise SAVED_NEW or
+ *   SAVED_UPDATED is returned depending on the operation performed. The
+ *   $object parameter contains values for any serial fields defined by the
+ *   $table.
+ */
+function ctools_exportable_save(ExportableInterface $exportable) {
+  return $exportable->save();
+}
+
+/**
+ * Deletes a single exportable object.
+ *
+ * This only deletes from the database, which means that if an item is in
+ * code, then this is actually a revert.
+ *
+ * @param Drupal\ctools\ExportableInterface $exportable
+ *   The fully populated exportable object to delete.
+ */
+function ctools_exportable_delete(ExportableInterface $exportable) {
+  return $exportable->delete();
+}
+
+/**
+ * Changes the status of a certain object.
+ *
+ * @param Drupal\ctools\ExportableInterface $exportable
+ *   The fully populated exportable object to enable.
+ * @param bool $status
+ *   The status of the object, whether it is enabled of not.
+ */
+function ctools_exportable_set_status(ExportableInterface $exportable, $status) {
+  return ctools_exportable_get_controller($exportable->exportableType)->setStatus($exportable, $status);
+}
+
+/**
+ * Enables a certain object.
+ *
+ * @param Drupal\ctools\ExportableInterface $exportable
+ *   The fully populated exportable object to enable.
+ */
+function ctools_exportable_enable(ExportableInterface $exportable) {
+  return $exportable->enable();
+}
+
+/**
+ * Disables a certain object.
+ *
+ * @param Drupal\ctools\ExportableInterface $exportable
+ *   The fully populated object to disable.
+ */
+function ctools_exportable_disable(ExportableInterface $exportable) {
+  return $exportable->disable();
 }
 
 /**
