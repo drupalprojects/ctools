@@ -100,4 +100,12 @@ interface ExportableInterface {
    */
   public function id();
 
+  /**
+   * Fetches the title of this exportable.
+   *
+   * @return string
+   *   The title of this exportable.
+   */
+  public function title();
+
 }

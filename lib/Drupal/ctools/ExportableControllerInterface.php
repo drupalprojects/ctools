@@ -113,4 +113,12 @@ interface ExportableControllerInterface {
    * @todo.
    */
   public function createDuplicate($exportable);
+
+  /**
+   * Provides a default list of all exportables for this type.
+   *
+   * @return array
+   *   An array of exportable titles.
+   */
+  public function defaultList();
 }

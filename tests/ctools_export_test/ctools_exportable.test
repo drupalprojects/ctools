@@ -162,6 +162,15 @@ class CToolsExportableTestCase extends WebTestBase {
 
     $this->assertEqual(count($multiple_exportables), 4, 'Multiple exportables have been correctly loaded.');
 
+    // Get a default list of exportables.
+    $this->assertEqual(count($controller->defaultList()), 4, 'A default list of all exportables has been loaded.');
+
+    $this->assertTrue(array_keys($all_exportables) == array_keys($controller->defaultList()), 'The default list exportable keys match all loaded exportables.');
+
+    // Test the default list title.
+    $default_test_key = array_search('Default test (default_test)', $controller->defaultList());
+    $this->assertEqual($default_test_key, 'default_test', 'The default list of exportables contain the expected titles.');
+
     // Disable an exportable
     $loaded_export = $controller->load('database_test');
     $loaded_export->disable();

@@ -198,4 +198,12 @@ class Exportable implements ExportableInterface {
     return $this->{$info['key']};
   }
 
+  /**
+   * Implements Drupal\ctools\ExportableInterface::title().
+   */
+  public function title() {
+    $info = ctools_exportable_get_controller($this->exportableType)->getInfo();
+    return $this->{$info['title key']};
+  }
+
 }

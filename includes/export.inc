@@ -109,6 +109,19 @@ function ctools_exportable_load_all($exportable_type) {
 }
 
 /**
+ * Gets a default list of exportables for a given type.
+ *
+ * @param string $exportable_type
+ *   The exportable type to load, e.g. views_view.
+ *
+ * @return array
+ *   An array of exportable titles, keyed by the exportable key.
+ */
+function ctools_exportable_default_list($exportable_type) {
+  return ctools_exportable_get_controller($exportable_type)->defaultList();
+}
+
+/**
  * Saves a single exportable object.
  *
  * @param Drupal\ctools\ExportableInterface $exportable
@@ -206,6 +219,7 @@ function ctools_exportable_get_info($exportable_type = NULL) {
       // @todo a lot of this should not be relevant now.
       'key' => 'name',
       'key name' => 'Name',
+      'title key' => 'title',
       'status' => 'default_' . $name,
       'default hook' => 'default_' . $name,
       'can disable' => TRUE,

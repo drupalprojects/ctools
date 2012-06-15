@@ -116,4 +116,18 @@ abstract class ExportableControllerBase implements ExportableControllerInterface
     $code = $this->export($exportable);
     return $this->import($code);
   }
+
+  /**
+   * Implements Drupal\ctools\ExportableControllerInterface::defaultList().
+   */
+  function defaultList() {
+    $list = array();
+
+    foreach ($this->loadAll() as $exportable) {
+      $list[$exportable->id()] = check_plain($exportable->title() . " (" . $exportable->id() . ")");
+    }
+
+    return $list;
+  }
+
 }
