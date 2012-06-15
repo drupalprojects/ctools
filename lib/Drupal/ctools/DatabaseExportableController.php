@@ -365,7 +365,13 @@ class DatabaseExportableController extends ExportableControllerBase {
     // Go through our schema and build correlations.
     foreach ($data as $field => $value) {
       if (isset($this->schema['fields'][$field])) {
-        $exportable->$field = !empty($this->schema['fields'][$field]['serialize']) ? unserialize($data[$field]) : $data[$field];
+        // We need to make sure if a field is unserialized, it is not an empty string.
+        if (!empty($this->schema['fields'][$field]['serialize']) && is_string($value)) {
+          $exportable->$field = !empty($value) ? unserialize($value) : $value;
+        }
+        else {
+          $exportable->$field = $value;
+        }
       }
       else {
         $exportable->$field = $value;
