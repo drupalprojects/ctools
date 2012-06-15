@@ -213,7 +213,8 @@ class ctools_export_ui {
       $commands[] = ajax_command_replace('#ctools-export-ui-list-form', $form);
     }
     print ajax_render($commands);
-    ajax_footer();
+    // @todo revise the exit when http://drupal.org/node/1619446 is fixed.
+    exit;
   }
 
   /**

@@ -116,7 +116,8 @@ function page_manager_list_page($js = NULL) {
     $commands[] = ajax_command_replace('#page-manager-list-pages-form', drupal_render($form));
   }
   print ajax_render($commands);
-  ajax_footer();
+  // @todo revise the exit when http://drupal.org/node/1619446 is fixed.
+  exit;
 }
 
 /**
@@ -456,8 +457,8 @@ function page_manager_edit_page_operation() {
     $commands[] = ajax_command_replace('#page-manager-edit', $output);
 
     print ajax_render($commands);
-    ajax_footer();
-    return;
+    // @todo revise the exit when http://drupal.org/node/1619446 is fixed.
+    exit;
   }
 
   drupal_set_title($page->subtask['admin title']);

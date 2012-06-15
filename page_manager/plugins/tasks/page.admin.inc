@@ -1069,7 +1069,7 @@ function page_manager_page_subtask_argument_ajax($step = NULL, $task_name = NULL
     $commands = ctools_modal_form_render($form_state, $output);
   }
   print ajax_render($commands);
-  ajax_footer();
+  // @todo revise the exit when http://drupal.org/node/1619446 is fixed.
   exit;
 }
 
