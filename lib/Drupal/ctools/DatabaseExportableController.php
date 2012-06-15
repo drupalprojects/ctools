@@ -50,7 +50,7 @@ class DatabaseExportableController extends ExportableControllerBase {
    * @todo.
    */
   public function loadMultiple(array $keys) {
-    $result = $this->loadExportables('keys', $keys);
+    $results = $this->loadExportables('keys', $keys);
 
     // Ensure no empty results are returned.
     return array_filter($results);

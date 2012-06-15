@@ -157,6 +157,11 @@ class CToolsExportableTestCase extends WebTestBase {
 
     $this->assertTrue(count($all_exportables) == 4, 'All exportables have been loaded');
 
+    // Load multiple exportables.
+    $multiple_exportables = $controller->loadMultiple(array_keys($all_exportables));
+
+    $this->assertEqual(count($multiple_exportables), 4, 'Multiple exportables have been correctly loaded.');
+
     // Disable an exportable
     $loaded_export = $controller->load('database_test');
     $loaded_export->disable();
