@@ -38,7 +38,7 @@ abstract class ExportableControllerBase implements ExportableControllerInterface
   );
 
   /**
-   * @todo.
+   * Implements Drupal\ctools\ExportableControllerInterface::__construct().
    */
   public function __construct($type) {
     $this->type = $type;
@@ -49,21 +49,21 @@ abstract class ExportableControllerBase implements ExportableControllerInterface
   }
 
   /**
-   * @todo.
+   * Implements Drupal\ctools\ExportableControllerInterface::getType().
    */
   public function getType() {
     return $this->type;
   }
 
   /**
-   * @todo.
+   * Implements Drupal\ctools\ExportableControllerInterface::getInfo().
    */
   public function getInfo() {
     return $this->info;
   }
 
   /**
-   * @todo.
+   * Implements Drupal\ctools\ExportableControllerInterface::import().
    */
   public function import($code) {
     // @todo validate the object actually exists.
@@ -71,28 +71,28 @@ abstract class ExportableControllerBase implements ExportableControllerInterface
   }
 
   /**
-   * @todo.
+   * Implements Drupal\ctools\ExportableControllerInterface::enable().
    */
-  public function enable($exportable) {
+  public function enable(ExportableInterface $exportable) {
     return $this->setStatus($exportable, FALSE);
   }
 
   /**
-   * @todo.
+   * Implements Drupal\ctools\ExportableControllerInterface::disable().
    */
-  public function disable($exportable) {
+  public function disable(ExportableInterface $exportable) {
     return $this->setStatus($exportable, TRUE);
   }
 
   /**
-   * @todo.
+   * Implements Drupal\ctools\ExportableControllerInterface::export().
    */
-  public function export($exportable, $indent = '') {
+  public function export(ExportableInterface $exportable, $indent = '') {
     return $this->getExporter()->export($exportable->pack(), $indent);
   }
 
   /**
-   * @todo.
+   * Implements Drupal\ctools\ExportableControllerInterface::getExporter().
    */
   protected function getExporter() {
     if (empty($this->exporter)) {
@@ -108,7 +108,7 @@ abstract class ExportableControllerBase implements ExportableControllerInterface
   }
 
   /**
-   * @todo.
+   * Implements Drupal\ctools\ExportableControllerInterface::createDuplicate().
    */
   public function createDuplicate(ExportableInterface $exportable) {
     // The cleanest way to duplicate is to export and import which will

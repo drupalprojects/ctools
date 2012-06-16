@@ -17,7 +17,7 @@ class DatabaseExportableController extends ExportableControllerBase {
   protected $schema = NULL;
 
   /**
-   * @todo.
+   * Implements Drupal\ctools\ExportableControllerInterface::__construct().
    */
   public function __construct($type) {
     parent::__construct($type);
@@ -30,14 +30,14 @@ class DatabaseExportableController extends ExportableControllerBase {
   }
 
   /**
-   * @todo.
+   * Implements Drupal\ctools\ExportableControllerInterface::getSchema().
    */
   public function getSchema() {
     return $this->schema;
   }
 
   /**
-   * @todo.
+   * Implements Drupal\ctools\ExportableControllerInterface::load().
    */
   public function load($key) {
     $result = $this->loadExportables('keys', array($key));
@@ -47,7 +47,7 @@ class DatabaseExportableController extends ExportableControllerBase {
   }
 
   /**
-   * @todo.
+   * Implements Drupal\ctools\ExportableControllerInterface::loadMultiple().
    */
   public function loadMultiple(array $keys) {
     $results = $this->loadExportables('keys', $keys);
@@ -57,9 +57,9 @@ class DatabaseExportableController extends ExportableControllerBase {
   }
 
   /**
-   * @todo.
+   * Implements Drupal\ctools\ExportableControllerInterface::loadAll().
    */
-  public function loadAll(/* $pageSize, $pageNumber */) {
+  public function loadAll() {
     return $this->loadExportables('all');
   }
 
@@ -83,7 +83,7 @@ class DatabaseExportableController extends ExportableControllerBase {
    * @param $args
    *   An array of arguments whose actual use is defined by the $type argument.
    */
-  public function loadExportables($type = 'all', $args = array()) {
+  public function loadExportables($type = 'all', array $args = array()) {
     // If fetching all and cached all, we've done so and we are finished.
     if ($type == 'all' && !empty($this->cacheAll)) {
       return $this->cache;
@@ -249,7 +249,7 @@ class DatabaseExportableController extends ExportableControllerBase {
     return $return;
   }
 
-  function getDefaultExportables($args = NULL) {
+  function getDefaultExportables(array $args = NULL) {
     if (isset($this->cachedDefaults)) {
       return $this->cachedDefaults;
     }
@@ -296,7 +296,7 @@ class DatabaseExportableController extends ExportableControllerBase {
   }
 
   /**
-   * @todo.
+   * Implements Drupal\ctools\ExportableControllerInterface::create().
    */
   public function create(array $data = array(), $set_defaults = TRUE) {
     // Populate default values.
@@ -311,9 +311,9 @@ class DatabaseExportableController extends ExportableControllerBase {
   }
 
   /**
-   * @todo.
+   * Implements Drupal\ctools\ExportableControllerInterface::save().
    */
-  public function save($exportable) {
+  public function save(ExportableInterface $exportable) {
     // Objects should have a serial primary key. If not, simply fail to write.
     if (empty($this->schema['primary key'])) {
       return FALSE;
@@ -333,18 +333,18 @@ class DatabaseExportableController extends ExportableControllerBase {
   }
 
   /**
-   * @param $keys Array
+   * Implements Drupal\ctools\ExportableControllerInterface::delete().
    */
-  public function delete($keys) {
+  public function delete(array $keys) {
     db_delete($this->info['schema'])
       ->condition($this->info['key'], $keys)
       ->execute();
   }
 
   /**
-   * @todo.
+   * Implements Drupal\ctools\ExportableControllerInterface::setStatus().
    */
-  public function setStatus($exportable, $new_status) {
+  public function setStatus(ExportableInterface $exportable, $new_status) {
     $status = variable_get($this->info['status'], array());
 
     // Compare
@@ -359,7 +359,7 @@ class DatabaseExportableController extends ExportableControllerBase {
   }
 
   /**
-   * Implements \Drupal\ctools\ExportableControllerInterface::unpack().
+   * Implements Drupal\ctools\ExportableControllerInterface::unpack().
    */
   public function unpack(ExportableInterface $exportable, array $data) {
     // Go through our schema and build correlations.
@@ -392,7 +392,7 @@ class DatabaseExportableController extends ExportableControllerBase {
   }
 
   /**
-   * Implements \Drupal\ctools\ExportableControllerInterface::pack().
+   * Implements Drupal\ctools\ExportableControllerInterface::pack().
    */
   public function pack(ExportableInterface $exportable) {
     $data = array();
