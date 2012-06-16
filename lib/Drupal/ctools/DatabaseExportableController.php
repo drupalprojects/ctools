@@ -19,8 +19,8 @@ class DatabaseExportableController extends ExportableControllerBase {
   /**
    * Implements Drupal\ctools\ExportableControllerInterface::__construct().
    */
-  public function __construct($type) {
-    parent::__construct($type);
+  public function __construct($type, array $info) {
+    parent::__construct($type, $info);
     $this->type = $type;
 
     // @todo CTools had some code to work around schema caching issues

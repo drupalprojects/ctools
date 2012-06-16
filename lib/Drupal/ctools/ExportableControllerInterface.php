@@ -22,8 +22,11 @@ interface ExportableControllerInterface {
    * @param string $type
    *   The name of the exportable type. This must exist via
    *   ctools_exportable_get_info().
+   * @param array $info
+   *   The array of info for the exportable type, as returned by
+   *   ctools_exportable_get_info().
    */
-  public function __construct($type);
+  public function __construct($type, array $info);
 
   /**
    * Returns the name of the exportable type.

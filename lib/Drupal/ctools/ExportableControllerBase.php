@@ -40,12 +40,12 @@ abstract class ExportableControllerBase implements ExportableControllerInterface
   /**
    * Implements Drupal\ctools\ExportableControllerInterface::__construct().
    */
-  public function __construct($type) {
+  public function __construct($type, array $info) {
     $this->type = $type;
 
     // @todo How do we deal with $type not existing? Either an exception or
     // some way to mark the class as unusable.
-    $this->info = ctools_exportable_get_info($type);
+    $this->info = $info;
   }
 
   /**

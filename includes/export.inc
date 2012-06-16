@@ -192,7 +192,7 @@ function ctools_exportable_get_controller($exportable_type) {
   if (!isset($controllers[$exportable_type])) {
     $type_info = ctools_exportable_get_info($exportable_type);
     $class = $type_info['controller class'];
-    $controllers[$exportable_type] = new $class($exportable_type);
+    $controllers[$exportable_type] = new $class($exportable_type, $type_info);
   }
   return $controllers[$exportable_type];
 }
