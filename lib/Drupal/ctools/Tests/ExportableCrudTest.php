@@ -211,6 +211,14 @@ class ExportableCrudTest extends WebTestBase {
     $result = db_query("SELECT title from {ctools_export_test} WHERE machine = 'database_test'")->fetchField();
 
     $this->assertFalse($result, 'A saved exportable has been deleted from the database.');
+
+    // Test the creation of a Duplicate exportable.
+    $default_export = $controller->load('default_test');
+    $duplicate_export = $default_export->createDuplicate();
+
+    $this->assertIdentical($default_export->pack(), $duplicate_export->pack(), 'Data packed from a duplicate export matches the original.');
+
+    $this->assertEqual($default_export->getExportableType(), $duplicate_export->getExportableType(), 'The export type set on the duplicate export matches the original.');
   }
 
 }

@@ -180,14 +180,14 @@ class Exportable implements ExportableInterface {
    * @todo.
    */
   public function export($indent = '') {
-    ctools_exportable_get_controller($this->exportableType)->export($this, $indent);
+    return ctools_exportable_get_controller($this->exportableType)->export($this, $indent);
   }
 
   /**
    * @todo.
    */
   public function createDuplicate() {
-    ctools_exportable_get_controller($this->exportableType)->createDuplicate($this);
+    return ctools_exportable_get_controller($this->exportableType)->createDuplicate($this);
   }
 
   /**
