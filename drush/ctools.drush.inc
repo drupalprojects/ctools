@@ -11,6 +11,8 @@
 function ctools_drush_command() {
   $items = array();
 
+  $module_text = 'Filter the list of exportables by module. This will come from the \'export_module\' key on the exportable.';
+
   $items['ctools-export'] = array(
     'aliases' => array('ctex'),
     'callback' => 'ctools_drush_export',
@@ -41,12 +43,14 @@ function ctools_drush_command() {
       'format' => 'Display exportables info in a different format such as print_r, json, export. The default is to show in a tabular format.',
       'tables-only' => 'Only show list of exportable types/table names and not available objects.',
       'filter' => 'Filter the list of exportables by status. Available options are enabled, disabled, overridden, database, and code.',
+      'module' => $module_text,
     ),
     'examples' => array(
       'drush ctools-export-info' => 'View export info on all exportables.',
       'drush ctools-export-info views_view variable' => 'View export info for views_view and variable exportable types only.',
       'drush ctei --filter=enabled' => 'Show all enabled exportables.',
       'drush ctei views_view --filter=disabled' => 'Show all enabled exportables.',
+      'drush ctei views_view --module=node' => 'Show all exportables provided by/on behalf of the node module.',
     ),
   );
 
@@ -61,6 +65,7 @@ function ctools_drush_command() {
     'options' => array(
       'indent' => 'The string to use for indentation when dispalying the exportable export code. Defaults to \'\'.',
       'no-colour' => 'Remove any colour formatting from export string output. Ideal if you are sending the output of this command to a file.',
+      'module' => $module_text,
     ),
     'examples' => array(
       'drush ctools-export-view views_view' => 'View all views exportable objects.',
@@ -76,7 +81,9 @@ function ctools_drush_command() {
       'table name' => 'Base table of the exportable you want to revert.',
       'machine names' => 'Space separated list of exportables you want to revert.',
     ),
-    'options' => array(),
+    'options' => array(
+      'module' => $module_text,
+    ),
     'examples' => array(
       'drush ctools-export-revert views_view' => 'Revert all overridden views exportable objects.',
       'drush ctools-export-revert views_view archive' => 'Revert overridden default views archive view.',
@@ -91,7 +98,9 @@ function ctools_drush_command() {
       'table name' => 'Base table of the exportable you want to enable.',
       'machine names' => 'Space separated list of exportables you want to enable.',
     ),
-    'options' => array(),
+    'options' => array(
+      'module' => $module_text,
+    ),
     'examples' => array(
       'drush ctools-export-enable views_view' => 'Enable all overridden views exportable objects.',
       'drush ctools-export-enable views_view archive' => 'Enable overridden default views archive view.',
@@ -106,7 +115,9 @@ function ctools_drush_command() {
       'table name' => 'Base table of the exportable you want to disable.',
       'machine names' => 'Space separated list of exportables you want to disable.',
     ),
-    'options' => array(),
+    'options' => array(
+      'module' => $module_text,
+    ),
     'examples' => array(
       'drush ctools-export-disable views_view' => 'Disable all overridden views exportable objects.',
       'drush ctools-export-disable views_view archive' => 'Disable overridden default views archive view.',
@@ -340,14 +351,22 @@ function ctools_drush_export_info() {
   $format = drush_get_option('format', FALSE);
   $tables_only = drush_get_option('tables-only', FALSE);
   $filter = drush_get_option('filter', FALSE);
+  $export_module = drush_get_option('module', FALSE);
+
+  $load = (bool) $filter || $export_module;
 
   // Get info on these tables, or all tables if none specified.
-  $info = _ctools_drush_export_info($table_names, (bool) $filter);
+  $info = _ctools_drush_export_info($table_names, $load);
   $exportables = $info['exportables'];
 
   if (empty($exportables)) {
     drush_log(dt('There are no exportables available.'), 'warning');
     return;
+  }
+
+  // Filter by export module.
+  if (is_string($export_module)) {
+    _ctools_drush_export_module_filter($exportables, $export_module);
   }
 
   if (is_string($filter)) {
@@ -524,14 +543,14 @@ function _ctools_drush_export_op_command_logic($op = '', $table_name = NULL, arr
   }
 
   // Get export info based on table name.
-  $info = _ctools_drush_export_info(array($table_name));
+  $info = _ctools_drush_export_info(array($table_name), TRUE);
 
   if (!isset($info['exportables'][$table_name])) {
     drush_log(dt('Exportable table name not found.'), 'error');
     return FALSE;
   }
 
-  $exportables = $info['exportables'][$table_name];
+  $exportables = &$info['exportables'];
 
   if (empty($object_names)) {
     $all = drush_confirm(dt('No object names entered. Would you like to try and !op all exportables of type !type',
@@ -545,20 +564,26 @@ function _ctools_drush_export_op_command_logic($op = '', $table_name = NULL, arr
     // Iterate through object names and check they exist in exportables array.
     // Log error and unset them if they don't.
     foreach ($object_names as $object_name) {
-      if (!isset($exportables[$object_name])) {
+      if (!isset($exportables[$table_name][$object_name])) {
         drush_log(dt('Invalid exportable: !exportable', array('!exportable' => $object_name)), 'error');
-        unset($object_names[$object_name]);
+        unset($object_names[$table_name][$object_name]);
       }
     }
     // Iterate through exportables to get just a list of selected ones.
-    foreach (array_keys($exportables) as $exportable) {
+    foreach (array_keys($exportables[$table_name]) as $exportable) {
       if (!in_array($exportable, $object_names)) {
-        unset($exportables[$exportable]);
+        unset($exportables[$table_name][$exportable]);
       }
     }
   }
 
-  return $exportables;
+  $export_module = drush_get_option('module', FALSE);
+
+  if (is_string($export_module)) {
+    _ctools_drush_export_module_filter($exportables, $export_module);
+  }
+
+  return $exportables[$table_name];
 }
 
 /**
@@ -676,6 +701,32 @@ function _ctools_drush_export_disable($table_name, $object) {
   }
   else {
     drush_log("$object->name is already disabled", 'notice');
+  }
+}
+
+/**
+ * Filter a nested array of exportables by export module.
+ *
+ * @param $exportables array
+ *   Passed by reference. A nested array of exportables, keyed by table name.
+ * @param $export_module string
+ *   The name of the export module providing the exportable.
+ */
+function _ctools_drush_export_module_filter(&$exportables, $export_module) {
+  $module_list = module_list();
+
+  if (!isset($module_list[$export_module])) {
+    drush_log(dt('Invalid export module: !export_module', array('!export_module' => $export_module)), 'error');
+  }
+
+  foreach ($exportables as $table => $objects) {
+    foreach ($objects as $key => $object) {
+      if (!empty($object->export_module)) {
+        if ($object->export_module != $export_module) {
+          unset($exportables[$table][$key]);
+        }
+      }
+    }
   }
 }
 
