@@ -21,6 +21,9 @@ abstract class ExportableControllerBase implements ExportableControllerInterface
    */
   protected $info;
 
+  // @todo something has to load this.
+  protected $schema = NULL;
+
   /**
    * @todo.
    */
@@ -60,6 +63,40 @@ abstract class ExportableControllerBase implements ExportableControllerInterface
    */
   public function getInfo() {
     return $this->info;
+  }
+
+  /**
+   * Implements Drupal\ctools\ExportableControllerInterface::getSchema().
+   */
+  public function getSchema() {
+    return $this->schema;
+  }
+
+  /**
+   * Implements Drupal\ctools\ExportableControllerInterface::load().
+   */
+  public function load($key) {
+    $result = $this->loadExportables('keys', array($key));
+    if (isset($result[$key])) {
+      return $result[$key];
+    }
+  }
+
+  /**
+   * Implements Drupal\ctools\ExportableControllerInterface::loadMultiple().
+   */
+  public function loadMultiple(array $keys) {
+    $results = $this->loadExportables('keys', $keys);
+
+    // Ensure no empty results are returned.
+    return array_filter($results);
+  }
+
+  /**
+   * Implements Drupal\ctools\ExportableControllerInterface::loadAll().
+   */
+  public function loadAll() {
+    return $this->loadExportables('all');
   }
 
   /**

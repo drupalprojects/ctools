@@ -13,8 +13,6 @@ namespace Drupal\ctools;
 class DatabaseExportableController extends ExportableControllerBase {
   protected $cache = array();
   protected $cacheAll = FALSE;
-  // @todo something has to load this.
-  protected $schema = NULL;
 
   /**
    * Implements Drupal\ctools\ExportableControllerInterface::__construct().
@@ -27,40 +25,6 @@ class DatabaseExportableController extends ExportableControllerBase {
     // that we may need to replicate. These were particularly difficult
     // issues during the module enable process.
     $this->schema = drupal_get_schema($this->info['schema']);
-  }
-
-  /**
-   * Implements Drupal\ctools\ExportableControllerInterface::getSchema().
-   */
-  public function getSchema() {
-    return $this->schema;
-  }
-
-  /**
-   * Implements Drupal\ctools\ExportableControllerInterface::load().
-   */
-  public function load($key) {
-    $result = $this->loadExportables('keys', array($key));
-    if (isset($result[$key])) {
-      return $result[$key];
-    }
-  }
-
-  /**
-   * Implements Drupal\ctools\ExportableControllerInterface::loadMultiple().
-   */
-  public function loadMultiple(array $keys) {
-    $results = $this->loadExportables('keys', $keys);
-
-    // Ensure no empty results are returned.
-    return array_filter($results);
-  }
-
-  /**
-   * Implements Drupal\ctools\ExportableControllerInterface::loadAll().
-   */
-  public function loadAll() {
-    return $this->loadExportables('all');
   }
 
   /**
