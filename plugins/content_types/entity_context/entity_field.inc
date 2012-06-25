@@ -154,6 +154,10 @@ function ctools_entity_field_content_type_render($subtype, $conf, $panel_args, $
   $clone->{$field_name}[$language] = $all_values;
   $field_output = field_view_field($entity_type, $clone, $field_name, $field_settings, $language);
 
+  if ($conf['override_title']) {
+    $field_output['#title'] = filter_xss_admin($conf['override_title_text']);
+  }
+
   // Build the content type block.
   $block = new stdClass();
   $block->module  = 'entity_field';
