@@ -25,7 +25,6 @@ function ctools_drush_command() {
       'remove' => 'Remove existing files before writing, except the .module file.',
       'filter' => 'Comma separated list of exportable table names to filter by.',
     ),
-    'drupal dependencies' => array('bulk_export'),
     'examples' => array(
       'drush ctex export_module' => 'Export CTools exportables to a module called "export_module".',
       'drush ctex export_module --subdir=exports' => 'Same as above, but into the sites/all/modules/exports directory.',
@@ -206,6 +205,9 @@ function ctools_drush_export($module = 'foo') {
 
   // Create destination directory.
   drush_mkdir($dest);
+
+  // Load bulk export module.
+  module_load_include('module', 'bulk_export');
 
   // Create options and call Bulk export function.
   // We create an array, because maybe in the future we can pass in more
