@@ -723,10 +723,8 @@ function _ctools_drush_export_module_filter(&$exportables, $export_module) {
 
   foreach ($exportables as $table => $objects) {
     foreach ($objects as $key => $object) {
-      if (!empty($object->export_module)) {
-        if ($object->export_module != $export_module) {
-          unset($exportables[$table][$key]);
-        }
+      if (empty($object->export_module) || ($object->export_module !== $export_module)) {
+        unset($exportables[$table][$key]);
       }
     }
   }
