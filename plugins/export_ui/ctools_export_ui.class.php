@@ -963,6 +963,10 @@ class ctools_export_ui {
       $trail = $this->get_default_operation_trail($form_state['item'], $operations);
     }
 
+    foreach ($operations as $name => &$group) {
+      $this->process_operations($form_state['item'], $group, $name);
+    }
+
     $operation_form_state['trail'] = $trail;
 
     // If this form was submitted build it early, because a successful
@@ -1002,6 +1006,9 @@ class ctools_export_ui {
     // rendering.
     if (!empty($content['changed operations'])) {
       $operations = $this->get_operations($form_state['item']);
+      foreach ($operations as $name => &$group) {
+        $this->process_operations($form_state['item'], $group, $name);
+      }
     }
 
     $rendered_operations = $this->render_operations($form_state['item'], $operations, $trail);
@@ -1122,10 +1129,6 @@ class ctools_export_ui {
    * renderable by itself isn't going to render properly.
    */
   function render_operations($item, $operations, $trail) {
-    $export_key = $this->plugin['export']['key'];
-    $name = $item->{$export_key};
-    $default_path = ctools_export_ui_plugin_menu_path($this->plugin, 'edit', $name);
-
     // Set #active on each individual element by drilling down on the trail
     // loop. This is simpler than array splice operations in the main process.
     $active = &$operations;
@@ -1140,7 +1143,6 @@ class ctools_export_ui {
 
     $content = array();
     foreach ($operations as $name => &$group) {
-      $this->process_operations($item, $group, $name, $default_path);
       $content[$name] = drupal_render($group);
     }
 
@@ -1155,13 +1157,20 @@ class ctools_export_ui {
    * easily be available during drupal_render() due to the limitations
    * of data availability during theming.
    */
-  function process_operations($item, &$element, $key, $default_path, $trail = array()) {
+  function process_operations($item, &$element, $key, $default_path = NULL, $trail = array()) {
+    if (is_null($default_path)) {
+      // Figure out the default path for the current plugin and use that.
+      $export_key = $this->plugin['export']['key'];
+      $name = $item->{$export_key};
+      $default_path = ctools_export_ui_plugin_menu_path($this->plugin, 'edit', $name);
+    }
+
     $trail[] = $key;
     $element['#parents'][] = $trail;
 
     $path = implode('/', $trail);
     $element['#changed'] = !empty($item->changed_operations[$path]);
-    if (!isset($element['#path'])) {
+    if (!isset($element['#path']) && $element['#type'] !== 'ctools_operation_group') {
       $element['#path'] = $default_path . '/' . $path;
     }
 
@@ -1221,7 +1230,8 @@ class ctools_export_ui {
         'operation' => $operations,
         'active' => $active,
         'args' => $args,
-        'titles' => $titles
+        'titles' => $titles,
+        'path' => $operations['#path'],
       );
     }
   }
@@ -1245,12 +1255,6 @@ class ctools_export_ui {
     if (empty($operation['type'])) {
       $operation['type'] = 'form';
     }
-
-    // FIXME Ensure the #path is set, as real processing hasn't occured yet - do this smarter, earlier
-    $export_key = $this->plugin['export']['key'];
-    $name = $form_state['item']->{$export_key};
-    $operation['#path'] = !empty($operation['#path']) ? $operation['#path'] :
-      ctools_export_ui_plugin_menu_path($this->plugin, 'edit', $name) . '/' . implode('/', $trail);
 
     $method = 'render_operation_type_' . $operation['type'];
     if (!method_exists($this, $method)) {
@@ -1303,7 +1307,7 @@ class ctools_export_ui {
       'show cancel' => FALSE,
       'next callback' => 'ctools_export_ui_operation_next',
       'finish callback' => 'ctools_export_ui_operation_finish',
-      'path' => $operation['#path'] . "/%step",
+      'path' => $info['path'] . "/%step",
       // wrapper function to add an extra finish button.
       'wrapper' => 'ctools_export_ui_operation_wrapper',
     );
