@@ -1434,9 +1434,14 @@ class ctools_export_ui {
     // If a new trail is set and we're not ajaxing, set a redirect in the
     // form state so that the form will properly handle the next step.
     if (isset($form_state['new trail']) && empty($form_state['ajax'])) {
+      // Use an explicitly set path for the trail, if one exists.
       $operation = drupal_array_get_nested_value($form_state['operations'], $form_state['new trail']);
       if (!empty($operation['#path'])) {
         $form_state['redirect'] = $operation['#path'];
+      }
+      // Otherwise just derive the default path for the trail and hope it works.
+      else {
+        $form_state['redirect'] = ctools_export_ui_plugin_menu_path($this->plugin, 'edit', $item->{$export_key}) . '/' . implode('/', $form_state['new trail']);
       }
     }
 
