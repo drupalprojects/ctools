@@ -218,6 +218,14 @@ function ctools_drush_export($module = 'foo') {
   );
   $files = bulk_export_export(TRUE, $options);
 
+  $alter = array(
+    'module' => $module,
+    'files' => $files,
+  );
+  // Let other drush commands alter the files.
+  drush_command_invoke_all_ref('drush_ctex_files_alter', $alter);
+  $files = $alter['files'];
+
   // Start writing.
   if (is_array($files)) {
     foreach ($files as $base_file => $data) {
