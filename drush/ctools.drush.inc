@@ -12,6 +12,7 @@ function ctools_drush_command() {
   $items = array();
 
   $module_text = 'Filter the list of exportables by module. This will come from the \'export_module\' key on the exportable.';
+  $all_text = 'Perform this operation all CTools exportables available on the system (all tables).';
 
   $items['ctools-export'] = array(
     'aliases' => array('ctex'),
@@ -65,6 +66,7 @@ function ctools_drush_command() {
       'indent' => 'The string to use for indentation when dispalying the exportable export code. Defaults to \'\'.',
       'no-colour' => 'Remove any colour formatting from export string output. Ideal if you are sending the output of this command to a file.',
       'module' => $module_text,
+      'all' => $all_text,
     ),
     'examples' => array(
       'drush ctools-export-view views_view' => 'View all views exportable objects.',
@@ -82,10 +84,12 @@ function ctools_drush_command() {
     ),
     'options' => array(
       'module' => $module_text,
+      'all' => $all_text,
     ),
     'examples' => array(
       'drush ctools-export-revert views_view' => 'Revert all overridden views exportable objects.',
       'drush ctools-export-revert views_view archive' => 'Revert overridden default views archive view.',
+      'drush ctools-export-revert --all' => 'Revert all exportables on the system.',
     ),
   );
 
@@ -99,6 +103,7 @@ function ctools_drush_command() {
     ),
     'options' => array(
       'module' => $module_text,
+      'all' => $all_text,
     ),
     'examples' => array(
       'drush ctools-export-enable views_view' => 'Enable all overridden views exportable objects.',
@@ -116,6 +121,7 @@ function ctools_drush_command() {
     ),
     'options' => array(
       'module' => $module_text,
+      'all' => $all_text,
     ),
     'examples' => array(
       'drush ctools-export-disable views_view' => 'Disable all overridden views exportable objects.',
@@ -497,17 +503,34 @@ function ctools_drush_export_op_command() {
     return;
   }
 
-  $args = func_get_args();
-  // Table name should always be first arg...
-  $table_name = array_shift($args);
-  // Any additional args are assumed to be exportable names.
-  $object_names = $args;
+  if (drush_get_option('all', FALSE)) {
+    $info = _ctools_drush_export_info('', TRUE);
+    $exportable_info = $info['exportables'];
 
-  // Return any exportables based on table name, object names, options.
-  $exportables = _ctools_drush_export_op_command_logic($op, $table_name, $object_names);
+    $all = drush_confirm(dt('Are you sure you would like to !op all exportables on the system?',
+      array('!op' => _ctools_drush_export_op_alias($op))));
 
-  if ($exportables) {
-    ctools_drush_export_op($op, $table_name, $exportables);
+    if ($all && $exportable_info) {
+      foreach ($exportable_info as $table => $exportables) {
+        if (!empty($exportables)) {
+          ctools_drush_export_op($op, $table, $exportables);
+        }
+      }
+    }
+  }
+  else {
+    $args = func_get_args();
+    // Table name should always be first arg...
+    $table_name = array_shift($args);
+    // Any additional args are assumed to be exportable names.
+    $object_names = $args;
+
+    // Return any exportables based on table name, object names, options.
+    $exportables = _ctools_drush_export_op_command_logic($op, $table_name, $object_names);
+
+    if ($exportables) {
+      ctools_drush_export_op($op, $table_name, $exportables);
+    }
   }
 }
 
@@ -548,7 +571,7 @@ function ctools_drush_export_op($op = '', $table_name = '', $exportables = NULL)
  */
 function _ctools_drush_export_op_command_logic($op = '', $table_name = NULL, array $object_names = array()) {
   if (!$table_name) {
-    drush_log(dt('Exportable table name empty.'), 'error');
+    drush_log(dt('Exportable table name empty. Use the --all command if you want to perform this operation on all tables.'), 'error');
     return FALSE;
   }
 

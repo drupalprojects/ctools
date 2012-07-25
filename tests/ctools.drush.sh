@@ -95,6 +95,18 @@ echo 'Revert all node views'
 drush ctools-export-revert views_view --module=node --yes
 
 stamp
+echo 'Revert all exportables'
+drush ctools-export-revert --all --yes
+
+stamp
+echo 'Enable all exportables'
+drush ctools-export-enable --all --yes
+
+stamp
+echo 'Disable all exportables'
+drush ctools-export-disable --all --yes
+
+stamp
 echo 'Bulk export all objects'
 drush ctools-export $MODULE_NAME --subdir='tests' --choice=1
 
