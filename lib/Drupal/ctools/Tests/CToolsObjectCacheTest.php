@@ -1,18 +1,21 @@
 <?php
+
 /**
  * @file
- * Tests for different parts of the ctools object caching system.
+ * Definition of Drupal\ctools\Tests\CToolsObjectCacheTest.
  */
+
+namespace Drupal\ctools\Tests;
 
 use Drupal\simpletest\WebTestBase;
 
 /**
- * Test object cache storage.
+ * Tests object cache storage.
  */
-class CtoolsObjectCache extends WebTestBase {
+class CToolsObjectCacheTest extends WebTestBase {
   public static function getInfo() {
     return array(
-      'name' => 'Ctools object cache storage',
+      'name' => 'CTools object cache storage',
       'description' => 'Verify that objects are written, readable and lockable.',
       'group' => 'Chaos Tools Suite',
     );

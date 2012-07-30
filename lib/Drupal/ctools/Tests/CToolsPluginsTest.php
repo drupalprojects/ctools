@@ -1,15 +1,18 @@
 <?php
+
 /**
  * @file
- * Tests for different parts of the ctools plugin system.
+ * Definition of Drupal\ctools\Tests\CToolsPluginsTest.
  */
+
+namespace Drupal\ctools\Tests;
 
 use Drupal\simpletest\WebTestBase;
 
 /**
  * Test menu links depending on user permissions.
  */
-class CtoolsPluginsGetInfoTestCase extends WebTestBase {
+class CToolsPluginsTest extends WebTestBase {
   public static function getInfo() {
     return array(
       'name' => 'Get plugin info',

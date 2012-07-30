@@ -1,15 +1,18 @@
 <?php
+
 /**
  * @file
- * Tests for different parts of the ctools plugin system.
+ * Definition of Drupal\ctools\Tests\CToolsCSSTest.
  */
+
+namespace Drupal\ctools\Tests;
 
 use Drupal\simpletest\WebTestBase;
 
 /**
  * Test menu links depending on user permissions.
  */
-class CtoolsCssTestCase extends WebTestBase {
+class CToolsCSSTest extends WebTestBase {
   public static function getInfo() {
     return array(
       'name' => 'CSS Tools tests',

@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Definition of Drupal\ctools\Tests\ExporterBaseTest.
+ * Definition of Drupal\ctools\Tests\ExporterUnitTestBase.
  */
 
 namespace Drupal\ctools\Tests;
@@ -13,7 +13,7 @@ use Drupal\ctools\PhpExporter;
 /**
  * Provides a common foundation for Exporter Tests.
  */
-class ExporterBaseTest extends UnitTestBase {
+abstract class ExporterUnitTestBase extends UnitTestBase {
   /**
    * Return some test data and expected values.
    *

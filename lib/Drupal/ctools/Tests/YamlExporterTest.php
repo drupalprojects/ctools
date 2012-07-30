@@ -9,12 +9,12 @@ namespace Drupal\ctools\Tests;
 
 use Drupal\simpletest\UnitTestBase;
 use Drupal\ctools\YamlExporter;
-use Drupal\ctools\Tests\ExporterBaseTest;
+use Drupal\ctools\Tests\ExporterUnitTestBase;
 
 /**
  * Tests for the CTools YAML exporter.
  */
-class YamlExporterTest extends ExporterBaseTest {
+class YamlExporterTest extends ExporterUnitTestBase {
   public static function getInfo() {
     return array(
       'name' => 'CTools YAML exporter tests',

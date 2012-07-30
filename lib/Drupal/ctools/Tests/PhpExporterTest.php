@@ -9,12 +9,12 @@ namespace Drupal\ctools\Tests;
 
 use Drupal\simpletest\UnitTestBase;
 use Drupal\ctools\PhpExporter;
-use Drupal\ctools\Tests\ExporterBaseTest;
+use Drupal\ctools\Tests\ExporterUnitTestBase;
 
 /**
  * Tests for the CTools php exporter.
  */
-class PhpExporterTest extends ExporterBaseTest {
+class PhpExporterTest extends ExporterUnitTestBase {
   public static function getInfo() {
     return array(
       'name' => 'CTools PHP exporter tests',
