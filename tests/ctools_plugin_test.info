@@ -5,4 +5,5 @@ core = 7.x
 dependencies[] = ctools
 files[] = ctools.plugins.test
 files[] = object_cache.test
+files[] = css.test
 hidden = TRUE
