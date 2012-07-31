@@ -693,13 +693,15 @@ function _ctools_drush_export_view($table_name, $object) {
  * @param $object
  */
 function _ctools_drush_export_delete($table_name, $object) {
+  $name = _ctools_drush_get_export_name($table_name, $object);
+
   if (_ctools_drush_object_is_overridden($object)) {
     // Remove from db.
     ctools_export_crud_delete($table_name, $object);
-    drush_log("Reverted object: $object->name", 'success');
+    drush_log("Reverted object: $name", 'success');
   }
   else {
-    drush_log("Nothing to revert for: $object->name", 'notice');
+    drush_log("Nothing to revert for: $name", 'notice');
   }
 }
 
@@ -710,13 +712,16 @@ function _ctools_drush_export_delete($table_name, $object) {
  * @param $object
  */
 function _ctools_drush_export_enable($table_name, $object) {
+  $name = _ctools_drush_get_export_name($table_name, $object);
+
   if (_ctools_drush_object_is_disabled($object)) {
+
     // Enable object.
     ctools_export_crud_enable($table_name, $object);
-    drush_log("Enabled object: $object->name", 'success');
+    drush_log("Enabled object: $name", 'success');
   }
   else {
-    drush_log("$object->name is already Enabled", 'notice');
+    drush_log("$name is already Enabled", 'notice');
   }
 }
 
@@ -727,13 +732,15 @@ function _ctools_drush_export_enable($table_name, $object) {
  * @param $object
  */
 function _ctools_drush_export_disable($table_name, $object) {
+  $name = _ctools_drush_get_export_name($table_name, $object);
+
   if (!_ctools_drush_object_is_disabled($object)) {
     // Disable object.
     ctools_export_crud_disable($table_name, $object);
-    drush_log("Disabled object: $object->name", 'success');
+    drush_log("Disabled object: $name", 'success');
   }
   else {
-    drush_log("$object->name is already disabled", 'notice');
+    drush_log("$name is already disabled", 'notice');
   }
 }
 
@@ -759,6 +766,23 @@ function _ctools_drush_export_module_filter(&$exportables, $export_module) {
       }
     }
   }
+}
+
+/**
+ * Gets the key for an exportable type.
+ *
+ * @param $table_name
+ *   The exportable table name.
+ * @param $object
+ *   The exportable object.
+ *
+ * @return string
+ *   The key defined in the export schema data.
+ */
+function _ctools_drush_get_export_name($table_name, $object) {
+  $info = _ctools_drush_export_info(array($table_name));
+  $key = $info['schemas'][$table_name]['export']['key'];
+  return $object->{$key};
 }
 
 /**
