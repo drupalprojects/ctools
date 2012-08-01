@@ -24,7 +24,8 @@ function ctools_drush_command() {
     'options' => array(
       'subdir' => 'The name of the sub directory to create the module in. Defaults to ctools_export which will be placed into sites/all/modules.',
       'remove' => 'Remove existing files before writing, except the .module file.',
-      'filter' => 'Comma separated list of exportable table names to filter by.',
+      'filter' => 'Filter the list of exportables by status. Available options are enabled, disabled, overridden, database, code and all. Defaults to enabled.',
+      'tables' => 'Comma separated list of exportable table names to filter by.',
     ),
     'examples' => array(
       'drush ctex export_module' => 'Export CTools exportables to a module called "export_module".',
@@ -155,7 +156,14 @@ function ctools_drush_export($module = 'foo') {
     return;
   }
 
-  $tables = _ctools_drush_explode_options('filter');
+  // Filter by tables.
+  $tables = _ctools_drush_explode_options('tables');
+
+  // Check status.
+  $filter = drush_get_option('filter', FALSE);
+  if (empty($filter)) {
+    drush_set_option('filter', 'enabled');
+  }
 
   // Selection.
   $options = array('all' => dt('Export everything'), 'select' => dt('Make selection'));
@@ -170,7 +178,7 @@ function ctools_drush_export($module = 'foo') {
     $selections = _ctools_drush_selection_screen($tables);
   }
   else {
-    $info = _ctools_drush_export_info($tables);
+    $info = _ctools_drush_export_info($tables, TRUE);
     $selections = $info['exportables'];
   }
 
@@ -271,7 +279,7 @@ function _ctools_drush_selection_screen(array $tables = array()) {
 
   $selection_number = 0;
 
-  $info = _ctools_drush_export_info($tables);
+  $info = _ctools_drush_export_info($tables, TRUE);
   $exportables = $info['exportables'];
   $schemas = $info['schemas'];
 
@@ -385,44 +393,6 @@ function ctools_drush_export_info() {
     _ctools_drush_export_module_filter($exportables, $export_module);
   }
 
-  if (is_string($filter)) {
-    switch ($filter) {
-      // Show enabled exportables only.
-      case 'enabled':
-        $eval = '_ctools_drush_object_is_disabled';
-      break;
-      // Show disabled exportables only.
-      case 'disabled':
-        $eval = '_ctools_drush_object_is_enabled';
-      break;
-      // Show overridden exportables only.
-      case 'overridden':
-        $eval = '_ctools_drush_object_is_not_overridden';
-      break;
-      // Show database only exportables.
-      case 'database':
-        $eval = '_ctools_drush_object_is_not_db_only';
-      break;
-      // Show code only exportables.
-      case 'code':
-        $eval = '_ctools_drush_object_is_not_code_only';
-      break;
-      default:
-        drush_log(dt('Invalid filter option. Available options are: enabled, disabled, overridden, database, and code.'), 'error');
-        return;
-    }
-
-    foreach ($exportables as $table => $objects) {
-      foreach ($objects as $key => $object) {
-        if ($eval($object)) {
-          unset($exportables[$table][$key]);
-        }
-      }
-    }
-  }
-
-  $exportables = array_filter($exportables);
-
   if (empty($exportables)) {
     drush_log(dt('There are no exportables matching this criteria.'), 'notice');
     return;
@@ -473,7 +443,6 @@ function ctools_drush_export_info() {
     }
   }
 }
-
 /**
  * Drush callback: Acts as the hub for all op commands to keep
  * all arg handling etc in one place.
@@ -663,6 +632,11 @@ function _ctools_drush_export_info(array $table_names = array(), $load = FALSE) 
         }
       }
     }
+  }
+
+  if ($load) {
+    $filter = drush_get_option('filter', FALSE);
+    $exportables = _ctools_drush_filter_exportables($exportables, $filter);
   }
 
   return array('exportables' => $exportables, 'schemas' => $schemas);
@@ -873,6 +847,59 @@ function _ctools_drush_count_exportables($exportables) {
   $count['total'] = array_sum($count['exportables']);
 
   return $count;
+}
+
+/**
+ * Filters a collection of exportables based on filters.
+ *
+ * @param $exportables
+ * @param $filter
+ */
+function _ctools_drush_filter_exportables($exportables, $filter) {
+  $eval = FALSE;
+
+  if (is_string($filter)) {
+    switch ($filter) {
+      // Show enabled exportables only.
+      case 'enabled':
+        $eval = '_ctools_drush_object_is_disabled';
+      break;
+      // Show disabled exportables only.
+      case 'disabled':
+        $eval = '_ctools_drush_object_is_enabled';
+      break;
+      // Show overridden exportables only.
+      case 'overridden':
+        $eval = '_ctools_drush_object_is_not_overridden';
+      break;
+      // Show database only exportables.
+      case 'database':
+        $eval = '_ctools_drush_object_is_not_db_only';
+      break;
+      // Show code only exportables.
+      case 'code':
+        $eval = '_ctools_drush_object_is_not_code_only';
+      break;
+      // Do nothing.
+      case 'all':
+        break;
+      default:
+        drush_log(dt('Invalid filter option. Available options are: enabled, disabled, overridden, database, and code.'), 'error');
+        return;
+    }
+
+    if ($eval) {
+      foreach ($exportables as $table => $objects) {
+        foreach ($objects as $key => $object) {
+          if ($eval($object)) {
+            unset($exportables[$table][$key]);
+          }
+        }
+      }
+    }
+  }
+
+  return array_filter($exportables);
 }
 
 /**
