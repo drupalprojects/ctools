@@ -390,7 +390,7 @@ function ctools_drush_export_info() {
 
   // Filter by export module.
   if (is_string($export_module)) {
-    _ctools_drush_export_module_filter($exportables, $export_module);
+    $exportables = _ctools_drush_export_module_filter($exportables, $export_module);
   }
 
   if (empty($exportables)) {
@@ -582,7 +582,7 @@ function _ctools_drush_export_op_command_logic($op = '', $table_name = NULL, arr
   $export_module = drush_get_option('module', FALSE);
 
   if (is_string($export_module)) {
-    _ctools_drush_export_module_filter($exportables, $export_module);
+    $exportables = _ctools_drush_export_module_filter($exportables, $export_module);
   }
 
   return $exportables[$table_name];
@@ -726,7 +726,7 @@ function _ctools_drush_export_disable($table_name, $object) {
  * @param $export_module string
  *   The name of the export module providing the exportable.
  */
-function _ctools_drush_export_module_filter(&$exportables, $export_module) {
+function _ctools_drush_export_module_filter($exportables, $export_module) {
   $module_list = module_list();
 
   if (!isset($module_list[$export_module])) {
@@ -740,6 +740,8 @@ function _ctools_drush_export_module_filter(&$exportables, $export_module) {
       }
     }
   }
+
+  return array_filter($exportables);
 }
 
 /**
