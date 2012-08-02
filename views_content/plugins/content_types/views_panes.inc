@@ -537,6 +537,16 @@ function views_content_views_panes_content_type_edit_form($form, &$form_state) {
     }
   }
 
+  // The exposed sort stuff doesn't fall into $exposed_form['#info'] so we
+  // have to handle it separately.
+  if (isset($exposed_form['sort_by'])) {
+    $form['exposed']['sort_by'] = $exposed_form['sort_by'];
+  }
+
+  if (isset($exposed_form['sort_order'])) {
+    $form['exposed']['sort_order'] = $exposed_form['sort_order'];
+  }
+
   // Add the view object to the form to allow additional customization
   $form_state['view'] = $view;
 
