@@ -1212,7 +1212,10 @@ function page_manager_render_operations(&$page, $operations, $active_trail, $att
   }
 
   if ($output[$location]) {
-    $output[$location] = '<ul class="page-manager-operations ' . $attributes['class'] . '">' . $output[$location] . '</ul>';
+    $classes = isset($attributes['class']) && is_array($attributes['class']) ? $attributes['class'] : array();
+    $classes[] = 'page-manager-operations';
+
+    $output[$location] = '<ul class="' . implode(' ', $classes) . '">' . $output[$location] . '</ul>';
 
     if (!empty($attributes['title'])) {
       $class = '';
