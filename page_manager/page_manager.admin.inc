@@ -27,7 +27,11 @@ function page_manager_list_page($js = NULL) {
   }
 
   if (module_exists('advanced_help') && !$js) {
-    drupal_set_message(theme('advanced_help_topic', 'page_manager', 'getting-started', t('See the getting started guide for more information.')));
+    drupal_set_message(theme('advanced_help_topic', array(
+      'module' => 'page_manager',
+      'topic' => 'getting-started',
+      'type' => t('See the getting started guide for more information.'),
+    )));
   }
 
   $tasks = page_manager_get_tasks_by_type('page');
