@@ -225,8 +225,7 @@ function ctools_field_invoke_field($field_name, $op, $entity_type, $entity, &$a 
     $field_name = $instance['field_name'];
   }
   else {
-    list(, , $bundle) = entity_extract_ids($entity_type, $entity);
-    $instance = field_info_instance($entity_type, $field_name, $bundle);
+    $instance = field_info_instance($entity_type, $field_name, $entity->bundle());
   }
 
   if (empty($instance)) {

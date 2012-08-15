@@ -96,7 +96,10 @@ function ctools_entity_field_extra_content_type_render($subtype, $conf, $panel_a
   // Get a shortcut to the entity.
   $entity = clone $context->data;
   list($entity_type, $field_name) = explode(':', $subtype, 2);
-  list($id, $vid, $bundle) = entity_extract_ids($entity_type, $entity);
+
+  $id = $entity->id();
+  $vid = $entity->getRevisionId();
+  $bundle = $entity->bundle();
 
   // Invoke the view-hook to get the extra field.
   $entity->content = array();

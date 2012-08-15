@@ -77,8 +77,7 @@ function ctools_entity_form_field_content_type_render($subtype, $conf, $panel_ar
   list($entity_type, $field_name) = explode(':', $subtype, 2);
 
   // Load the entity type's information for this field.
-  $ids = entity_extract_ids($entity_type, $entity);
-  $field = field_info_instance($entity_type, $field_name, $ids[2]);
+  $field = field_info_instance($entity_type, $field_name, $entity->bundle());
 
   // Do not render if the entity type does not have this field.
   if (empty($field)) {

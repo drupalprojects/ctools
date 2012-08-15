@@ -73,8 +73,7 @@ function ctools_context_create_entity($empty, $data = NULL, $conf = FALSE, $plug
     $id = $data['entity_id'];
   }
   elseif (is_object($data)) {
-    $ids = entity_extract_ids($entity_type, $data);
-    $id = $ids[0];
+    $id = $data->id();
   }
   elseif (is_numeric($data)) {
     $id = $data;
@@ -195,8 +194,7 @@ function ctools_context_entity_settings_form_validate($form, &$form_state) {
     form_error($form['entity'], t('Invalid entity selected.'));
   }
   else {
-    $entity_id = entity_extract_ids($form_state['values']['entity_type'], $entity);
-    form_set_value($form['entity_id'], $entity_id[0], $form_state);
+    form_set_value($form['entity_id'], $entity->id(), $form_state);
   }
 }
 
