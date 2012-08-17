@@ -13,17 +13,20 @@ use Drupal\simpletest\WebTestBase;
  * Tests object cache storage.
  */
 class CToolsObjectCacheTest extends WebTestBase {
+
+  /**
+   * Modules to enable.
+   *
+   * @var array
+   */
+  public static $modules = array('ctools');
+
   public static function getInfo() {
     return array(
       'name' => 'CTools object cache storage',
       'description' => 'Verify that objects are written, readable and lockable.',
       'group' => 'Chaos Tools Suite',
     );
-  }
-
-  public function setUp() {
-    // Additionally enable ctools module.
-    parent::setUp('ctools');
   }
 
   public function testObjectStorage() {

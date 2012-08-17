@@ -13,17 +13,20 @@ use Drupal\simpletest\WebTestBase;
  * Test menu links depending on user permissions.
  */
 class CToolsCSSTest extends WebTestBase {
+
+  /**
+   * Modules to enable.
+   *
+   * @var array
+   */
+  public static $modules = array('ctools');
+
   public static function getInfo() {
     return array(
       'name' => 'CSS Tools tests',
       'description' => '...',
       'group' => 'Chaos Tools Suite',
     );
-  }
-
-  function setUp() {
-    // Additionally enable contact module.
-    parent::setUp('ctools');
   }
 
   /**

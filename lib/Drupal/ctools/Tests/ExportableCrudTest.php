@@ -14,6 +14,13 @@ use Drupal\simpletest\WebTestBase;
  */
 class ExportableCrudTest extends WebTestBase {
 
+  /**
+   * Modules to enable.
+   *
+   * @var array
+   */
+  public static $modules = array('ctools_export_test');
+
   public static function getInfo() {
     return array(
       'name' => 'CTools exportable CRUD tests',
@@ -23,7 +30,7 @@ class ExportableCrudTest extends WebTestBase {
   }
 
   protected function setUp() {
-    parent::setUp('ctools_export_test');
+    parent::setUp();
     $this->resetAll();
   }
 

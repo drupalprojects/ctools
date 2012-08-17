@@ -13,17 +13,20 @@ use Drupal\simpletest\WebTestBase;
  * Test menu links depending on user permissions.
  */
 class CToolsPluginsTest extends WebTestBase {
+
+  /**
+   * Modules to enable.
+   *
+   * @var array
+   */
+  public static $modules = array('ctools_plugin_test');
+
   public static function getInfo() {
     return array(
       'name' => 'Get plugin info',
       'description' => 'Verify that plugin type definitions can properly set and overide values.',
       'group' => 'Chaos Tools Suite',
     );
-  }
-
-  function setUp() {
-    // Additionally enable contact module.
-    parent::setUp('ctools', 'ctools_plugin_test');
   }
 
   protected function assertPluginFunction($module, $type, $id, $function = 'function') {
