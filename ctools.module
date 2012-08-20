@@ -766,6 +766,17 @@ function ctools_export_ui_ctools_access_set($argument, $access) {
 }
 
 /**
+ * Implements hook_views_api().
+ */
+function ctools_views_api() {
+  return array(
+    'api' => 3.0,
+    'path' => drupal_get_path('module', 'ctools') . '/plugins/views',
+  );
+}
+
+
+/**
  * Implements hook_menu_local_tasks_alter().
  */
 function ctools_menu_local_tasks_alter(&$data, $router_item, $root_path) {
