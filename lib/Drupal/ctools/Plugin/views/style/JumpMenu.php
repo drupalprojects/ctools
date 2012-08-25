@@ -10,6 +10,8 @@ namespace Drupal\ctools\Plugin\views\style;
 use Drupal\Core\Annotation\Plugin;
 use Drupal\Core\Annotation\Translation;
 use Drupal\views\Plugin\views\style\StylePluginBase;
+use Drupal\views\Plugin\views\wizard\WizardInterface;
+use Drupal\views\View;
 
 /**
  * Style plugin to render each item as a row in a table.
@@ -166,5 +168,44 @@ class JumpMenu extends StylePluginBase {
     $options = array();
     $fields = $this->rendered_fields;
   }
+
+  function wizard_submit(&$form, &$form_state, WizardInterface $wizard, &$display_options, $display_type) {
+    // If any of the displays use jump menus, we want to add fields to the view
+    // that store the path that will be used in the jump menu. The fields to
+    // use for this are defined by the plugin.
+    $plugin = $wizard->getPlugin();
+    if (isset($plugin['path_field'])) {
+      $path_field = $plugin['path_field'];
+      $path_fields_added = FALSE;
+      foreach ($display_options as $display_type => $options) {
+        if (!empty($options['style_plugin']) && $options['style_plugin'] == 'jump_menu') {
+          // Regardless of how many displays have jump menus, we only need to
+          // add a single set of path fields to the view.
+          if (!$path_fields_added) {
+            // The plugin might provide supplemental fields that it needs to
+            // generate the path (for example, node revisions need the node ID
+            // as well as the revision ID). We need to add these first so they
+            // are available as replacement patterns in the main path field.
+            $path_fields = !empty($plugin['path_fields_supplemental']) ? $plugin['path_fields_supplemental'] : array();
+            $path_fields[] = &$path_field;
+
+            // Generate a unique ID for each field so we don't overwrite
+            // existing ones.
+            foreach ($path_fields as &$field) {
+              $field['id'] = View::generate_item_id($field['id'], $display_options['default']['fields']);
+              $display_options['default']['fields'][$field['id']] = $field;
+            }
+
+            $path_fields_added = TRUE;
+          }
+
+          // Configure the style plugin to use the path field to generate the
+          // jump menu path.
+          $display_options[$display_type]['style_options']['path'] = $path_field['id'];
+        }
+      }
+    }
+  }
+
 
 }
