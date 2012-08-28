@@ -7,7 +7,7 @@
 
 namespace Drupal\ctools\Tests;
 
-use Drupal\views\Tests\WizardTestBase;
+use Drupal\views\Tests\Wizard\WizardTestBase;
 
 /**
  * Tests the ability of the views wizard to create views with a jump menu style plugin.
