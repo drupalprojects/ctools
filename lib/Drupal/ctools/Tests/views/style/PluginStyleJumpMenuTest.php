@@ -7,13 +7,13 @@
 
 namespace Drupal\ctools\Tests\views\style;
 
-use Drupal\views\Tests\ViewsSqlTest;
+use Drupal\views\Tests\ViewTestBase;
 use Drupal\views\View;
 
 /**
  * Tests jump menu style functionality.
  */
-class PluginStyleJumpMenuTest extends ViewsSqlTest {
+class PluginStyleJumpMenuTest extends ViewTestBase {
   public static function getInfo() {
     return array(
       'name' => 'Jump menu',

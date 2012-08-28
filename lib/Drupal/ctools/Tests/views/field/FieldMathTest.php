@@ -7,12 +7,12 @@
 
 namespace Drupal\ctools\Tests\views\field;
 
-use Drupal\views\Tests\ViewsSqlTest;
+use Drupal\views\Tests\ViewTestBase;
 
 /**
  * Tests the core Drupal\ctools\Plugin\views\field\Math handler.
  */
-class FieldMathTest extends ViewsSqlTest {
+class FieldMathTest extends ViewTestBase {
   public static function getInfo() {
     return array(
       'name' => 'Field: Math',
