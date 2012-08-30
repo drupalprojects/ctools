@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * @file
  * Plugin to provide access control based upon role membership.
@@ -17,7 +19,7 @@ $plugin = array(
   'settings form' => 'ctools_role_ctools_access_settings',
   'settings form submit' => 'ctools_role_ctools_access_settings_submit',
   'summary' => 'ctools_role_ctools_access_summary',
-  'required context' => new ctools_context_required(t('User'), 'user'),
+  'required context' => new ContextRequired(t('User'), 'user'),
 );
 
 /**

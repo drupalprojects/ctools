@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * Plugins are described by creating a $plugin array which will be used
  * by the system that includes this file.
@@ -9,7 +11,7 @@ $plugin = array(
   'title' => t('List of related terms'),
   'icon' => 'icon_term.png',
   'description' => t('Terms related to an existing term; may be child, siblings or top level.'),
-  'required context' => new ctools_context_required(t('Term'), array('term', 'taxonomy_term')),
+  'required context' => new ContextRequired(t('Term'), array('term', 'taxonomy_term')),
   'category' => t('Taxonomy term'),
   'defaults' => array('title' => '', 'type' => 'child', 'list_type' => 'ul', 'path' => 'taxonomy/term'),
 );

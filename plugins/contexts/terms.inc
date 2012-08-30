@@ -6,6 +6,8 @@
  * Plugin to provide a terms context
  */
 
+use Drupal\ctools\Context;
+
 /**
  * Plugins are described by creating a $plugin array which will be used
  * by the system that includes this file.
@@ -38,7 +40,7 @@ function ctools_context_create_terms($empty, $data = NULL, $conf = FALSE) {
   // The input is expected to be an object as created by ctools_break_phrase
   // which contains a group of terms.
 
-  $context = new ctools_context(array('terms', 'entity:taxonomy_term'));
+  $context = new Context(array('terms', 'entity:taxonomy_term'));
   $context->plugin = 'terms';
 
   if ($empty) {

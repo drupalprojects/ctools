@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * @file
  * Plugin to provide an relationship handler for user from term.
@@ -13,7 +15,7 @@ $plugin = array(
   'title' => t('User from view'),
   'keyword' => 'user',
   'description' => t('Extract a user context from a view context of the base type user.'),
-  'required context' => new ctools_context_required(t('View'), 'view', array('base' => 'users')),
+  'required context' => new ContextRequired(t('View'), 'view', array('base' => 'users')),
   'context' => 'views_content_user_from_view_context',
   'edit form' => 'views_content_user_from_view_settings_form',
   'edit form validate' => 'views_content_user_from_view_settings_form_validate',

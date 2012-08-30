@@ -1,6 +1,8 @@
 <?php
 // $Id$
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * @file
  * Plugin to provide access control based upon entity bundle.
@@ -36,7 +38,7 @@ function ctools_entity_bundle_ctools_access_get_children($plugin, $parent) {
     $plugin['keyword'] = $entity_type;
     $plugin['description'] = t('Control access by @entity entity bundle.', array('@entity' => $entity_type));
     $plugin['name'] = $parent . ':' . $entity_type;
-    $plugin['required context'] = new ctools_context_required(t(ucfirst($entity_type)), $entity_type);
+    $plugin['required context'] = new ContextRequired(t(ucfirst($entity_type)), $entity_type);
     $plugins[$parent . ':' . $entity_type] = $plugin;
   }
 

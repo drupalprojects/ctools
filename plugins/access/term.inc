@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * @file
  * Plugin to provide access control based upon specific terms.
@@ -18,7 +20,7 @@ $plugin = array(
   'settings form validation' => 'ctools_term_ctools_access_settings_validate',
   'settings form submit' => 'ctools_term_ctools_access_settings_submit',
   'summary' => 'ctools_term_ctools_access_summary',
-  'required context' => new ctools_context_required(t('Term'), array('taxonomy_term', 'terms')),
+  'required context' => new ContextRequired(t('Term'), array('taxonomy_term', 'terms')),
 );
 
 /**

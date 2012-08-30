@@ -5,6 +5,8 @@
  * Plugin to provide a user_edit_form context
  */
 
+use Drupal\ctools\Context;
+
 /**
  * Plugins are described by creating a $plugin array which will be used
  * by the system that includes this file.
@@ -31,7 +33,7 @@ $plugin = array(
  */
 function ctools_context_create_user_edit_form($empty, $user = NULL, $conf = FALSE) {
   static $created;
-  $context = new ctools_context(array('form', 'user_edit', 'user_form', 'user_edit_form', 'user', 'entity:user'));
+  $context = new Context(array('form', 'user_edit', 'user_form', 'user_edit_form', 'user', 'entity:user'));
   $context->plugin = 'user_edit_form';
 
   if ($empty || (isset($created) && $created)) {

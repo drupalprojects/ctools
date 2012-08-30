@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * @file
  * Plugin to provide an relationship handler for term from view.
@@ -13,7 +15,7 @@ $plugin = array(
   'title' => t('Term from view'),
   'keyword' => 'term',
   'description' => t('Extract a term context from a view context of the base type term.'),
-  'required context' => new ctools_context_required(t('View'), 'view', array('base' => 'term_data')),
+  'required context' => new ContextRequired(t('View'), 'view', array('base' => 'term_data')),
   'context' => 'views_content_term_from_view_context',
   'edit form' => 'views_content_term_from_view_settings_form',
   'edit form validate' => 'views_content_term_from_view_settings_form_validate',

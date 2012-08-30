@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * @file
  * Plugin automatically declare 'tokens' as plugins.
@@ -45,7 +47,7 @@ function ctools_token_content_type_content_types() {
           'icon' => 'icon_token.png',
           'title' => $token['name'],
           'description' => $token['description'],
-          'required context' => new ctools_context_required(t(ucfirst($entity_type)), $entity_type),
+          'required context' => new ContextRequired(t(ucfirst($entity_type)), $entity_type),
         );
       }
     }

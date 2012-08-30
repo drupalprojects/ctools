@@ -1,5 +1,6 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
 
 /**
  * @file
@@ -18,7 +19,7 @@ $plugin = array(
   'title' => t("Relcontext from simplecontext"),
   'keyword' => 'relcontext',
   'description' => t('Adds a relcontext from existing simplecontext.'),
-  'required context' => new ctools_context_required(t('Simplecontext'), 'simplecontext'),
+  'required context' => new ContextRequired(t('Simplecontext'), 'simplecontext'),
   'context' => 'ctools_relcontext_from_simplecontext_context',
   'settings form' => 'ctools_relcontext_from_simplecontext_settings_form',
 );

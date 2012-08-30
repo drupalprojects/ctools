@@ -2,6 +2,3 @@ name = Chaos tools
 description = A library of helpful tools by Merlin of Chaos.
 core = 8.x
 package = Chaos tool suite
-files[] = includes/context.inc
-files[] = includes/math-expr.inc
-files[] = includes/stylizer.inc

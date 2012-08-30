@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * @file
  * Plugin to provide an relationship handler for all terms from node.
@@ -13,7 +15,7 @@ $plugin = array(
   'title' => t('Multiple terms from node'),
   'keyword' => 'terms',
   'description' => t('Adds a taxonomy terms from a node context; if multiple terms are selected, they wil be concatenated.'),
-  'required context' => new ctools_context_required(t('Node'), 'node'),
+  'required context' => new ContextRequired(t('Node'), 'node'),
   'context' => 'ctools_terms_from_node_context',
   'edit form' => 'ctools_terms_from_node_settings_form',
   'defaults' => array('vocabulary' => array(), 'concatenator' => ','),

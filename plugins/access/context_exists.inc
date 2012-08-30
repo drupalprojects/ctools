@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * @file
  * Plugin to provide access control/visibility based on existence of a specified context
@@ -11,7 +13,7 @@ $plugin = array(
   'callback' => 'ctools_context_exists_ctools_access_check',
   'settings form' => 'ctools_context_exists_ctools_access_settings',
   'summary' => 'ctools_context_exists_ctools_access_summary',
-  'required context' => new ctools_context_required(t('Context'), 'any', TRUE),
+  'required context' => new ContextRequired(t('Context'), 'any', TRUE),
   'defaults' => array('exists' => TRUE),
 );
 

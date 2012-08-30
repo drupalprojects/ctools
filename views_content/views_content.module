@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * @file views_content.module
  *
@@ -253,7 +255,7 @@ function _views_content_get_context_from_display($view, $id, $parent, $required 
     // If context is not required, then having any required context
     // causes a fail.
     foreach ($contexts as $context) {
-      if (is_object($context) && get_class($context) == 'ctools_context_required') {
+      if (is_object($context) && get_class($context) == 'ContextRequired') {
         return;
       }
     }

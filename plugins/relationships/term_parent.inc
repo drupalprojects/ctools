@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * @file relationships/term_parent.inc
  * Plugin to provide an relationship handler for term parent.
@@ -13,7 +15,7 @@ $plugin = array(
   'title' => t('Term parent'),
   'keyword' => 'parent_term',
   'description' => t('Adds a taxonomy term parent from a term context.'),
-  'required context' => new ctools_context_required(t('Term'), 'entity:taxonomy_term'),
+  'required context' => new ContextRequired(t('Term'), 'entity:taxonomy_term'),
   'context' => 'ctools_term_parent_context',
   'edit form' => 'ctools_term_parent_settings_form',
   'defaults' => array('type' => 'top'),

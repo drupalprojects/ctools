@@ -1,5 +1,6 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
 
 /**
  * @file
@@ -27,7 +28,7 @@ $plugin = array(
   // Icon goes in the directory with the content type.
   'icon' => 'icon_example.png',
   'description' => t('Simplecontext content type - works with a simplecontext context.'),
-  'required context' => new ctools_context_required(t('Simplecontext'), 'simplecontext'),
+  'required context' => new ContextRequired(t('Simplecontext'), 'simplecontext'),
   'edit form' => 'simplecontext_content_type_edit_form',
   'admin title' => 'ctools_plugin_example_simplecontext_content_type_admin_title',
 

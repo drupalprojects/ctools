@@ -7,6 +7,8 @@
  * context object that can be utilized by anything that accepts contexts.
  */
 
+use Drupal\ctools\Context;
+
 /**
  * Plugins are described by creating a $plugin array which will be used
  * by the system that includes this file.
@@ -36,7 +38,7 @@ $plugin = array(
  * are not always created from the UI.
  */
 function ctools_context_create_node($empty, $data = NULL, $conf = FALSE) {
-  $context = new ctools_context('node');
+  $context = new Context('node');
   $context->plugin = 'node';
 
   if ($empty) {

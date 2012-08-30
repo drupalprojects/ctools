@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 if (module_exists('book')) {
   /**
    * Plugins are described by creating a $plugin array which will be used
@@ -10,7 +12,7 @@ if (module_exists('book')) {
     'title' => t('Book navigation'),
     'icon' => 'icon_node.png',
     'description' => t('The navigation menu the book the node belongs to.'),
-    'required context' => new ctools_context_required(t('Node'), 'node'),
+    'required context' => new ContextRequired(t('Node'), 'node'),
     'category' => t('Node'),
   );
 }

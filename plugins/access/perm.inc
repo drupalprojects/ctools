@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * @file
  * Plugin to provide access control based on user permission strings.
@@ -16,7 +18,7 @@ $plugin = array(
   'default' => array('perm' => 'access content'),
   'settings form' => 'ctools_perm_ctools_access_settings',
   'summary' => 'ctools_perm_ctools_access_summary',
-  'required context' => new ctools_context_required(t('User'), 'user'),
+  'required context' => new ContextRequired(t('User'), 'user'),
 );
 
 /**

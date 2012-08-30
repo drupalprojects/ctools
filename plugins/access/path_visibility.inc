@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextOptional;
+
 /**
  * @file
  * Plugin to provide access control/visibility based on path.
@@ -11,7 +13,7 @@ $plugin = array(
   'callback' => 'ctools_path_visibility_ctools_access_check',
   'settings form' => 'ctools_path_visibility_ctools_access_settings',
   'summary' => 'ctools_path_visibility_ctools_access_summary',
-  'required context' =>  new ctools_context_optional(t('Path'), 'string'),
+  'required context' =>  new ContextOptional(t('Path'), 'string'),
   'default' => array('visibility_setting' => 1, 'paths' => ''),
 );
 

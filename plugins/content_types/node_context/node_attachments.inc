@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * Plugins are described by creating a $plugin array which will be used
  * by the system that includes this file.
@@ -9,7 +11,7 @@ $plugin = array(
   'title' => t('Attached files'),
   'icon' => 'icon_node.png',
   'description' => t('A list of files attached to the node.'),
-  'required context' => new ctools_context_required(t('Node'), 'node'),
+  'required context' => new ContextRequired(t('Node'), 'node'),
   'category' => t('Node'),
 );
 

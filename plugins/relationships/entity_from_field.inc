@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * @file
  * Plugin to provide an relationship handler for an entity from a field.
@@ -109,7 +111,7 @@ function ctools_entity_from_field_get_children($parent_plugin, $parent) {
 
                     // Since we can't apply restrictions on the reverse relationship
                     // we just add the required context here.
-                    $plugin['required context'] = new ctools_context_required($to_entity_info['label'], $to_entity);
+                    $plugin['required context'] = new ContextRequired($to_entity_info['label'], $to_entity);
 
                     $plugin_entities = array(
                       'to' => array($from_entity => $from_entity_info),
@@ -136,7 +138,7 @@ function ctools_entity_from_field_get_children($parent_plugin, $parent) {
     $from_entity_info = $entities[$from_entity];
     $to_entity_info = $entities[$to_entity];
 
-    $plugins[$key]['required context'] = new ctools_context_required($from_entity_info['label'], $from_entity, array('type' => array_keys($context['types'])));
+    $plugins[$key]['required context'] = new ContextRequired($from_entity_info['label'], $from_entity, array('type' => array_keys($context['types'])));
 
     $plugin_entities = array(
       'to' => array($to_entity => $to_entity_info),

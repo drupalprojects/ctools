@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * Plugins are described by creating a $plugin array which will be used
  * by the system that includes this file.
@@ -11,7 +13,7 @@ $plugin = array(
   'title' => t('General form'),
   'icon' => 'icon_form.png',
   'description' => t('Everything in the form that is not displayed by other content.'),
-  'required context' => new ctools_context_required(t('Form'), 'form'),
+  'required context' => new ContextRequired(t('Form'), 'form'),
   'category' => t('Form'),
 );
 

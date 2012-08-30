@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 if (module_exists('search')) {
   /**
    * Plugins are described by creating a $plugin array which will be used
@@ -10,7 +12,7 @@ if (module_exists('search')) {
     'title' => t('Search results'),
     'icon' => 'icon_search.png',
     'description' => t('The results of a search using keywords.'),
-    'required context' => new ctools_context_required(t('Keywords'), 'string'),
+    'required context' => new ContextRequired(t('Keywords'), 'string'),
     'category' => t('Widgets'),
     'defaults' => array(
       'type' => 'node',

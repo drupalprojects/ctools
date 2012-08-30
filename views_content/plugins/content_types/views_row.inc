@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * @file
  * Allow a view context to display individual rows.
@@ -10,7 +12,7 @@ $plugin = array(
   'category' => t('View context'),
   'icon' => 'icon_views_page.png',
   'description' => t('Display all or a specific amount of rows from a loaded view context.'),
-  'required context' => new ctools_context_required(t('View'), 'view'),
+  'required context' => new ContextRequired(t('View'), 'view'),
   'defaults' => array(
     'rows' => array(),
     'use_fields' => array(),

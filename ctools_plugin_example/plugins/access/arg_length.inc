@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * @file
  * Plugin to provide access control/visibility based on length of
@@ -16,7 +18,7 @@ $plugin = array(
   'callback' => 'ctools_plugin_example_arg_length_ctools_access_check',
   'settings form' => 'ctools_plugin_example_arg_length_ctools_access_settings',
   'summary' => 'ctools_plugin_example_arg_length_ctools_access_summary',
-  'required context' => new ctools_context_required(t('Simplecontext'), 'simplecontext'),
+  'required context' => new ContextRequired(t('Simplecontext'), 'simplecontext'),
 );
 
 /**

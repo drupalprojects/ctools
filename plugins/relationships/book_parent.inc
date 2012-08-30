@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * @file
  * Plugin to provide an relationship handler for book parent.
@@ -13,7 +15,7 @@ $plugin = array(
   'title' => t('Book parent'),
   'keyword' => 'book_parent',
   'description' => t('Adds a book parent from a node context.'),
-  'required context' => new ctools_context_required(t('Node'), 'node'),
+  'required context' => new ContextRequired(t('Node'), 'node'),
   'context' => 'ctools_book_parent_context',
   'edit form' => 'ctools_book_parent_settings_form',
   'defaults' => array('type' => 'top'),

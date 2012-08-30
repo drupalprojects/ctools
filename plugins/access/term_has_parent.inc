@@ -1,4 +1,7 @@
 <?php
+
+use Drupal\ctools\ContextRequired;
+
 /**
  * @file
  * Plugin to provide access control based upon a parent term.
@@ -16,7 +19,7 @@ $plugin = array(
   'settings form' => 'ctools_term_has_parent_ctools_access_settings',
   'settings form submit' => 'ctools_term_has_parent_ctools_access_settings_submit',
   'summary' => 'ctools_term_has_parent_ctools_access_summary',
-  'required context' => new ctools_context_required(t('Term'), array('taxonomy_term', 'terms')),
+  'required context' => new ContextRequired(t('Term'), array('taxonomy_term', 'terms')),
 );
 
 /**

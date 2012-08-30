@@ -6,6 +6,8 @@
  * is used in this demo to create a relcontext from an existing simplecontext.
  */
 
+use Drupal\ctools\Context;
+
 /**
  * Plugins are described by creating a $plugin array which will be used
  * by the system that includes this file.
@@ -35,7 +37,7 @@ $plugin = array(
  *   a Context object.
  */
 function ctools_plugin_example_context_create_relcontext($empty, $data = NULL, $conf = FALSE) {
-  $context = new ctools_context('relcontext');
+  $context = new Context('relcontext');
   $context->plugin = 'relcontext';
   if ($empty) {
     return $context;

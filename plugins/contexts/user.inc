@@ -6,6 +6,8 @@
  * Plugin to provide a user context
  */
 
+use Drupal\ctools\Context;
+
 /**
  * Plugins are described by creating a $plugin array which will be used
  * by the system that includes this file.
@@ -32,7 +34,7 @@ $plugin = array(
  * are not always created from the UI.
  */
 function ctools_context_create_user($empty, $data = NULL, $conf = FALSE) {
-  $context = new ctools_context(array('entity:user', 'entity', 'user'));
+  $context = new Context(array('entity:user', 'entity', 'user'));
   $context->plugin = 'user';
 
   if ($empty) {

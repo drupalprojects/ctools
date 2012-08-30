@@ -7,6 +7,8 @@
  * context object that can be utilized by anything that accepts contexts.
  */
 
+use Drupal\ctools\Context;
+
 /**
  * Plugins are described by creating a $plugin array which will be used
  * by the system that includes this file.
@@ -71,7 +73,7 @@ function views_content_context_view_get_children($plugin, $parent) {
 }
 
 function views_content_context_view_create($empty, $data = NULL, $conf = FALSE, $plugin = array()) {
-  $context = new ctools_context('view');
+  $context = new Context('view');
   $context->plugin = 'view';
 
   if ($empty) {

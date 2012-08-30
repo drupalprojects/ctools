@@ -1,5 +1,6 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
 
 /**
  * @file
@@ -23,7 +24,7 @@ $plugin = array(
   // Icon goes in the directory with the content type. Here, in plugins/content_types.
   'icon' => 'icon_example.png',
   'description' => t('Relcontext content type - works with relcontext context.'),
-  'required context' => new ctools_context_required(t('Relcontext'), 'relcontext'),
+  'required context' => new ContextRequired(t('Relcontext'), 'relcontext'),
   'category' => array(t('CTools Examples'), -9),
   'edit form' => 'relcontext_edit_form',
 

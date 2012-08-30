@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 if (module_exists('comment')) {
   /**
    * Plugins are described by creating a $plugin array which will be used
@@ -10,7 +12,7 @@ if (module_exists('comment')) {
     'title' => t('Comment form'),
     'icon' => 'icon_node.png',
     'description' => t('A form to add a new comment.'),
-    'required context' => new ctools_context_required(t('Node'), 'node'),
+    'required context' => new ContextRequired(t('Node'), 'node'),
     'category' => t('Node'),
     'defaults' => array('anon_links' => FALSE),
   );

@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * @file
  * Plugin to provide an relationship handler for node from user.
@@ -13,7 +15,7 @@ $plugin = array(
   'title' => t('Node author'),
   'keyword' => 'user',
   'description' => t('Creates the author of a node as a user context.'),
-  'required context' => new ctools_context_required(t('Node'), 'node'),
+  'required context' => new ContextRequired(t('Node'), 'node'),
   'context' => 'ctools_user_from_node_context',
   'no ui' => TRUE,
 );

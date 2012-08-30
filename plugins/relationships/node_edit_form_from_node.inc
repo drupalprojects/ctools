@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * @file
  * Plugin to provide an relationship handler for term from node.
@@ -13,7 +15,7 @@ $plugin = array(
   'title' => t('Node edit form from node'),
   'keyword' => 'node_form',
   'description' => t('Adds node edit form from a node context.'),
-  'required context' => new ctools_context_required(t('Node'), 'node'),
+  'required context' => new ContextRequired(t('Node'), 'node'),
   'context' => 'ctools_node_edit_form_from_node_context',
 );
 

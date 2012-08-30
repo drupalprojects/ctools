@@ -6,6 +6,8 @@
  * Plugin to provide a node_add_form context
  */
 
+use Drupal\ctools\Context;
+
 /**
  * Plugins are described by creating a $plugin array which will be used
  * by the system that includes this file.
@@ -32,7 +34,7 @@ $plugin = array(
  */
 function ctools_context_create_node_add_form($empty, $data = NULL, $conf = FALSE) {
   static $creating = FALSE;
-  $context = new ctools_context(array('form', 'node_add', 'node_form', 'node', 'entity:node'));
+  $context = new Context(array('form', 'node_add', 'node_form', 'node', 'entity:node'));
   $context->plugin = 'node_add_form';
 
   if ($empty || ($creating)) {

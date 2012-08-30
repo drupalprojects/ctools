@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * @file
  * Plugin to provide an relationship handler for node from view.
@@ -13,7 +15,7 @@ $plugin = array(
   'title' => t('Node from view'),
   'keyword' => 'node',
   'description' => t('Extract a node context from a view context of the base type node.'),
-  'required context' => new ctools_context_required(t('View'), 'view', array('base' => 'node')),
+  'required context' => new ContextRequired(t('View'), 'view', array('base' => 'node')),
   'context' => 'views_content_node_from_view_context',
   'edit form' => 'views_content_node_from_view_settings_form',
   'edit form validate' => 'views_content_node_from_view_settings_form_validate',

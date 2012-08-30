@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * @file
  * Plugin to provide access control based upon node (un)published status.
@@ -14,7 +16,7 @@ $plugin = array(
   'description' => t('Control access by the nodes published status.'),
   'callback' => 'ctools_node_status_ctools_access_check',
   'summary' => 'ctools_node_status_ctools_access_summary',
-  'required context' => new ctools_context_required(t('Node'), 'node'),
+  'required context' => new ContextRequired(t('Node'), 'node'),
 );
 
 /**

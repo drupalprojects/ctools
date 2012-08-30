@@ -5,6 +5,8 @@
  *  Provide a global context to allow for token support.
  */
 
+use Drupal\ctools\Context;
+
 $plugin = array(
   'title' => t('Token'),
   'description' => t('A context that contains token replacements from token.module.'),
@@ -19,7 +21,7 @@ $plugin = array(
  * Create a context from manual configuration.
  */
 function ctools_context_create_token($empty, $data = NULL, $conf = FALSE) {
-  $context = new ctools_context('token');
+  $context = new Context('token');
   $context->plugin = 'token';
 
   return $context;

@@ -1,5 +1,9 @@
 <?php
 
+namespace Drupal\ctools;
+
+use Drupal\ctools\ContextOptional;
+
 /**
  * @file
  *
@@ -19,229 +23,11 @@
  */
 
 /**
- * The context object is largely a wrapper around some other object, with
- * an interface to finding out what is contained and getting to both
- * the object and information about the object.
- *
- * Each context object has its own information, but some things are very
- * common, such as titles, data, keywords, etc. In particulare, the 'type'
- * of the context is important.
- */
-class ctools_context {
-  var $type = NULL;
-  var $data = NULL;
-  // The title of this object.
-  var $title = '';
-  // The title of the page if this object exists
-  var $page_title = '';
-  // The identifier (in the UI) of this object
-  var $identifier = '';
-  var $argument = NULL;
-  var $keyword = '';
-  var $original_argument = NULL;
-  var $restrictions = array();
-  var $empty = FALSE;
-
-  function ctools_context($type = 'none', $data = NULL) {
-    $this->type  = $type;
-    $this->data  = $data;
-    $this->title = t('Unknown context');
-  }
-
-  function is_type($type) {
-    if ($type == 'any' || $this->type == 'any') {
-      return TRUE;
-    }
-
-    $a = is_array($type) ? $type : array($type);
-    $b = is_array($this->type) ? $this->type : array($this->type);
-    return (bool) array_intersect($a, $b);
-  }
-
-  function get_argument() {
-    return $this->argument;
-  }
-
-  function get_original_argument() {
-    if (!is_null($this->original_argument)) {
-      return $this->original_argument;
-    }
-    return $this->argument;
-  }
-
-  function get_keyword() {
-    return $this->keyword;
-  }
-
-  function get_identifier() {
-    return $this->identifier;
-  }
-
-  function get_title() {
-    return $this->title;
-  }
-
-  function get_page_title() {
-    return $this->page_title;
-  }
-}
-
-/**
- * Used to create a method of comparing if a list of contexts
- * match a required context type.
- */
-class ctools_context_required {
-  var $keywords = '';
-
-  /**
-   * If set, the title will be used in the selector to identify
-   * the context. This is very useful when multiple contexts
-   * are required to inform the user will be used for what.
-   */
-  var $title = NULL;
-
-  /**
-   * Test to see if this context is required.
-   */
-  var $required = TRUE;
-
-  /**
-   * If TRUE, skip the check in ctools_context_required::select()
-   * for contexts whose names may have changed.
-   */
-  var $skip_name_check = FALSE;
-
-  /**
-   *
-   * @param $title
-   *   The first parameter should be the 'title' of the context for use
-   *   in UYI selectors when multiple contexts qualify.
-   * @param ...
-   *   One or more keywords to use for matching which contexts are allowed.
-   */
-  function ctools_context_required($title) {
-    $args = func_get_args();
-    $this->title = array_shift($args);
-
-    // If we have a boolean value at the end for $skip_name_check, store it
-    if (is_bool(end($args))) {
-      $this->skip_name_check = array_pop($args);
-    }
-
-    // If we were given restrictions at the end, store them.
-    if (count($args) > 1 && is_array(end($args))) {
-      $this->restrictions = array_pop($args);
-    }
-
-    if (count($args) == 1) {
-      $args = array_shift($args);
-    }
-    $this->keywords = $args;
-  }
-
-  function filter($contexts) {
-    $result = array();
-
-    // See which of these contexts are valid
-    foreach ((array) $contexts as $cid => $context) {
-      if ($context->is_type($this->keywords)) {
-        // Compare to see if our contexts were met.
-        if (!empty($this->restrictions) && !empty($context->restrictions)) {
-          foreach ($this->restrictions as $key => $values) {
-            // If we have a restriction, the context must either not have that
-            // restriction listed, which means we simply don't know what it is,
-            // or there must be an intersection of the restricted values on
-            // both sides.
-            if (!is_array($values)) {
-              $values = array($values);
-            }
-            if (!empty($context->restrictions[$key]) && !array_intersect($values, $context->restrictions[$key])) {
-              continue 2;
-            }
-          }
-        }
-        $result[$cid] = $context;
-      }
-    }
-
-    return $result;
-  }
-
-  function select($contexts, $context) {
-    if (!is_array($contexts)) {
-      $contexts = array($contexts);
-    }
-
-    // If we had requested a $context but that $context doesn't exist
-    // in our context list, there is a good chance that what happened
-    // is our context IDs changed. See if there's another context
-    // that satisfies our requirements.
-    if (!$this->skip_name_check && !empty($context) && !isset($contexts[$context])) {
-      $choices = $this->filter($contexts);
-
-      // If we got a hit, take the first one that matches.
-      if ($choices) {
-        $keys = array_keys($choices);
-        $context = reset($keys);
-      }
-    }
-
-    if (empty($context) || empty($contexts[$context])) {
-      return FALSE;
-    }
-    return $contexts[$context];
-  }
-}
-
-/**
- * Used to compare to see if a list of contexts match an optional context. This
- * can produce empty contexts to use as placeholders.
- */
-class ctools_context_optional extends ctools_context_required {
-  var $required = FALSE;
-  function ctools_context_optional() {
-    $args = func_get_args();
-    call_user_func_array(array($this, 'ctools_context_required'), $args);
-  }
-
-  /**
-   * Add the 'empty' context which is possible for optional
-   */
-  function add_empty(&$contexts) {
-    $context = new ctools_context('any');
-    $context->title      = t('No context');
-    $context->identifier = t('No context');
-    $contexts = array_merge(array('empty' => $context), $contexts);
-  }
-
-  function filter($contexts) {
-    $this->add_empty($contexts);
-    return parent::filter($contexts);
-  }
-
-  function select($contexts, $context) {
-    $this->add_empty($contexts);
-    if (empty($context)) {
-      return $contexts['empty'];
-    }
-
-    $result = parent::select($contexts, $context);
-
-    // Don't flip out if it can't find the context; this is optional, put
-    // in an empty.
-    if ($result == FALSE) {
-      $result = $contexts['empty'];
-    }
-    return $result;
-  }
-}
-
-/**
  * Return a keyed array of context that match the given 'required context'
  * filters.
  *
  * Functions or systems that require contexts of a particular type provide a
- * ctools_context_required or ctools_context_optional object. This function
+ * ContextRequired or ContextOptional object. This function
  * examines that object and an array of contexts to determine which contexts
  * match the filter.
  *
@@ -251,7 +37,7 @@ class ctools_context_optional extends ctools_context_required {
  * @param $contexts
  *   A keyed array of all available contexts.
  * @param $required
- *   A ctools_context_required or ctools_context_optional object, or an array
+ *   A ContextRequired or ContextOptional object, or an array
  *   of such objects.
  *
  * @return

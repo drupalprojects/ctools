@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * @file
  * Plugin to provide access control/visibility based on specified context string matching user-specified string
@@ -11,7 +13,7 @@ $plugin = array(
   'callback' => 'ctools_string_equal_ctools_access_check',
   'settings form' => 'ctools_string_equal_ctools_access_settings',
   'summary' => 'ctools_string_equal_ctools_access_summary',
-  'required context' => new ctools_context_required(t('String'), 'string'),
+  'required context' => new ContextRequired(t('String'), 'string'),
   'defaults' => array('operator' => '=', 'value' => '', 'case' => FALSE),
 );
 

@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * @file
  * Publishing options form for the node. This contains the basic settings
@@ -15,7 +17,7 @@ $plugin = array(
   'title' => t('Node form publishing options'),
   'icon' => 'icon_node_form.png',
   'description' => t('Publishing options on the Node form.'),
-  'required context' => new ctools_context_required(t('Form'), 'node_form'),
+  'required context' => new ContextRequired(t('Form'), 'node_form'),
   'category' => t('Form'),
 );
 

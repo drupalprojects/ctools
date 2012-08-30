@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 if (module_exists('comment')) {
   /**
    * Plugins are described by creating a $plugin array which will be used
@@ -10,7 +12,7 @@ if (module_exists('comment')) {
     'title' => t('Node comments'),
     'icon' => 'icon_node.png',
     'description' => t('The comments of the referenced node.'),
-    'required context' => new ctools_context_required(t('Node'), 'node'),
+    'required context' => new ContextRequired(t('Node'), 'node'),
     'category' => t('Node'),
     'defaults' => array(
       'mode' => variable_get('comment_default_mode', COMMENT_MODE_THREADED),

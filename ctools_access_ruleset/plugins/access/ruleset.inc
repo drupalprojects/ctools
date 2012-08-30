@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * @file
  * Plugin to provide access control based on user rulesetission strings.
@@ -36,7 +38,7 @@ function ctools_ruleset_ctools_access_merge_plugin($plugin, $parent, $item) {
     foreach ($item->requiredcontexts as $context) {
       $info = ctools_get_context($context['name']);
       // TODO: allow an optional setting
-      $plugin['required context'][] = new ctools_context_required($context['identifier'], $info['context name']);
+      $plugin['required context'][] = new ContextRequired($context['identifier'], $info['context name']);
     }
   }
 

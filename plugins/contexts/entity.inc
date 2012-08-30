@@ -7,6 +7,8 @@
  * context object that can be utilized by anything that accepts contexts.
  */
 
+use Drupal\ctools\Context;
+
 /**
  * Plugins are described by creating a $plugin array which will be used
  * by the system that includes this file.
@@ -57,7 +59,7 @@ function ctools_context_entity_get_children($plugin, $parent) {
 function ctools_context_create_entity($empty, $data = NULL, $conf = FALSE, $plugin) {
   $entity_type = $plugin['keyword'];
   $entity = entity_get_info($entity_type);
-  $context = new ctools_context(array('entity:' . $entity_type, 'entity', $entity_type));
+  $context = new Context(array('entity:' . $entity_type, 'entity', $entity_type));
   $context->plugin = $plugin['name'];
   $context->keyword = $entity_type;
 

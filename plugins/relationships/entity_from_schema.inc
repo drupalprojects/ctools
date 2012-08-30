@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * @file
  * Plugin to provide an relationship handler for an entity from a field.
@@ -64,7 +66,7 @@ function ctools_entity_from_schema_get_children($parent_plugin, $parent) {
               $plugin['name'] = $plugin_id;
               $plugin['description'] = t('Builds a relationship from a @from_entity to a @to_entity using the @base_table.@relationship field.', $replacements);
 
-              $plugin['required context'] = new ctools_context_required($from_entity_info['label'], $from_entity);
+              $plugin['required context'] = new ContextRequired($from_entity_info['label'], $from_entity);
 
               $plugin_entities = array('to' => $to_entity_info, 'from' => $from_entity_info);
               $plugin_entities = array('to' => array($to_entity => $to_entity_info), 'from' => array($from_entity => $from_entity_info));
@@ -83,7 +85,7 @@ function ctools_entity_from_schema_get_children($parent_plugin, $parent) {
               $plugin['name'] = $plugin_id;
               $plugin['description'] = t('Builds a relationship from a @to_entity to a @from_entity using the @base_table.@relationship field.', $replacements);
 
-              $plugin['required context'] = new ctools_context_required($to_entity_info['label'], $to_entity);
+              $plugin['required context'] = new ContextRequired($to_entity_info['label'], $to_entity);
 
               $plugin_entities = array('to' => $from_entity_info, 'from' => $to_entity_info);
               $plugin_entities = array('to' => array($from_entity => $from_entity_info), 'from' => array($to_entity => $to_entity_info));

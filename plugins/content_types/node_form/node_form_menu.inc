@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 if (module_exists('menu')) {
   /**
    * Plugins are described by creating a $plugin array which will be used
@@ -10,7 +12,7 @@ if (module_exists('menu')) {
     'icon' => 'icon_node_form.png',
     'title' => t('Node form menu settings'),
     'description' => t('Menu settings on the Node form.'),
-    'required context' => new ctools_context_required(t('Form'), 'node_form'),
+    'required context' => new ContextRequired(t('Form'), 'node_form'),
     'category' => t('Form'),
   );
 }

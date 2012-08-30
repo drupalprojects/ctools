@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * @file
  * Handle rendering entity fields as panes.
@@ -70,7 +72,7 @@ function ctools_entity_field_content_type_content_types() {
   // Create the required context for each field related to the bundle types.
   foreach ($types as $key => $field_content_type) {
     list($entity_type, $field_name) = explode(':', $key, 2);
-    $types[$key]['required context'] = new ctools_context_required(t(ucfirst($entity_type)), $entity_type, array(
+    $types[$key]['required context'] = new ContextRequired(t(ucfirst($entity_type)), $entity_type, array(
       'type' => array_keys($context_types[$key]['types']),
     ));
     unset($context_types[$key]['types']);

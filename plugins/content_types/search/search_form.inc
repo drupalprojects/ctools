@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextOptional;
+
 if (module_exists('search')) {
   /**
    * Plugins are described by creating a $plugin array which will be used
@@ -10,7 +12,7 @@ if (module_exists('search')) {
     'title' => t('Advanced search form'),
     'icon' => 'icon_search.png',
     'description' => t('A search form with advanced options.'),
-    'required context' => new ctools_context_optional(t('Keywords'), 'string'),
+    'required context' => new ContextOptional(t('Keywords'), 'string'),
     'category' => t('Widgets'),
     'defaults' => array(
       'type' => 'node',

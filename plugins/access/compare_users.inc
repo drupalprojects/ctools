@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * @file
  * Ctools access plugin to provide access/visiblity if two user contexts are equal.
@@ -19,8 +21,8 @@ $plugin = array(
   'settings form' => 'ctools_compare_users_settings',
   'summary' => 'ctools_compare_users_ctools_access_summary',
   'required context' => array(
-    new ctools_context_required(t('First User'), 'user'),
-    new ctools_context_required(t("Second User"), 'user')
+    new ContextRequired(t('First User'), 'user'),
+    new ContextRequired(t("Second User"), 'user')
   ),
 );
 

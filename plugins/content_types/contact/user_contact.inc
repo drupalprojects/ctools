@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 if (module_exists('contact')) {
   /**
    * Plugins are described by creating a $plugin array which will be used
@@ -11,7 +13,7 @@ if (module_exists('contact')) {
     'icon' => 'icon_contact.png',
     'description' => t('The site contact form that allows users to contact other users.'),
     'category' => t('User'),
-    'required context' => new ctools_context_required(t('User'), 'user'),
+    'required context' => new ContextRequired(t('User'), 'user'),
   );
 }
 

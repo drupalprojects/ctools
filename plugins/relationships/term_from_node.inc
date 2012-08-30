@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * @file
  * Plugin to provide an relationship handler for term from node.
@@ -13,7 +15,7 @@ $plugin = array(
   'title' => t('Term from node'),
   'keyword' => 'term',
   'description' => t('Adds a taxonomy term from a node context; if multiple terms are selected, this will get the "first" term only.'),
-  'required context' => new ctools_context_required(t('Node'), 'node'),
+  'required context' => new ContextRequired(t('Node'), 'node'),
   'context' => 'ctools_term_from_node_context',
   'edit form' => 'ctools_term_from_node_settings_form',
   'defaults' => array('vid' => ''),

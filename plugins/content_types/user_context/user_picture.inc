@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * Plugins are described by creating a $plugin array which will be used
  * by the system that includes this file.
@@ -9,7 +11,7 @@ $plugin = array(
   'title' => t('User picture'),
   'icon' => 'icon_user.png',
   'description' => t('The picture of a user.'),
-  'required context' => new ctools_context_required(t('User'), 'user'),
+  'required context' => new ContextRequired(t('User'), 'user'),
   'category' => t('User'),
 );
 

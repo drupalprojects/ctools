@@ -6,6 +6,8 @@
  * Plugin to provide a string context
  */
 
+use Drupal\ctools\Context;
+
 /**
  * Plugins are described by creating a $plugin array which will be used
  * by the system that includes this file.
@@ -36,7 +38,7 @@ function ctools_context_create_string($empty, $data = NULL, $conf = FALSE) {
   // The input is expected to be an object as created by ctools_break_phrase
   // which contains a group of string.
 
-  $context = new ctools_context('string');
+  $context = new Context('string');
   $context->plugin = 'string';
 
   if ($empty) {

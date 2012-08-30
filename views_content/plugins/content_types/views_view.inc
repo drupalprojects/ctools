@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * @file
  * Allow a view context to be displayed as whole.
@@ -10,7 +12,7 @@ $plugin = array(
   'category' => t('View context'),
   'icon' => 'icon_views_page.png',
   'description' => t('Display the entire view.'),
-  'required context' => new ctools_context_required(t('View'), 'view'),
+  'required context' => new ContextRequired(t('View'), 'view'),
 );
 
 /**

@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 if (module_exists('profile') && !is_null(profile_user_categories())) {
   /**
    * Plugins are described by creating a $plugin array which will be used
@@ -10,7 +12,7 @@ if (module_exists('profile') && !is_null(profile_user_categories())) {
     'title' => t('Profile category'),
     'icon' => 'icon_user.png',
     'description' => t('Contents of a single profile category.'),
-    'required context' => new ctools_context_required(t('User'), 'user'),
+    'required context' => new ContextRequired(t('User'), 'user'),
     'category' => t('User'),
     'defaults' => array('category' => '', 'empty' => ''),
     'hook theme' => 'ctools_profile_fields_content_type_theme',

@@ -6,6 +6,8 @@
  * Plugin to provide a vocabulary context
  */
 
+use Drupal\ctools\Context;
+
 /**
  * Plugins are described by creating a $plugin array which will be used
  * by the system that includes this file.
@@ -29,7 +31,7 @@ $plugin = array(
  * are not always created from the UI.
  */
 function ctools_context_create_vocabulary($empty, $data = NULL, $conf = FALSE) {
-  $context = new ctools_context('vocabulary');
+  $context = new Context('vocabulary');
   $context->plugin = 'vocabulary';
 
   if ($empty) {

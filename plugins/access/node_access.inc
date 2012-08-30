@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextRequired;
+
 /**
  * @file
  * Plugin to provide access control based upon node type.
@@ -18,8 +20,8 @@ $plugin = array(
   'settings form submit' => 'ctools_node_access_ctools_access_settings_submit',
   'summary' => 'ctools_node_access_ctools_access_summary',
   'required context' => array(
-    new ctools_context_required(t('User'), 'user'),
-    new ctools_context_required(t('Node'), 'node'),
+    new ContextRequired(t('User'), 'user'),
+    new ContextRequired(t('Node'), 'node'),
   ),
 );
 

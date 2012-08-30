@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\ctools\ContextOptional;
+
 /**
  * @file
  * Content type plugin to expose all views as content.
@@ -287,7 +289,7 @@ function views_content_views_content_type_edit_form($form, &$form_state) {
   $required = array();
   if (isset($view->display_handler) && $arguments = $view->display_handler->get_handlers('argument')) {
     foreach ($arguments as $arg) {
-      $required[] = new ctools_context_optional($arg->ui_name(), 'any');
+      $required[] = new ContextOptional($arg->ui_name(), 'any');
     }
   }
 

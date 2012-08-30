@@ -1,11 +1,12 @@
 <?php
 
-
 /**
  * @file
  * Sample ctools context type plugin that shows how to create a context from an arg.
  *
  */
+
+use Drupal\ctools\Context;
 
 /**
  * Plugins are described by creating a $plugin array which will be used
@@ -44,7 +45,7 @@ $plugin = array(
  *   a Context object/
  */
 function ctools_plugin_example_context_create_simplecontext($empty, $data = NULL, $conf = FALSE) {
-  $context = new ctools_context('simplecontext');
+  $context = new Context('simplecontext');
   $context->plugin = 'simplecontext';
 
   if ($empty) {
