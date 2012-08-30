@@ -1,15 +1,64 @@
 <?php
 
 /**
- * UI class for Stylizer.
+ * @file
+ * Definition of Drupal\stylizer\Plugin\ctools\export_ui\StylizerUI.
  */
-class stylizer_ui extends ctools_export_ui {
+
+namespace Drupal\stylizer\Plugin\ctools\export_ui;
+
+use Drupal\ctools\Plugin\ctools\export_ui\ExportUIPluginBase;
+use Drupal\Core\Annotation\Plugin;
+use Drupal\Core\Annotation\Translation;
+
+/**
+ * UI class for Stylizer.
+ *
+ * @Plugin(
+ *   id = "stylizer_ui",
+ *   name = "stylizer_ui",
+ *   schema = "stylizer",
+ *   module = "stylizer",
+ *   access = "administer stylizer",
+ *   menu = {
+ *     "menu_item" = "stylizer",
+ *     "menu_title" = "Stylizer",
+ *     "menu_description" = "Add, edit or delete stylizer styles."
+ *   },
+ *   title_singular = @Translation("style"),
+ *   title_singular_proper = @Translation("Style"),
+ *   title_plural = @Translation("styles"),
+ *   title_plural_proper = @Translation("Styles"),
+ *   strings = {
+ *     "message" = {
+ *       missing_base_type" = @Translation("There are currently no style types available to add. You should enable a module that utilizes them, such as Panels.")
+ *     }
+ *   },
+ *   use_wizard = TRUE,
+ *   form_info = {
+ *     "add_order" = {
+ *       "admin" = @Translation("Administrative settings"),
+ *       "type" = @Translation("Select style type"),
+ *       "choose" = @Translation("Select base style")
+ *     },
+ *     "order" = {
+ *       "admin" = @Translation("Administrative settings")
+ *     },
+ *     "forms" = {
+ *       "choose" = {
+ *         "form id" = "ctools_stylizer_edit_style_form_choose"
+ *       }
+ *     }
+ *   }
+ * )
+ */
+class StylizerUI extends ExportUIPluginBase {
 
   function access($op, $item) {
     $access = parent::access($op, $item);
     if ($op == 'add' && $access && empty($this->base_types)) {
-     // Make sure there are base styles defined.
-     $access = FALSE;
+      // Make sure there are base styles defined.
+      $access = FALSE;
     }
     return $access;
   }
@@ -22,7 +71,7 @@ class stylizer_ui extends ctools_export_ui {
 
     if (empty($this->base_types)) {
       // Give a warning about the missing base styles.
-      drupal_set_message($this->plugin['strings']['message']['missing base type'], 'warning');
+      drupal_set_message($this->plugin['strings']['message']['missing_base_type'], 'warning');
     }
 
     $types = $all;
@@ -269,4 +318,5 @@ class stylizer_ui extends ctools_export_ui {
   function edit_form_type_submit(&$form, &$form_state) {
     list($form_state['item']->style_module, $form_state['item']->style_type) = explode('-', $form_state['values']['type']);
   }
+
 }

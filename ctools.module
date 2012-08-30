@@ -668,8 +668,7 @@ function ctools_export_ui_load($item_name, $plugin_name) {
 
   if (!$return) {
     ctools_include('export-ui');
-    $plugin = ctools_get_export_ui($plugin_name);
-    $handler = ctools_export_ui_get_handler($plugin);
+    $handler = ctools_export_ui_get_instance($plugin_name);
 
     if ($handler) {
       return $handler->load_item($item_name);
@@ -687,8 +686,7 @@ function ctools_export_ui_load($item_name, $plugin_name) {
  */
 function ctools_export_ui_task_access($plugin_name, $op, $item = NULL) {
   ctools_include('export-ui');
-  $plugin = ctools_get_export_ui($plugin_name);
-  $handler = ctools_export_ui_get_handler($plugin);
+  $handler = ctools_export_ui_get_instance($plugin_name);
 
   if ($handler) {
     return $handler->access($op, $item);
@@ -725,8 +723,7 @@ function ctools_export_ui_ctools_access_get($argument) {
   ctools_include('export-ui');
   list($plugin_name, $key) = explode(':', $argument, 2);
 
-  $plugin = ctools_get_export_ui($plugin_name);
-  $handler = ctools_export_ui_get_handler($plugin);
+  $handler = ctools_export_ui_get_instance($plugin_name);
 
   if ($handler) {
     ctools_include('context');
@@ -751,8 +748,7 @@ function ctools_export_ui_ctools_access_set($argument, $access) {
   ctools_include('export-ui');
   list($plugin_name, $key) = explode(':', $argument, 2);
 
-  $plugin = ctools_get_export_ui($plugin_name);
-  $handler = ctools_export_ui_get_handler($plugin);
+  $handler = ctools_export_ui_get_instance($plugin_name);
 
   if ($handler) {
     ctools_include('context');

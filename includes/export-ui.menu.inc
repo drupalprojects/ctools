@@ -14,8 +14,8 @@ function ctools_export_ui_menu(&$items) {
   foreach (ctools_get_export_uis() as $plugin) {
     // We also need to make sure that the module hasn't been disabled. During
     // the disable process, the module's plugins still still appear.
-    if ($plugin['has menu'] && module_exists($plugin['module'])) {
-      $handler = ctools_export_ui_get_handler($plugin);
+    if ($plugin['has_menu'] && module_exists($plugin['module'])) {
+      $handler = ctools_export_ui_get_instance($plugin['id']);
       if ($handler) {
         $handler->hook_menu($items);
       }

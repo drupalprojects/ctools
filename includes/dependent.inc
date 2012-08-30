@@ -42,7 +42,7 @@
  * On any form item, add
  * - @code '#dependency' => array('id-of-form-without-the-#' => array(list, of, values, that, make, this, gadget, visible)), @endcode
  *
- * A fuller example, that hides the menu title when no menu is selected:
+ * A fuller example, that hides the menu_title when no menu is selected:
  * @code
  *function ctools_dependent_example() {
  *  $form = array();

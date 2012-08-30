@@ -1,6 +1,37 @@
 <?php
 
-class ctools_custom_content_ui extends ctools_export_ui {
+/**
+ * @file
+ * Definition of Drupal\ctools_custom_content\Plugin\ctools\export_ui\CToolsCustomContentUI.
+ */
+
+namespace Drupal\ctools_custom_content\Plugin\ctools\export_ui;
+
+use Drupal\ctools\Plugin\ctools\export_ui\ExportUIPluginBase;
+use Drupal\Core\Annotation\Plugin;
+use Drupal\Core\Annotation\Translation;
+
+/**
+ * @Plugin(
+ * )
+ *  * @Plugin(
+ *   id = "ctools_custom_content_ui",
+ *   name = "ctools_custom_content_ui",
+ *   module = "ctools_custom_content",
+ *   schema = "stylizer",
+ *   access = "administer custom content",
+ *   menu = {
+ *     "menu_item" = "ctools-content",
+ *     "menu_title" = "Custom content panes",
+ *     "menu_description" = "Add, edit or delete custom content panes."
+ *   },
+ *   title_singular = @Translation("content pane"),
+ *   title_singular_proper = @Translation("Content pane"),
+ *   title_plural = @Translation("content panes"),
+ *   title_plural_proper = @Translation("Content panes")
+ * )
+ */
+class CToolsCustomContentUI extends ExportUIPluginBase {
 
   function edit_form(&$form, &$form_state) {
     // Correct for an error that came in because filter format changed.

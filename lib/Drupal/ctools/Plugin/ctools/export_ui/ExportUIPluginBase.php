@@ -1,9 +1,11 @@
 <?php
 
+namespace Drupal\ctools\Plugin\ctools\export_ui;
+
 /**
  * Base class for export UI.
  */
-class ctools_export_ui {
+class ExportUIPluginBase {
   var $plugin;
   var $name;
   var $options = array();
@@ -91,7 +93,7 @@ class ctools_export_ui {
    * string, and then additional checks as needed.
    *
    * @param $op
-   *   The 'op' of the menu item, which is defined by 'allowed operations'
+   *   The 'op' of the menu item, which is defined by 'allowed_operations'
    *   and embedded into the arguments in the menu item.
    * @param $item
    *   If an op that works on an item, then the item object, otherwise NULL.
@@ -105,17 +107,17 @@ class ctools_export_ui {
     }
 
     // More fine-grained access control:
-    if ($op == 'add' && !user_access($this->plugin['create access'])) {
+    if ($op == 'add' && !user_access($this->plugin['create_access'])) {
       return FALSE;
     }
 
     // More fine-grained access control:
-    if (($op == 'revert' || $op == 'delete') && !user_access($this->plugin['delete access'])) {
+    if (($op == 'revert' || $op == 'delete') && !user_access($this->plugin['delete_access'])) {
       return FALSE;
     }
 
     // If we need to do a token test, do it here.
-    if (!empty($this->plugin['allowed operations'][$op]['token']) && (!isset($_GET['token']) || !drupal_valid_token($_GET['token'], $op))) {
+    if (!empty($this->plugin['allowed_operations'][$op]['token']) && (!isset($_GET['token']) || !drupal_valid_token($_GET['token'], $op))) {
       return FALSE;
     }
 
@@ -469,7 +471,7 @@ class ctools_export_ui {
   function build_operations($item) {
     $plugin = $this->plugin;
     $schema = ctools_export_get_schema($plugin['schema']);
-    $operations = $plugin['allowed operations'];
+    $operations = $plugin['allowed_operations'];
     $operations['import'] = FALSE;
 
     if ($item->{$schema['export']['export type string']} == t('Normal')) {
@@ -644,7 +646,7 @@ class ctools_export_ui {
 
     // If a step not set, they are trying to create a new item. If a step
     // is set, they're in the process of creating an item.
-    if (!empty($this->plugin['use wizard']) && !empty($step)) {
+    if (!empty($this->plugin['use_wizard']) && !empty($step)) {
       $item = $this->edit_cache_get(NULL, 'add');
     }
     if (empty($item)) {
@@ -680,7 +682,7 @@ class ctools_export_ui {
     drupal_set_title($this->get_page_title('edit', $item));
 
     // Check to see if there is a cached item to get if we're using the wizard.
-    if (!empty($this->plugin['use wizard'])) {
+    if (!empty($this->plugin['use_wizard'])) {
       $cached = $this->edit_cache_get($item, 'edit');
       if (!empty($cached)) {
         $item = $cached;
@@ -717,7 +719,7 @@ class ctools_export_ui {
 
     // If a step not set, they are trying to create a new clone. If a step
     // is set, they're in the process of cloning an item.
-    if (!empty($this->plugin['use wizard']) && !empty($step)) {
+    if (!empty($this->plugin['use_wizard']) && !empty($step)) {
       $item = $this->edit_cache_get(NULL, 'clone');
     }
     if (empty($item)) {
@@ -764,7 +766,7 @@ class ctools_export_ui {
    * settings.
    */
   function edit_execute_form(&$form_state) {
-    if (!empty($this->plugin['use wizard'])) {
+    if (!empty($this->plugin['use_wizard'])) {
       return $this->edit_execute_form_wizard($form_state);
     }
     else {
@@ -814,7 +816,7 @@ class ctools_export_ui {
       $name = $form_state['item']->{$export_key};
     }
 
-    $form_info = !empty($this->plugin['form info']) ? $this->plugin['form info'] : array();
+    $form_info = !empty($this->plugin['form_info']) ? $this->plugin['form_info'] : array();
     $form_info += array(
       'id' => 'ctools_export_ui_edit',
       'path' => ctools_export_ui_plugin_menu_path($this->plugin, $form_state['form type'], $name) . '/%step',
@@ -863,14 +865,14 @@ class ctools_export_ui {
    * Execute the wizard for editing.
    *
    * For complex objects, sometimes a wizard is needed. This is normally
-   * activated by setting 'use wizard' => TRUE in the plugin definition
+   * activated by setting 'use_wizard' => TRUE in the plugin definition
    * and then creating a 'form info' array to feed the wizard the data
    * it needs.
    *
    * When creating this wizard, the plugin is responsible for defining all forms
    * that will be utilized with the wizard.
    *
-   * Using 'add order' or 'edit order' can be used to ensure that add/edit order
+   * Using 'add_order' or 'edit_order' can be used to ensure that add/edit_order
    * is different.
    */
   function edit_execute_form_wizard(&$form_state) {
@@ -1042,7 +1044,7 @@ class ctools_export_ui {
       '#title' => t($schema['export']['key name']),
       '#type' => 'textfield',
       '#default_value' => $item->{$export_key},
-      '#description' => t('The unique ID for this @export.', array('@export' => $this->plugin['title singular'])),
+      '#description' => t('The unique ID for this @export.', array('@export' => $this->plugin['title_singular'])),
       '#required' => TRUE,
       '#maxlength' => 255,
     );
@@ -1274,7 +1276,7 @@ class ctools_export_ui {
     );
 
     $form['import'] = array(
-      '#title' => t('@plugin code', array('@plugin' => $this->plugin['title singular proper'])),
+      '#title' => t('@plugin code', array('@plugin' => $this->plugin['title_singular_proper'])),
       '#type' => 'textarea',
       '#rows' => 10,
       '#required' => TRUE,
@@ -1315,218 +1317,4 @@ class ctools_export_ui {
     // function exists simply to prevent it from going to the default
     // edit_form_submit() method.
   }
-}
-
-// -----------------------------------------------------------------------
-// Forms to be used with this class.
-//
-// Since Drupal's forms are completely procedural, these forms will
-// mostly just be pass-throughs back to the object.
-
-/**
- * Add all appropriate includes to forms so that caching the form
- * still loads the files that we need.
- */
-function _ctools_export_ui_add_form_files($form, &$form_state) {
-  ctools_form_include($form_state, 'export');
-  ctools_form_include($form_state, 'export-ui');
-
-  // Also make sure the plugin .inc file is loaded.
-  ctools_form_include_file($form_state, $form_state['object']->plugin['path'] . '/' . $form_state['object']->plugin['file']);
-}
-
-/**
- * Form callback to handle the filter/sort form when listing items.
- *
- * This simply loads the object defined in the plugin and hands it off.
- */
-function ctools_export_ui_list_form($form, $form_state) {
-  $form_state['object']->list_form($form, $form_state);
-  return $form;
-}
-
-/**
- * Validate handler for ctools_export_ui_list_form.
- */
-function ctools_export_ui_list_form_validate(&$form, &$form_state) {
-  $form_state['object']->list_form_validate($form, $form_state);
-}
-
-/**
- * Submit handler for ctools_export_ui_list_form.
- */
-function ctools_export_ui_list_form_submit(&$form, &$form_state) {
-  $form_state['object']->list_form_submit($form, $form_state);
-}
-
-/**
- * Form callback to edit an exportable item.
- *
- * This simply loads the object defined in the plugin and hands it off.
- */
-function ctools_export_ui_edit_item_form($form, &$form_state) {
-  // When called using #ajax via ajax_form_callback(), 'export' may
-  // not be included so include it here.
-  _ctools_export_ui_add_form_files($form, $form_state);
-
-  $form_state['object']->edit_form($form, $form_state);
-  return $form;
-}
-
-/**
- * Validate handler for ctools_export_ui_edit_item_form.
- */
-function ctools_export_ui_edit_item_form_validate(&$form, &$form_state) {
-  $form_state['object']->edit_form_validate($form, $form_state);
-}
-
-/**
- * Submit handler for ctools_export_ui_edit_item_form.
- */
-function ctools_export_ui_edit_item_form_submit(&$form, &$form_state) {
-  $form_state['object']->edit_form_submit($form, $form_state);
-}
-
-/**
- * Submit handler to delete for ctools_export_ui_edit_item_form
- *
- * @todo Put this on a callback in the object.
- */
-function ctools_export_ui_edit_item_form_delete(&$form, &$form_state) {
-  _ctools_export_ui_add_form_files($form, $form_state);
-
-  $export_key = $form_state['plugin']['export']['key'];
-  $path = $form_state['item']->export_type & EXPORT_IN_CODE ? 'revert' : 'delete';
-
-  drupal_goto(ctools_export_ui_plugin_menu_path($form_state['plugin'], $path, $form_state['item']->{$export_key}), array('cancel_path' => current_path()));
-}
-
-/**
- * Validate that an export item name is acceptable and unique during add.
- */
-function ctools_export_ui_edit_name_validate($element, &$form_state) {
-  $plugin = $form_state['plugin'];
-  // Check for string identifier sanity
-  if (!preg_match('!^[a-z0-9_]+$!', $element['#value'])) {
-    form_error($element, t('The export id can only consist of lowercase letters, underscores, and numbers.'));
-    return;
-  }
-
-  // Check for name collision
-  if (empty($form_state['item']->export_ui_allow_overwrite) && $exists = ctools_export_crud_load($plugin['schema'], $element['#value'])) {
-    form_error($element, t('A @plugin with this name already exists. Please choose another name or delete the existing item before creating a new one.', array('@plugin' => $plugin['title singular'])));
-  }
-}
-
-/**
- * Test for #machine_name type to see if an export exists.
- */
-function ctools_export_ui_edit_name_exists($name, $element, &$form_state) {
-  $plugin = $form_state['plugin'];
-
-  return (empty($form_state['item']->export_ui_allow_overwrite) && ctools_export_crud_load($plugin['schema'], $name));
-}
-
-/**
- * Delete/Revert confirm form.
- *
- * @todo -- call back into the object instead.
- */
-function ctools_export_ui_delete_confirm_form($form, &$form_state) {
-  _ctools_export_ui_add_form_files($form, $form_state);
-
-  $plugin = $form_state['plugin'];
-  $item = $form_state['item'];
-
-  $form = array();
-
-  $export_key = $plugin['export']['key'];
-  $question = str_replace('%title', check_plain($item->{$export_key}), $plugin['strings']['confirmation'][$form_state['op']]['question']);
-  $path = empty($_REQUEST['cancel_path']) ? ctools_export_ui_plugin_base_path($plugin) : $_REQUEST['cancel_path'];
-
-  $form = confirm_form($form,
-    $question,
-    $path,
-    $plugin['strings']['confirmation'][$form_state['op']]['information'],
-    $plugin['allowed operations'][$form_state['op']]['title'], t('Cancel')
-  );
-  return $form;
-}
-
-// --------------------------------------------------------------------------
-// Forms and callbacks for using the edit system with the wizard.
-
-/**
- * Form callback to edit an exportable item using the wizard
- *
- * This simply loads the object defined in the plugin and hands it off.
- */
-function ctools_export_ui_edit_item_wizard_form($form, &$form_state) {
-  _ctools_export_ui_add_form_files($form, $form_state);
-
-  $method = 'edit_form_' . $form_state['step'];
-  if (!method_exists($form_state['object'], $method)) {
-    $method = 'edit_form';
-  }
-
-  $form_state['object']->$method($form, $form_state);
-  return $form;
-}
-
-/**
- * Validate handler for ctools_export_ui_edit_item_wizard_form.
- */
-function ctools_export_ui_edit_item_wizard_form_validate(&$form, &$form_state) {
-  $method = 'edit_form_' . $form_state['step'] . '_validate';
-  if (!method_exists($form_state['object'], $method)) {
-    $method = 'edit_form_validate';
-  }
-
-  $form_state['object']->$method($form, $form_state);
-
-  // Additionally, if there were no errors from that, and we're finishing,
-  // perform a final validate to make sure everything is ok.
-  if (isset($form_state['clicked_button']['#wizard type']) && $form_state['clicked_button']['#wizard type'] == 'finish' && !form_get_errors()) {
-    $form_state['object']->edit_finish_validate($form, $form_state);
-  }
-}
-
-/**
- * Submit handler for ctools_export_ui_edit_item_wizard_form.
- */
-function ctools_export_ui_edit_item_wizard_form_submit(&$form, &$form_state) {
-  $method = 'edit_form_' . $form_state['step'] . '_submit';
-  if (!method_exists($form_state['object'], $method)) {
-    $method = 'edit_form_submit';
-  }
-
-  $form_state['object']->$method($form, $form_state);
-}
-
-/**
- * Wizard 'back' callback when using a wizard to edit an item.
- */
-function ctools_export_ui_wizard_back(&$form_state) {
-  $form_state['object']->edit_wizard_back($form_state);
-}
-
-/**
- * Wizard 'next' callback when using a wizard to edit an item.
- */
-function ctools_export_ui_wizard_next(&$form_state) {
-  $form_state['object']->edit_wizard_next($form_state);
-}
-
-/**
- * Wizard 'cancel' callback when using a wizard to edit an item.
- */
-function ctools_export_ui_wizard_cancel(&$form_state) {
-  $form_state['object']->edit_wizard_cancel($form_state);
-}
-
-/**
- * Wizard 'finish' callback when using a wizard to edit an item.
- */
-function ctools_export_ui_wizard_finish(&$form_state) {
-  $form_state['object']->edit_wizard_finish($form_state);
 }

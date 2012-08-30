@@ -1,6 +1,43 @@
 <?php
 
-class ctools_access_ruleset_ui extends ctools_export_ui {
+/**
+ * @file
+ * Definition of Drupal\ctools_access_ruleset\Plugin\ctools\export_ui\CToolsAccessRulesetUI.
+ */
+
+namespace Drupal\ctools_access_ruleset\Plugin\ctools\export_ui;
+
+use Drupal\ctools\Plugin\ctools\export_ui\ExportUIPluginBase;
+use Drupal\Core\Annotation\Plugin;
+use Drupal\Core\Annotation\Translation;
+
+/**
+ * @Plugin(
+ *   id = "ctools_access_ruleset_ui",
+ *   name = "ctools_access_ruleset_ui",
+ *   module = "ctools_access_ruleset",
+ *   schema = "ctools_access_ruleset",
+ *   access = "aadminister ctools access ruleset",
+ *   menu = {
+ *     "menu_item" = "ctools-rulesets",
+ *     "menu_title" = "Custom access rulesets",
+ *     "menu_description" = "Add, edit or delete custom access rulesets for use with Panels and other systems that utilize CTools content plugins."
+ *   },
+ *   title_singular = @Translation("ruleset"),
+ *   title_singular_proper = @Translation("Ruleset"),
+ *   title_plural = @Translation("rulesets"),
+ *   title_plural_proper = @Translation("Rulesets"),
+ *   use_wizard = TRUE,
+ *   form_info = {
+ *     "order" = {
+ *       "basic" = @Translation("Basic information"),
+ *       "context" = @Translation("Contexts"),
+ *       "rules" = @Translation("Rules")
+ *     }
+ *   }
+ * )
+ */
+class CToolsAccessRulesetUI extends ExportUIPluginBase {
 
   function edit_form_context(&$form, &$form_state) {
     ctools_include('context-admin');
