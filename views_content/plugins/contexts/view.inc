@@ -59,7 +59,7 @@ function views_content_context_view_get_children($plugin, $parent) {
   // we want to disable the UI so you can't add it that way anymore.
   $types['view']['no ui'] = TRUE;
 
-  $views = views_get_applicable_views('returns context');
+  $views = views_get_applicable_views('returns_context');
   foreach ($views as $data) {
     list($view, $id) = $data;
     $info = _views_content_get_context_from_display($view, $id, $parent, FALSE);
@@ -123,7 +123,7 @@ function views_content_context_view_create($empty, $data = NULL, $conf = FALSE, 
 
 function views_content_context_view_settings_form($form, &$form_state) {
   $conf = $form_state['conf'];
-  $views = views_get_applicable_views('returns context');
+  $views = views_get_applicable_views('returns_context');
   foreach ($views as $data) {
     list($view, $id) = $data;
     $title = views_content_get_display_title($view, $id, 'admin_title');

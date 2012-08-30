@@ -40,7 +40,7 @@ function views_content_view_from_argument_get_child($plugin, $parent, $child) {
 function views_content_view_from_argument_get_children($plugin, $parent) {
   $types = array();
 
-  $views = views_get_applicable_views('returns context');
+  $views = views_get_applicable_views('returns_context');
   foreach ($views as $data) {
     list($view, $id) = $data;
     $info = _views_content_get_context_from_display($view, $id, $parent, TRUE);

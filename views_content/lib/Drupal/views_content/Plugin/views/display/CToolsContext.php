@@ -1,32 +1,83 @@
 <?php
 /**
  * @file
- * Contains the block display plugin.
+ * Definition of Drupal\views_content\Plugin\views\display\CToolsContext.
  */
+
+namespace Drupal\views_content\Plugin\views\display;
+
+use Drupal\views\Plugin\views\display\DisplayPluginBase;
+use Drupal\Core\Annotation\Plugin;
+use Drupal\Core\Annotation\Translation;
 
 /**
  * The plugin that handles a block.
  *
  * @ingroup views_display_plugins
+ *
+ * @Plugin(
+ *   id = "ctools_context",
+ *   title = @Translation("Context"),
+ *   admin = @Translation("Context"),
+ *   help = @Translation("Makes the view results available as a context for use in Panels and other applications."),
+ *   help_topic = "display-context",
+ *   register_theme = FALSE,
+ *   returns_context = TRUE
+ * )
  */
-class views_content_plugin_display_ctools_context extends views_plugin_display {
+class CToolsContext extends DisplayPluginBase {
+
+  /**
+   * Whether the display allows the use of AJAX or not.
+   *
+   * @var bool
+   */
+  protected $usesAJAX = FALSE;
+
+  /**
+   * Whether the display allows the use of a 'more' link or not.
+   *
+   * @var bool
+   */
+  protected $usesMore = FALSE;
+
+  /**
+   * Whether the display allows attachments.
+   *
+   * @var bool
+   *   TRUE if the display can use attachments, or FALSE otherwise.
+   */
+  protected $usesAttachments = TRUE;
+
   /**
    * If this variable is true, this display counts as a context. We use this
    * variable so that we can easily build plugins against this display type.
+   *
+   * @var bool
    */
-  var $context_display = TRUE;
+  public $context_display = TRUE;
 
-  function get_style_type() { return 'context'; }
+  /**
+   * Overrides Drupal\views\Plugin\views\Display\DisplayPluginBase::getStyleType().
+   *
+   * @return string
+   */
+  public function getStyleType() { return 'context'; }
 
-  function defaultable_sections($section = NULL) {
+  /**
+   * Overrides Drupal\views\Plugin\views\Display\DisplayPluginBase::defaultableSections().
+   *
+   * @return string
+   */
+  public function defaultableSections($section = NULL) {
     if (in_array($section, array('style_options', 'style_plugin', 'row_options', 'row_plugin',))) {
       return FALSE;
     }
 
-    return parent::defaultable_sections($section);
+    return parent::defaultableSections($section);
   }
 
-  function option_definition() {
+  public function option_definition() {
     $options = parent::option_definition();
 
     $options['admin_title'] = array('default' => '', 'translatable' => TRUE);
@@ -47,12 +98,12 @@ class views_content_plugin_display_ctools_context extends views_plugin_display {
   /**
    * The display block handler returns the structure necessary for a block.
    */
-  function execute() {
+  public function execute() {
     $this->executing = TRUE;
     return $this->view->render();
   }
 
-  function preview() {
+  public function preview() {
     $this->previewing = TRUE;
     return $this->view->render();
   }
@@ -60,7 +111,7 @@ class views_content_plugin_display_ctools_context extends views_plugin_display {
   /**
    * Render this display.
    */
-  function render() {
+  public function render() {
     if (!empty($this->previewing)) {
       return theme($this->theme_functions(), array('view' => $this->view));
     }
@@ -92,9 +143,9 @@ class views_content_plugin_display_ctools_context extends views_plugin_display {
    *
    * This output is returned as an array.
    */
-  function options_summary(&$categories, &$options) {
+  public function optionsSummary(&$categories, &$options) {
     // It is very important to call the parent function here:
-    parent::options_summary($categories, $options);
+    parent::optionsSummary($categories, $options);
 
     $categories['context'] = array(
       'title' => t('Context settings'),
@@ -104,7 +155,7 @@ class views_content_plugin_display_ctools_context extends views_plugin_display {
       ),
     );
 
-    $admin_title = $this->get_option('admin_title');
+    $admin_title = $this->getOption('admin_title');
     if (empty($admin_title)) {
       $admin_title = t('Use view name');
     }
@@ -122,7 +173,7 @@ class views_content_plugin_display_ctools_context extends views_plugin_display {
     $options['inherit_panels_path'] = array(
       'category' => 'context',
       'title' => t('Use Panel path'),
-      'value' => $this->get_option('inherit_panels_path') ? t('Yes') : t('No'),
+      'value' => $this->getOption('inherit_panels_path') ? t('Yes') : t('No'),
     );
 
     $options['argument_input'] = array(
@@ -148,7 +199,7 @@ class views_content_plugin_display_ctools_context extends views_plugin_display {
 
         $form['admin_title'] = array(
           '#type' => 'textfield',
-          '#default_value' => $this->get_option('admin_title'),
+          '#default_value' => $this->getOption('admin_title'),
           '#description' => t('This is the title that will appear for this view context in the configure context dialog. If left blank, the view name will be used.'),
         );
         break;
@@ -158,13 +209,13 @@ class views_content_plugin_display_ctools_context extends views_plugin_display {
         $form['inherit_panels_path'] = array(
           '#type' => 'select',
           '#options' => array(1 => t('Yes'), 0 => t('No')),
-          '#default_value' => $this->get_option('inherit_panels_path'),
+          '#default_value' => $this->getOption('inherit_panels_path'),
           '#description' => t('If yes, all links generated by Views, such as more links, summary links, and exposed input links will go to the panels display path, not the view, if the display has a path.'),
         );
         break;
       case 'argument_input':
         $form['#title'] .= t('Choose the data source for view arguments');
-        $argument_input = $this->get_argument_input();
+        $argument_input = $this->getArgumentType();
         ctools_include('context');
         ctools_include('dependent');
         $form['argument_input']['#tree'] = TRUE;
@@ -223,7 +274,7 @@ class views_content_plugin_display_ctools_context extends views_plugin_display {
       case 'admin_title':
       case 'argument_input':
       case 'inherit_panels_path':
-        $this->set_option($form_state['section'], $form_state['values'][$form_state['section']]);
+        $this->setOption($form_state['section'], $form_state['values'][$form_state['section']]);
         break;
     }
   }
@@ -234,9 +285,9 @@ class views_content_plugin_display_ctools_context extends views_plugin_display {
    * the arguments doesn't cause the argument input field to just
    * break.
    */
-  function get_argument_input() {
-    $arguments = $this->get_option('argument_input');
-    $handlers = $this->get_handlers('argument');
+  protected function getArgumentType() {
+    $arguments = $this->getOption('argument_input');
+    $handlers = $this->getHandlers('argument');
 
     // We use a separate output so as to seamlessly discard info for
     // arguments that no longer exist.
@@ -261,12 +312,12 @@ class views_content_plugin_display_ctools_context extends views_plugin_display {
   }
 
   function get_path() {
-    if ($this->get_option('link_display') == 'custom_url' && $override_path = $this->get_option('link_url')) {
+    if ($this->getOption('link_display') == 'custom_url' && $override_path = $this->getOption('link_url')) {
       return $override_path;
     }
-    if ($this->get_option('inherit_panels_path')) {
+    if ($this->getOption('inherit_panels_path')) {
       return $_GET['q'];
     }
-    return parent::get_path();
+    return parent::getPath();
   }
 }

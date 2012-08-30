@@ -5,6 +5,3 @@ dependencies[] = ctools
 dependencies[] = views
 core = 8.x
 package = Chaos tool suite
-files[] = plugins/views/views_content_plugin_display_ctools_context.inc
-files[] = plugins/views/views_content_plugin_display_panel_pane.inc
-files[] = plugins/views/views_content_plugin_style_ctools_context.inc
