@@ -13,8 +13,6 @@ use Drupal\Core\Annotation\Translation;
 
 /**
  * @Plugin(
- * )
- *  * @Plugin(
  *   id = "ctools_custom_content_ui",
  *   name = "ctools_custom_content_ui",
  *   module = "ctools_custom_content",
