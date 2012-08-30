@@ -23,14 +23,21 @@ use Drupal\views\View;
  *   title = @Translation("Jump menu"),
  *   help = @Translation("Puts all of the results into a select box and allows the user to go to a different page based upon the results."),
  *   theme = "views_view_jump_menu",
- *   uses_row_plugin = TRUE,
- *   uses_fields = TRUE,
- *   uses_options = TRUE,
  *   type = "normal",
  *   help_topic = "style-jump-menu"
  * )
  */
 class JumpMenu extends StylePluginBase {
+
+  /**
+   * This plugin uses a row plugin.
+   */
+  public $usesRowPlugin = TRUE;
+
+  /**
+   * This plugin uses fields.
+   */
+  protected $usesFields = FALSE;
 
   function option_definition() {
     $options = parent::option_definition();
@@ -173,9 +180,8 @@ class JumpMenu extends StylePluginBase {
     // If any of the displays use jump menus, we want to add fields to the view
     // that store the path that will be used in the jump menu. The fields to
     // use for this are defined by the plugin.
-    $plugin = $wizard->getPlugin();
-    if (isset($plugin['path_field'])) {
-      $path_field = $plugin['path_field'];
+    $path_field = $wizard->getPathField();
+    if (!empty($path_field)) {
       $path_fields_added = FALSE;
       foreach ($display_options as $display_type => $options) {
         if (!empty($options['style_plugin']) && $options['style_plugin'] == 'jump_menu') {
@@ -186,7 +192,7 @@ class JumpMenu extends StylePluginBase {
             // generate the path (for example, node revisions need the node ID
             // as well as the revision ID). We need to add these first so they
             // are available as replacement patterns in the main path field.
-            $path_fields = !empty($plugin['path_fields_supplemental']) ? $plugin['path_fields_supplemental'] : array();
+            $path_fields = $wizard->getPathFieldsSupplemental();
             $path_fields[] = &$path_field;
 
             // Generate a unique ID for each field so we don't overwrite

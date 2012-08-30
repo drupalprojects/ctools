@@ -14,17 +14,18 @@ use Drupal\views\View;
  * Tests jump menu style functionality.
  */
 class PluginStyleJumpMenuTest extends ViewTestBase {
+
   public static function getInfo() {
     return array(
       'name' => 'Jump menu',
       'description' => 'Test jump menu style functionality.',
-      'group' => 'Views Plugins',
+      'group' => 'Chaos Tools Suite: Views',
     );
   }
 
-
   public function setUp() {
     parent::setUp();
+
     $this->nodes = array();
     $this->nodes['page'][] = $this->drupalCreateNode(array('type' => 'page'));
     $this->nodes['page'][] = $this->drupalCreateNode(array('type' => 'page'));
@@ -34,14 +35,13 @@ class PluginStyleJumpMenuTest extends ViewTestBase {
     $this->nodeTitles = array($this->nodes['page'][0]->label(), $this->nodes['page'][1]->label(), $this->nodes['story'][0]->label(), $this->nodes['story'][1]->label());
   }
 
-
   /**
    * Tests jump menues with more then one same path but maybe differnet titles.
    */
   function testDuplicatePaths() {
     $view = $this->getJumpMenuView();
-    $view->set_display();
-    $view->init_handlers();
+    $view->setDisplay();
+    $view->initHandlers();
 
     // Setup a [path] which would leed to "duplicate" paths, but still the shouldn't be used for grouping.
     $view->field['nothing']->options['alter']['text'] = '[path]';
@@ -63,7 +63,7 @@ class PluginStyleJumpMenuTest extends ViewTestBase {
   }
 
   function getJumpMenuView() {
-    $view = new View();
+    $view = views_new_view();
     $view->name = 'test_jump_menu';
     $view->description = '';
     $view->tag = 'default';
@@ -145,4 +145,5 @@ class PluginStyleJumpMenuTest extends ViewTestBase {
 
     return $view;
   }
+
 }

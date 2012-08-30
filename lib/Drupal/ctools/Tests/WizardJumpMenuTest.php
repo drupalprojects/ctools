@@ -13,11 +13,14 @@ use Drupal\views\Tests\Wizard\WizardTestBase;
  * Tests the ability of the views wizard to create views with a jump menu style plugin.
  */
 class WizardJumpMenuTest extends WizardTestBase {
+
+  protected $profile = 'standard';
+
   public static function getInfo() {
     return array(
       'name' => 'Views UI wizard jump menu functionality',
       'description' => 'Test the ability of the views wizard to create views with a jump menu style plugin.',
-      'group' => 'Views UI',
+      'group' => 'Chaos Tools Suite: Views',
     );
   }
 
@@ -175,4 +178,5 @@ class WizardJumpMenuTest extends WizardTestBase {
     $node->save();
     return 'node/' . $node->nid . '/revisions/' . $node->vid . '/view';
   }
+
 }

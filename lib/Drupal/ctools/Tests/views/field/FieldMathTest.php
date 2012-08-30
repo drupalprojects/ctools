@@ -13,17 +13,19 @@ use Drupal\views\Tests\ViewTestBase;
  * Tests the core Drupal\ctools\Plugin\views\field\Math handler.
  */
 class FieldMathTest extends ViewTestBase {
+
   public static function getInfo() {
     return array(
       'name' => 'Field: Math',
       'description' => 'Test the core Drupal\views\Plugin\views\field\Math handler.',
-      'group' => 'Views Handlers',
+      'group' => 'Chaos Tools Suite: Views',
     );
   }
 
-  function viewsData() {
-    $data = parent::viewsData();
-    return $data;
+  protected function setUp() {
+    parent::setUp();
+
+    $this->enableViewsTestModule();
   }
 
   public function testFieldCustom() {
@@ -32,7 +34,7 @@ class FieldMathTest extends ViewTestBase {
     // Alter the text of the field to a random string.
     $rand1 = rand(0, 100);
     $rand2 = rand(0, 100);
-    $view->display['default']->handler->override_option('fields', array(
+    $view->display['default']->handler->overrideOption('fields', array(
       'expression' => array(
         'id' => 'expression',
         'table' => 'views',
@@ -46,4 +48,5 @@ class FieldMathTest extends ViewTestBase {
 
     $this->assertEqual($rand1 + $rand2, $view->style_plugin->get_field(0, 'expression'));
   }
+
 }
