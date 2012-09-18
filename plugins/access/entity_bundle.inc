@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 use Drupal\ctools\ContextRequired;
 
