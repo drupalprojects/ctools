@@ -1,0 +1,51 @@
+api_version: '3.0'
+base_table: node
+core: '8'
+description: ''
+disabled: '0'
+display:
+  default:
+    display_options:
+      access:
+        type: perm
+      fields:
+        title:
+          field: title
+          id: title
+          label: ''
+          table: node
+        type:
+          exclude: '1'
+          field: type
+          id: type
+          table: node
+        nothing:
+          alter:
+            text: '[type]'
+          exclude: '1'
+          field: nothing
+          id: nothing
+          table: views
+      filters:
+        status:
+          field: status
+          id: status
+          table: node
+          value: '1'
+      sorts:
+        created:
+          field: created
+          id: created
+          order: DESC
+          table: node
+      style_plugin: 'jump_menu'
+      style_options:
+        path: 'nothing'
+      row_plugin: 'fields'
+    display_plugin: default
+    display_title: Master
+    id: default
+    position: '0'
+human_name: ''
+name: test_jump_menu
+tag: ''

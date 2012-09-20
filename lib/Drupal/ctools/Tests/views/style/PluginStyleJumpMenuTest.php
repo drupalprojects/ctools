@@ -8,12 +8,19 @@
 namespace Drupal\ctools\Tests\views\style;
 
 use Drupal\views\Tests\ViewTestBase;
-use Drupal\views\View;
 
 /**
  * Tests jump menu style functionality.
  */
 class PluginStyleJumpMenuTest extends ViewTestBase {
+
+
+  /**
+   * Modules to enable.
+   *
+   * @var array
+   */
+  public static $modules = array('ctools_views_test');
 
   public static function getInfo() {
     return array(
@@ -39,7 +46,7 @@ class PluginStyleJumpMenuTest extends ViewTestBase {
    * Tests jump menues with more then one same path but maybe differnet titles.
    */
   function testDuplicatePaths() {
-    $view = $this->getJumpMenuView();
+    $view = $this->getView();
     $view->setDisplay();
     $view->initHandlers();
 
@@ -58,92 +65,15 @@ class PluginStyleJumpMenuTest extends ViewTestBase {
       if ($key == 0) {
         continue;
       }
-      $this->assertTrue($this->nodeTitles[$key - 1] == trim($title), t('Title @title should appear on the jump list, as we do not filter', array('@title' => $title)));
+      $this->assertEqual($this->nodeTitles[$key - 1], trim($title), format_string('Title @title should appear on the jump list, as we do not filter', array('@title' => $title)));
     }
   }
 
-  function getJumpMenuView() {
-    $view = views_new_view();
-    $view->name = 'test_jump_menu';
-    $view->description = '';
-    $view->tag = 'default';
-    $view->base_table = 'node';
-    $view->human_name = 'test_jump_menu';
-    $view->core = 7;
-    $view->api_version = '3.0';
-    $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
-
-    /* Display: Master */
-    $handler = $view->new_display('default', 'Master', 'default');
-    $handler->display->display_options['access']['type'] = 'perm';
-    $handler->display->display_options['cache']['type'] = 'none';
-    $handler->display->display_options['query']['type'] = 'views_query';
-    $handler->display->display_options['query']['options']['query_comment'] = FALSE;
-    $handler->display->display_options['exposed_form']['type'] = 'basic';
-    $handler->display->display_options['pager']['type'] = 'full';
-    $handler->display->display_options['style_plugin'] = 'jump_menu';
-    $handler->display->display_options['style_options']['hide'] = 0;
-    $handler->display->display_options['style_options']['path'] = 'nothing';
-    $handler->display->display_options['style_options']['default_value'] = 0;
-    $handler->display->display_options['row_plugin'] = 'fields';
-    /* Field: Content: Title */
-    $handler->display->display_options['fields']['title']['id'] = 'title';
-    $handler->display->display_options['fields']['title']['table'] = 'node';
-    $handler->display->display_options['fields']['title']['field'] = 'title';
-    $handler->display->display_options['fields']['title']['label'] = '';
-    $handler->display->display_options['fields']['title']['alter']['alter_text'] = 0;
-    $handler->display->display_options['fields']['title']['alter']['make_link'] = 0;
-    $handler->display->display_options['fields']['title']['alter']['absolute'] = 0;
-    $handler->display->display_options['fields']['title']['alter']['word_boundary'] = 0;
-    $handler->display->display_options['fields']['title']['alter']['ellipsis'] = 0;
-    $handler->display->display_options['fields']['title']['alter']['strip_tags'] = 0;
-    $handler->display->display_options['fields']['title']['alter']['trim'] = 0;
-    $handler->display->display_options['fields']['title']['alter']['html'] = 0;
-    $handler->display->display_options['fields']['title']['hide_empty'] = 0;
-    $handler->display->display_options['fields']['title']['empty_zero'] = 0;
-    $handler->display->display_options['fields']['title']['link_to_node'] = 1;
-    /* Field: Content: Type */
-    $handler->display->display_options['fields']['type']['id'] = 'type';
-    $handler->display->display_options['fields']['type']['table'] = 'node';
-    $handler->display->display_options['fields']['type']['field'] = 'type';
-    $handler->display->display_options['fields']['type']['exclude'] = 1;
-    /* Field: Global: Custom text */
-    $handler->display->display_options['fields']['nothing']['id'] = 'nothing';
-    $handler->display->display_options['fields']['nothing']['table'] = 'views';
-    $handler->display->display_options['fields']['nothing']['field'] = 'nothing';
-    $handler->display->display_options['fields']['nothing']['alter']['text'] = '[type]';
-    $handler->display->display_options['fields']['nothing']['alter']['make_link'] = 0;
-    $handler->display->display_options['fields']['nothing']['alter']['absolute'] = 0;
-    $handler->display->display_options['fields']['nothing']['alter']['external'] = 0;
-    $handler->display->display_options['fields']['nothing']['alter']['replace_spaces'] = 0;
-    $handler->display->display_options['fields']['nothing']['alter']['trim_whitespace'] = 0;
-    $handler->display->display_options['fields']['nothing']['alter']['nl2br'] = 0;
-    $handler->display->display_options['fields']['nothing']['alter']['word_boundary'] = 1;
-    $handler->display->display_options['fields']['nothing']['alter']['ellipsis'] = 1;
-    $handler->display->display_options['fields']['nothing']['alter']['strip_tags'] = 0;
-    $handler->display->display_options['fields']['nothing']['alter']['trim'] = 0;
-    $handler->display->display_options['fields']['nothing']['alter']['html'] = 0;
-    $handler->display->display_options['fields']['nothing']['element_label_colon'] = 1;
-    $handler->display->display_options['fields']['nothing']['element_default_classes'] = 1;
-    $handler->display->display_options['fields']['nothing']['hide_empty'] = 0;
-    $handler->display->display_options['fields']['nothing']['empty_zero'] = 0;
-    $handler->display->display_options['fields']['nothing']['hide_alter_empty'] = 0;
-    $handler->display->display_options['fields']['nothing']['exclude'] = 1;
-
-    /* Sort criterion: Content: Post date */
-    $handler->display->display_options['sorts']['created']['id'] = 'created';
-    $handler->display->display_options['sorts']['created']['table'] = 'node';
-    $handler->display->display_options['sorts']['created']['field'] = 'created';
-    $handler->display->display_options['sorts']['created']['order'] = 'DESC';
-    /* Filter criterion: Content: Published */
-    $handler->display->display_options['filters']['status']['id'] = 'status';
-    $handler->display->display_options['filters']['status']['table'] = 'node';
-    $handler->display->display_options['filters']['status']['field'] = 'status';
-    $handler->display->display_options['filters']['status']['value'] = 1;
-    $handler->display->display_options['filters']['status']['group'] = 0;
-    $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
-
-    return $view;
+  /**
+   * Overrides Drupal\views\Tests\ViewTestBase::getBasicView().
+   */
+  protected function getBasicView() {
+    return $this->createViewFromConfig('test_jump_menu');
   }
 
 }
