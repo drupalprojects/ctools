@@ -87,7 +87,7 @@ class Math extends Numeric {
       $value = format_plural($value, $this->options['format_plural_singular'], $this->options['format_plural_plural']);
     }
 
-    return $this->sanitize_value($this->options['prefix'] . $value . $this->options['suffix']);
+    return $this->sanitizeValue($this->options['prefix'] . $value . $this->options['suffix']);
   }
 
   function query() { }
