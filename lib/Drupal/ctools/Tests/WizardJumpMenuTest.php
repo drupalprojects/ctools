@@ -14,7 +14,12 @@ use Drupal\views\Tests\Wizard\WizardTestBase;
  */
 class WizardJumpMenuTest extends WizardTestBase {
 
-  protected $profile = 'standard';
+  /**
+   * Modules to enable.
+   *
+   * @var array
+   */
+  public static $modules = array('node', 'comment', 'taxonomy', 'file');
 
   public static function getInfo() {
     return array(

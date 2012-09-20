@@ -28,8 +28,8 @@ use Drupal\views\Plugin\views\style\DefaultSummary;
  */
 class JumpMenuSummary extends DefaultSummary {
 
-  function option_definition() {
-    $options = parent::option_definition();
+  function defineOptions() {
+    $options = parent::defineOptions();
 
     $options['base_path'] = array('default' => '');
     $options['count'] = array('default' => TRUE, 'bool' => TRUE);
@@ -50,7 +50,7 @@ class JumpMenuSummary extends DefaultSummary {
     $this->display->handler->set_option('pager', $pager);
   }
 
-  function options_form(&$form, &$form_state) {
+  function buildOptionsForm(&$form, &$form_state) {
     $form['base_path'] = array(
       '#type' => 'textfield',
       '#title' => t('Base path'),

@@ -49,8 +49,8 @@ class PanelPane extends DisplayPluginBase {
    */
   protected $usesAttachments = TRUE;
 
-  public function option_definition() {
-    $options = parent::option_definition();
+  public function defineOptions() {
+    $options = parent::defineOptions();
 
     $options['pane_title'] = array('default' => '', 'translatable' => TRUE);
     $options['pane_description'] = array('default' => '', 'translatable' => TRUE);
@@ -185,9 +185,9 @@ class PanelPane extends DisplayPluginBase {
   /**
    * Provide the default form for setting options.
    */
-  public function options_form(&$form, &$form_state) {
+  public function buildOptionsForm(&$form, &$form_state) {
     // It is very important to call the parent function here:
-    parent::options_form($form, $form_state);
+    parent::buildOptionsForm($form, $form_state);
 
     switch ($form_state['section']) {
       case 'allow':
@@ -356,9 +356,9 @@ class PanelPane extends DisplayPluginBase {
    * Perform any necessary changes to the form values prior to storage.
    * There is no need for this function to actually store the data.
    */
-  public function options_submit(&$form, &$form_state) {
+  public function submitOptionsForm(&$form, &$form_state) {
     // It is very important to call the parent function here:
-    parent::options_submit($form, $form_state);
+    parent::submitOptionsForm($form, $form_state);
     switch ($form_state['section']) {
       case 'allow':
       case 'argument_input':

@@ -26,14 +26,14 @@ use Drupal\Core\Annotation\Plugin;
  */
 class Math extends Numeric {
 
-  function option_definition() {
-    $options = parent::option_definition();
+  function defineOptions() {
+    $options = parent::defineOptions();
     $options['expression'] = array('default' => '');
 
     return $options;
   }
 
-  function options_form(&$form, &$form_state) {
+  function buildOptionsForm(&$form, &$form_state) {
     $form['expression'] = array(
       '#type' => 'textarea',
       '#title' => t('Expression'),

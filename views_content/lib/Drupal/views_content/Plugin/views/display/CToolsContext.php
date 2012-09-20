@@ -77,8 +77,8 @@ class CToolsContext extends DisplayPluginBase {
     return parent::defaultableSections($section);
   }
 
-  public function option_definition() {
-    $options = parent::option_definition();
+  public function defineOptions() {
+    $options = parent::defineOptions();
 
     $options['admin_title'] = array('default' => '', 'translatable' => TRUE);
 
@@ -186,9 +186,9 @@ class CToolsContext extends DisplayPluginBase {
   /**
    * Provide the default form for setting options.
    */
-  function options_form(&$form, &$form_state) {
+  function buildOptionsForm(&$form, &$form_state) {
     // It is very important to call the parent function here:
-    parent::options_form($form, $form_state);
+    parent::buildOptionsForm($form, $form_state);
     switch ($form_state['section']) {
       case 'row_plugin':
         // This just overwrites the existing row_plugin which is using the wrong options.
@@ -267,9 +267,9 @@ class CToolsContext extends DisplayPluginBase {
    * Perform any necessary changes to the form values prior to storage.
    * There is no need for this function to actually store the data.
    */
-  function options_submit(&$form, &$form_state) {
+  function submitOptionsForm(&$form, &$form_state) {
     // It is very important to call the parent function here:
-    parent::options_submit($form, $form_state);
+    parent::submitOptionsForm($form, $form_state);
     switch ($form_state['section']) {
       case 'admin_title':
       case 'argument_input':

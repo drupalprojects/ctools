@@ -11,7 +11,7 @@ use Drupal\Core\Annotation\Plugin;
 use Drupal\Core\Annotation\Translation;
 use Drupal\views\Plugin\views\style\StylePluginBase;
 use Drupal\views\Plugin\views\wizard\WizardInterface;
-use Drupal\views\View;
+use Drupal\views\ViewStorage;
 
 /**
  * Style plugin to render each item as a row in a table.
@@ -39,8 +39,8 @@ class JumpMenu extends StylePluginBase {
    */
   protected $usesFields = FALSE;
 
-  function option_definition() {
-    $options = parent::option_definition();
+  function defineOptions() {
+    $options = parent::defineOptions();
 
     $options['hide'] = array('default' => FALSE, 'bool' => TRUE);
     $options['path'] = array('default' => '');
@@ -54,8 +54,8 @@ class JumpMenu extends StylePluginBase {
   /**
    * Render the given style.
    */
-  function options_form(&$form, &$form_state) {
-    parent::options_form($form, $form_state);
+  function buildOptionsForm(&$form, &$form_state) {
+    parent::buildOptionsForm($form, $form_state);
     $handlers = $this->display->handler->get_handlers('field');
     if (empty($handlers)) {
       $form['error_markup'] = array(
@@ -198,7 +198,7 @@ class JumpMenu extends StylePluginBase {
             // Generate a unique ID for each field so we don't overwrite
             // existing ones.
             foreach ($path_fields as &$field) {
-              $field['id'] = View::generate_item_id($field['id'], $display_options['default']['fields']);
+              $field['id'] = ViewStorage::generateItemId($field['id'], $display_options['default']['fields']);
               $display_options['default']['fields'][$field['id']] = $field;
             }
 
