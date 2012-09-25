@@ -8,10 +8,10 @@
 namespace Drupal\ctools\Plugin\views\style;
 
 use Drupal\Core\Annotation\Plugin;
+use Drupal\views\ViewExecutable;
 use Drupal\Core\Annotation\Translation;
 use Drupal\views\Plugin\views\style\StylePluginBase;
 use Drupal\views\Plugin\views\wizard\WizardInterface;
-use Drupal\views\ViewStorage;
 
 /**
  * Style plugin to render each item as a row in a table.
@@ -184,7 +184,7 @@ class JumpMenu extends StylePluginBase {
     if (!empty($path_field)) {
       $path_fields_added = FALSE;
       foreach ($display_options as $display_type => $options) {
-        if (!empty($options['style_plugin']) && $options['style_plugin'] == 'jump_menu') {
+        if (!empty($options['style']) && $options['style']['type'] == 'jump_menu') {
           // Regardless of how many displays have jump menus, we only need to
           // add a single set of path fields to the view.
           if (!$path_fields_added) {
@@ -198,7 +198,7 @@ class JumpMenu extends StylePluginBase {
             // Generate a unique ID for each field so we don't overwrite
             // existing ones.
             foreach ($path_fields as &$field) {
-              $field['id'] = ViewStorage::generateItemId($field['id'], $display_options['default']['fields']);
+              $field['id'] = ViewExecutable::generateItemId($field['id'], $display_options['default']['fields']);
               $display_options['default']['fields'][$field['id']] = $field;
             }
 
@@ -207,7 +207,7 @@ class JumpMenu extends StylePluginBase {
 
           // Configure the style plugin to use the path field to generate the
           // jump menu path.
-          $display_options[$display_type]['style_options']['path'] = $path_field['id'];
+          $display_options[$display_type]['style']['options']['path'] = $path_field['id'];
         }
       }
     }

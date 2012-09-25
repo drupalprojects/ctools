@@ -38,10 +38,12 @@ display:
           id: created
           order: DESC
           table: node
-      style_plugin: 'jump_menu'
-      style_options:
-        path: 'nothing'
-      row_plugin: 'fields'
+      style:
+        type: jump_menu
+        options:
+          path: nothing
+      row:
+        type: fields
     display_plugin: default
     display_title: Master
     id: default

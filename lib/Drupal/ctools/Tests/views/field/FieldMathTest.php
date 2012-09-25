@@ -34,7 +34,7 @@ class FieldMathTest extends ViewTestBase {
     // Alter the text of the field to a random string.
     $rand1 = rand(0, 100);
     $rand2 = rand(0, 100);
-    $view->display['default']->handler->overrideOption('fields', array(
+    $view->displayHandlers['default']->overrideOption('fields', array(
       'expression' => array(
         'id' => 'expression',
         'table' => 'views',
