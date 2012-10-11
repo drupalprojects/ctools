@@ -85,6 +85,10 @@ function _ctools_block_content_type_content_type($module, $delta, $block) {
  * doesn't cache its results anyway.
  */
 function _ctools_block_load_blocks() {
+  if (!module_exists('block')) {
+    return array();
+  }
+
   $blocks = &drupal_static(__FUNCTION__, NULL);
   if (!isset($blocks)) {
     global $theme_key;
