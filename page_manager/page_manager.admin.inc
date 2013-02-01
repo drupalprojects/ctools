@@ -158,7 +158,7 @@ function page_manager_get_pages($tasks, &$pages, $task_id = NULL) {
     $visible_path = '';
     if (!empty($task['admin path'])) {
       foreach (explode('/', $task['admin path']) as $bit) {
-        if ($bit[0] != '!') {
+        if (isset($bit[0]) && $bit[0] != '!') {
           $path[] = $bit;
         }
       }
