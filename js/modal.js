@@ -434,7 +434,7 @@
       }
     };
 
-    $(document).bind('keypress', modalEventEscapeCloseHandler);
+    $(document).bind('keydown', modalEventEscapeCloseHandler);
 
     // Close the open modal content and backdrop
     function close() {
