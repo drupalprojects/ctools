@@ -106,7 +106,7 @@ function page_manager_term_view_menu_alter(&$items, $task) {
  * to run with it. If no one does, it passes through to Drupal core's
  * term view, which is term_page_view().
  */
-function page_manager_term_view_page($term) {
+function page_manager_term_view_page($term, $depth = NULL) {
   // Prep the term to be displayed so all of the regular hooks are triggered.
   // Rather than calling taxonomy_term_page() directly, as it that would
   // potentially load nodes that were not necessary, execute some of the code
@@ -135,7 +135,7 @@ function page_manager_term_view_page($term) {
   // Load the term into a context.
   ctools_include('context');
   ctools_include('context-task-handler');
-  $contexts = ctools_context_handler_get_task_contexts($task, '', array($term));
+  $contexts = ctools_context_handler_get_task_contexts($task, '', array($term, $depth));
 
   if (empty($contexts)) {
     return drupal_not_found();
