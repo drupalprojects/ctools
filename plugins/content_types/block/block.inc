@@ -284,7 +284,7 @@ function ctools_block_content_type_admin_title($subtype, $conf) {
  */
 function ctools_block_content_type_admin_info($subtype, $conf) {
   list($module, $delta) = _ctools_block_get_module_delta($subtype, $conf);
-  $block = (object) module_invoke($module, 'block', 'view', $delta);
+  $block = (object) module_invoke($module, 'block_view', $delta);
 
   // Sanitize the block because <script> tags can hose javascript up:
   if (!empty($block->content)) {
