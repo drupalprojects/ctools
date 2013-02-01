@@ -399,7 +399,7 @@
       }
 
       var parents = $(target).parents().get();
-      for (var i in $(target).parents().get()) {
+      for (var i = 0; i < parents.length; ++i) {
         var position = $(parents[i]).css('position');
         if (position == 'absolute' || position == 'fixed') {
           return true;
