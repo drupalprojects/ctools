@@ -98,6 +98,7 @@ function ctools_entity_field_value_ctools_access_settings($form, &$form_state, $
   foreach (element_children($form['settings']) as $element) {
     unset($form['settings'][$element]['#weight']);
   }
+
   // Need more logic here to handle compound fields.
   foreach ($columns as $column) {
     if (isset($conf[$column]) && is_array($conf[$column])) {
@@ -105,12 +106,13 @@ function ctools_entity_field_value_ctools_access_settings($form, &$form_state, $
         if (is_numeric($delta) && is_array($conf_value)) {
           $form['settings'][$field_name][LANGUAGE_NONE][$delta]['value']['#default_value'] = $conf_value['value'];
         }
-        else {
-          $form['settings'][$field_name][LANGUAGE_NONE]['#default_value'] = $conf[$column];
-        }
       }
     }
+    else {
+      $form['settings'][$field_name][LANGUAGE_NONE]['#default_value'] = $conf[$column];
+    }
   }
+
   return $form;
 }
 
