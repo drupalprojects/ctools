@@ -815,6 +815,9 @@ function ctools_ajax_theme_callback() {
   }
 }
 
+/**
+ * Implements hook_ctools_entity_context_alter().
+ */
 function ctools_ctools_entity_context_alter(&$plugin, &$entity, $plugin_id) {
   ctools_include('context');
   switch ($plugin_id) {
