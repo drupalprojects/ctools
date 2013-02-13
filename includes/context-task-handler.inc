@@ -143,6 +143,10 @@ function ctools_context_handler_render_handler($task, $subtask, $handler, $conte
         return MENU_ACCESS_DENIED;
       case 404:
         return MENU_NOT_FOUND;
+      case 410:
+        drupal_add_http_header('Status', '410 Gone');
+        drupal_exit();
+        break;
       case 301:
       case 302:
       case 303:
