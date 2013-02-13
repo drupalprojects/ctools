@@ -699,22 +699,6 @@ function ctools_export_ui_task_access($plugin_name, $op, $item = NULL) {
 }
 
 /**
- * Cache callback on behalf of ctools_export_ui.
- */
-function ctools_export_ui_context_cache_get($plugin_name, $key) {
-  dsm('should not be called!');
-  return;
-}
-
-/**
- * Cache callback on behalf of ctools_export_ui.
- */
-function ctools_export_ui_context_cache_set($plugin_name, $key, $item) {
-  dsm('should not be called!');
-  return;
-}
-
-/**
  * Callback for access control ajax form on behalf of export ui.
  *
  * Returns the cached access config and contexts used.
