@@ -86,7 +86,7 @@ function ctools_plugin_example_explanation_page() {
     array(
       '@demo_url' => url('ctools_plugin_example/xxxxx'),
       '!ctools_plugin_example_help' => theme('advanced_help_topic', array('module' => 'ctools_plugin_example', 'topic' => 'Chaos-Tools--CTools--Plugin-Examples', 'type' => 'title')),
-      '!ctools_help' => theme('advanced_help_topic', array('module' => 'ctools', 'topic' => 'plugins', 'type' => 'title'),
+      '!ctools_help' => theme('advanced_help_topic', array('module' => 'ctools', 'topic' => 'plugins', 'type' => 'title')),
       '%path' => drupal_get_path('module', 'ctools_plugin_example'),
     )) . '</p>';
 
