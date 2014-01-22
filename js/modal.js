@@ -287,7 +287,10 @@
     // content. This is helpful for allowing users to see error messages at the
     // top of a form, etc.
     $('#modal-content').html(response.output).scrollTop(0);
-    Drupal.attachBehaviors();
+
+    // Attach behaviors within a modal dialog.
+    var settings = response.settings || ajax.settings || Drupal.settings;
+    Drupal.attachBehaviors('#modalContent', settings);
   }
 
   /**
