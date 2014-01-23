@@ -83,7 +83,7 @@ function views_content_views_panes_content_type_content_type($subtype, $plugin) 
 function _views_content_panes_content_type($view, $display) {
   // Ensure the handler is the right type, as Views will fall back to
   // the default display if something is broken:
-  if (get_class($display->handler) != 'views_content_plugin_display_panel_pane') {
+  if (!is_a($display->handler, 'views_content_plugin_display_panel_pane')) {
     return;
   }
 
