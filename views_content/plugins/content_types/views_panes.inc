@@ -255,7 +255,7 @@ function views_content_views_panes_content_type_render($subtype, $conf, $panel_a
 
     if ($conf['use_pager']) {
       if (!isset($pager['options']['id']) || (isset($conf['pager_id']) && $pager['options']['id'] != $conf['pager_id'])) {
-        $pager['options']['id'] = $conf['pager_id'];
+        $pager['options']['id'] = (int) $conf['pager_id'];
       }
     }
 
