@@ -14,7 +14,7 @@
 function page_manager_list_page($js = NULL) {
   // Prevent this page from showing up when random other links fail.
   if ($js && $js != 'ajax' && $js != 'nojs') {
-    return drupal_not_found();
+    return MENU_NOT_FOUND;
   }
 
   // TRUE if 'ajax', FALSE if otherwise.
@@ -62,7 +62,7 @@ function page_manager_list_page($js = NULL) {
   if (isset($input['op']) && $input['op'] == t('Reset')) {
     unset($_SESSION['page_manager']['#admin']);
     if (!$js) {
-      return drupal_goto($_GET['q']);
+      drupal_goto($_GET['q']);
     }
     // clear everything but form id, form build id and form token:
     $keys = array_keys($input);

@@ -152,7 +152,7 @@ class ctools_export_ui {
     if (isset($input['op']) && $input['op'] == t('Reset')) {
       unset($_SESSION['ctools_export_ui'][$this->plugin['name']]);
       if (!$js) {
-        return drupal_goto($_GET['q']);
+        drupal_goto($_GET['q']);
       }
       // clear everything but form id, form build id and form token:
       $keys = array_keys($input);
