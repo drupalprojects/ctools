@@ -162,6 +162,9 @@ function views_content_views_panes_content_type_render($subtype, $conf, $panel_a
             $args[] = $contexts[$key]->argument;
           }
         }
+        else {
+          $args[] = isset($arguments[$id]['exception']['value']) ? $arguments[$id]['exception']['value'] : 'all';
+        }
         break;
 
       case 'fixed':
