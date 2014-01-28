@@ -227,7 +227,11 @@
         // AJAX submits specified in this manner automatically submit to the
         // normal form action.
         element_settings.url = Drupal.CTools.Modal.findURL(this);
+        if (element_settings.url == '') {
+          element_settings.url = $(this).closest('form').attr('action');
+        }
         element_settings.event = 'click';
+        element_settings.setClick = true;
 
         var base = $this.attr('id');
         Drupal.ajax[base] = new Drupal.ajax(base, this, element_settings);
