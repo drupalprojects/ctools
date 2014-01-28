@@ -99,6 +99,11 @@
     $('span.modal-title', Drupal.CTools.Modal.modal).html(Drupal.CTools.Modal.currentSettings.loadingText);
     Drupal.CTools.Modal.modalContent(Drupal.CTools.Modal.modal, settings.modalOptions, settings.animation, settings.animationSpeed);
     $('#modalContent .modal-content').html(Drupal.theme(settings.throbberTheme));
+
+    // Position autocomplete results based on the scroll position of the modal.
+    $('#modalContent .modal-content').delegate('input.form-autocomplete', 'keyup', function() {
+      $('#autocomplete').css('top', $(this).position().top + $(this).outerHeight() + $(this).closest('#modal-content').scrollTop());
+    });
   };
 
   /**
