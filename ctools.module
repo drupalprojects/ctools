@@ -407,8 +407,11 @@ function ctools_uuid_generate() {
  * @return
  *   TRUE if the string is well formed.
  */
-function ctools_uuid_is_valid($uuid) {
-  if(function_exists('uuid_is_valid') || module_exists('uuid')) {
+function ctools_uuid_is_valid($uuid = '') {
+  if (empty($uuid)) {
+    return FALSE;
+  }
+  if (function_exists('uuid_is_valid') || module_exists('uuid')) {
     return uuid_is_valid($uuid);
   }
   else {
