@@ -930,7 +930,7 @@ function _page_manager_get_operation_content($js, &$page, $active, $operation, $
     $output = drupal_render($built_form);
     $title = empty($form_state['title']) ? $operation['title'] : $form_state['title'];
     $titles[] = $title;
-    $title = implode(' &raquo ', array_filter($titles));
+    $title = implode(' &raquo; ', array_filter($titles));
 
     // If there are messages for the form, render them.
     if ($messages = theme('status_messages')) {
