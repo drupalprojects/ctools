@@ -1,0 +1,5 @@
+name = Term Depth access
+description = Controls access to context based upon term depth
+core = 7.x
+dependencies[] = ctools
+package = Chaos tool suite
