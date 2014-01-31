@@ -25,6 +25,11 @@ function ctools_entity_field_extra_content_type_content_type($subtype) {
  */
 function ctools_entity_field_extra_content_type_content_types() {
   // This will hold all the individual field content types.
+  $types = &drupal_static(__FUNCTION__);
+  if (isset($types)) {
+    return $types;
+  }
+
   $types = array();
   $context_types = array();
   $entities = entity_get_info();

@@ -973,7 +973,12 @@ function ctools_export_object($table, $object, $indent = '', $identifier = NULL,
  * that it's easily available.
  */
 function ctools_export_get_schema($table) {
-  $cache = &drupal_static(__FUNCTION__);
+  static $drupal_static_fast;
+  if (!isset($drupal_static_fast)) {
+    $drupal_static_fast['cache'] = &drupal_static(__FUNCTION__);
+  }
+  $cache = &$drupal_static_fast['cache'];
+
   if (empty($cache[$table])) {
     $schema = drupal_get_schema($table);
 

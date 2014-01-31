@@ -40,6 +40,11 @@ function ctools_block_content_type_content_type($subtype_id) {
  * of the form "$module . '_ctools_block_info'".
  */
 function ctools_block_content_type_content_types() {
+  $types = &drupal_static(__FUNCTION__);
+  if (isset($types)) {
+    return $types;
+  }
+
   $types = array();
   foreach (module_implements('block_info') as $module) {
     $module_blocks = module_invoke($module, 'block_info');
