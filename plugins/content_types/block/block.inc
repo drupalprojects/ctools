@@ -156,14 +156,16 @@ function ctools_block_content_type_render($subtype, $conf) {
   $block->module = $module;
   $block->delta = $delta;
 
-  if ($module == 'block' && !empty($info) && isset($info->title)) {
-    $block->title = $info->title;
-  }
-  else if (isset($block->subject)) {
-    $block->title = $block->subject;
-  }
-  else {
-    $block->title = NULL;
+  if (!isset($block->title)) {
+    if ($module == 'block' && !empty($info) && isset($info->title)) {
+      $block->title = $info->title;
+    }
+    else if (isset($block->subject)) {
+      $block->title = $block->subject;
+    }
+    else {
+      $block->title = NULL;
+    }
   }
 
   if (module_exists('block') && user_access('administer blocks')) {
