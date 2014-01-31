@@ -381,13 +381,13 @@ function ctools_uuid_generate() {
 
     if (empty($callback)) {
       if (function_exists('uuid_create') && !function_exists('uuid_make')) {
-        $callback = '_uuid_generate_pecl';
+        $callback = '_ctools_uuid_generate_pecl';
       }
       elseif (function_exists('com_create_guid')) {
-        $callback = '_uuid_generate_com';
+        $callback = '_ctools_uuid_generate_com';
       }
       else {
-        $callback = '_uuid_generate_php';
+        $callback = '_ctools_uuid_generate_php';
       }
     }
     return $callback();

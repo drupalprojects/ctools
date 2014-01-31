@@ -16,7 +16,7 @@ define('UUID_PATTERN', '[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}');
  *
  * @see http://php.net/com_create_guid
  */
-function _uuid_generate_com() {
+function _ctools_uuid_generate_com() {
   // Remove {} wrapper and make lower case to keep result consistent.
   return drupal_strtolower(trim(com_create_guid(), '{}'));
 }
@@ -24,7 +24,7 @@ function _uuid_generate_com() {
 /**
  * Generates an universally unique identifier using the PECL extension.
  */
-function _uuid_generate_pecl() {
+function _ctools_uuid_generate_pecl() {
   return uuid_create(UUID_TYPE_DEFAULT);
 }
 
@@ -33,7 +33,7 @@ function _uuid_generate_pecl() {
  *
  * Based on code from @see http://php.net/uniqid#65879 , but corrected.
  */
-function _uuid_generate_php() {
+function _ctools_uuid_generate_php() {
   // The field names refer to RFC 4122 section 4.1.2.
   return sprintf('%04x%04x-%04x-4%03x-%04x-%04x%04x%04x',
     // 32 bits for "time_low".
