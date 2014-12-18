@@ -284,6 +284,11 @@ function views_content_views_panes_content_type_render($subtype, $conf, $panel_a
     return;
   }
 
+  // Add contextual links to the output.
+  $block = (array) $block;
+  views_add_block_contextual_links($block, $view, $display, 'panel_pane');
+  $block = (object) $block;
+
   $block->title = $view->get_title();
 
   if (empty($view->total_rows) || $view->total_rows <= $view->get_items_per_page()) {
