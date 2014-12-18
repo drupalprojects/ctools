@@ -423,25 +423,15 @@ function ctools_plugin_load_includes($info, $filename = NULL) {
   // store static of plugin arrays for reference because they can't be reincluded.
   static $plugin_arrays = array();
 
-  // If we're being asked for all plugins of a type, skip any caching
-  // we may have done because this is an admin task and it's ok to
-  // spend the extra time.
-  if (!isset($filename)) {
-    $all_files[$info['module']][$info['type']] = NULL;
-  }
-
   if (!isset($all_files[$info['module']][$info['type']])) {
-    // If a filename was set, we will try to load our list of files from
-    // cache. This is considered normal operation and we try to reduce
-    // the time spent finding files.
-    if (isset($filename)) {
-      $cache = cache_get("ctools_plugin_files:$info[module]:$info[type]");
-      if ($cache) {
-        $all_files[$info['module']][$info['type']] = $cache->data;
-      }
+    $cache = cache_get("ctools_plugin_files:$info[module]:$info[type]");
+    if ($cache) {
+      $all_files[$info['module']][$info['type']] = $cache->data;
     }
-
-    if (!isset($all_files[$info['module']][$info['type']])) {
+    // Do not attempt any file scan even if the cached entry was empty.
+    // A NULL entry here would mean the plugin just does not exists, and we
+    // cannot afford to run file scan on production sites normal run.
+    elseif (!isset($all_files[$info['module']][$info['type']])) {
       $all_files[$info['module']][$info['type']] = array();
       // Load all our plugins.
       $directories = ctools_plugin_get_directories($info);

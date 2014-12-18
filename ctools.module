@@ -905,11 +905,25 @@ function ctools_block_list_alter(&$blocks) {
 }
 
 /**
- * Implement hook_modules_enabled to clear static caches for detecting new plugins
+ * Implements hook_modules_enabled().
+ *
+ * Clear caches for detecting new plugins.
  */
 function ctools_modules_enabled($modules) {
   ctools_include('plugins');
   ctools_get_plugins_reset();
+  cache_clear_all('ctools_plugin_files:', 'cache', TRUE);
+}
+
+/**
+ * Implements hook_modules_disabled().
+ *
+ * Clear caches for removing disabled plugins.
+ */
+function ctools_modules_disabled($modules) {
+  ctools_include('plugins');
+  ctools_get_plugins_reset();
+  cache_clear_all('ctools_plugin_files:', 'cache', TRUE);
 }
 
 /**
