@@ -118,6 +118,8 @@ function ctools_entity_field_content_type_render($subtype, $conf, $panel_args, $
   $field_settings = array(
     'label' => $label,
     'type' => $conf['formatter'],
+    // Pass all entity field panes settings to field display settings.
+    'pane_settings' => $conf,
   );
 
   // Get the field output, and the title.
