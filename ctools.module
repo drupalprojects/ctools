@@ -546,19 +546,12 @@ function ctools_cron() {
 }
 
 /**
- * Ensure the CTools CSS cache is flushed whenever hook_flush_caches is invoked.
+ * Implements hook_flush_caches().
  */
 function ctools_flush_caches() {
-  // Do not actually flush caches if running on cron. Drupal uses this hook
-  // in an inconsistent fashion and it does not necessarily mean to *flush*
-  // caches when running from cron. Instead it's just getting a list of cache
-  // tables and may not do any flushing.
-  if (!empty($GLOBALS['locks']['cron'])) {
-    return;
-  }
-
-  ctools_include('css');
-  ctools_css_flush_caches();
+  // Only return the CSS cache bin if it has been activated, to avoid
+  // drupal_flush_all_caches() from trying to truncate a non-existing table.
+  return variable_get('cache_class_cache_ctools_css', FALSE) ? array('cache_ctools_css') : array();
 }
 
 /**
