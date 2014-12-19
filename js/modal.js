@@ -501,7 +501,7 @@
 
       // Get where we should move content to
       var modalContent = $('#modalContent');
-      var mdcTop = wt + ( winHeight / 2 ) - (  modalContent.outerHeight() / 2);
+      var mdcTop = wt + ( winHeight / 2 ) - ( modalContent.outerHeight() / 2);
       var mdcLeft = ( winWidth / 2 ) - ( modalContent.outerWidth() / 2);
 
       // Apply the changes
