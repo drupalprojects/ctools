@@ -333,13 +333,15 @@ function _ctools_context_selector($contexts, $required, $default, $num = 0) {
       $title = $num ? t('Context %count', array('%count' => $num)) : t('Context');
     }
 
-    return array(
+    $form = array(
       '#type' => 'select',
       '#options' => $options,
       '#title' => $title,
       '#default_value' => $default,
     );
   }
+
+  return $form;
 }
 
 /**
