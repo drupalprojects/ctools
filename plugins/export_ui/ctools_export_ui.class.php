@@ -1339,7 +1339,7 @@ function _ctools_export_ui_add_form_files($form, &$form_state) {
  *
  * This simply loads the object defined in the plugin and hands it off.
  */
-function ctools_export_ui_list_form($form, $form_state) {
+function ctools_export_ui_list_form($form, &$form_state) {
   $form_state['object']->list_form($form, $form_state);
   return $form;
 }
