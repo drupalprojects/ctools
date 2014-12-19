@@ -780,6 +780,15 @@ function ctools_js_load($js) {
 }
 
 /**
+ * Provides the default value for %ctools_js.
+ *
+ * This allows drupal_valid_path() to work with %ctools_js.
+ */
+function ctools_js_to_arg($arg) {
+  return empty($arg) || $arg == '%' ? 'nojs' : $arg;
+}
+
+/**
  * Menu _load hook.
  *
  * This function will be called to load an object as a replacement for
