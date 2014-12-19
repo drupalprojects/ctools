@@ -421,12 +421,17 @@
           return true;
         }
       }
-      if( $(target).filter('*:visible').parents('#modalContent').size()) {
-        // allow the event only if target is a visible child node of #modalContent
+
+      if ($(target).is('#modalContent, body') || $(target).filter('*:visible').parents('#modalContent').length) {
+        // Allow the event only if target is a visible child node
+        // of #modalContent.
         return true;
       }
-      if ( $('#modalContent')) $('#modalContent').get(0).focus();
-      return false;
+      else {
+        $('#modalContent').focus();
+      }
+
+      event.preventDefault();
     };
     $('body').bind( 'focus', modalEventHandler );
     $('body').bind( 'keypress', modalEventHandler );
