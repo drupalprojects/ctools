@@ -98,7 +98,7 @@ function page_manager_user_edit_page($account, $category = 'account') {
   if (is_array($output)) {
     $output = drupal_render($output);
   }
-  if ($output != FALSE) {
+  if ($output !== FALSE) {
     return $output;
   }
 
