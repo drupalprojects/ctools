@@ -274,6 +274,11 @@ function views_content_views_panes_content_type_render($subtype, $conf, $panel_a
   }
 
   if ($allow['exposed_form'] && !empty($conf['exposed'])) {
+    foreach ($conf['exposed'] as $filter_name => $filter_value) {
+      if (!is_array($filter_value)) {
+        $conf['exposed'][$filter_name] = ctools_context_keyword_substitute($filter_value, array(), $contexts);
+      }
+    }
     $view->set_exposed_input($conf['exposed']);
   }
 
@@ -607,7 +612,7 @@ function views_content_views_panes_content_type_admin_info($subtype, $conf, $con
     $argument_input = $view->display_handler->get_option('argument_input');
 
     foreach ($conf['arguments'] as $key => $value) {
-      if(!empty($value)){
+      if (!empty($value)){
         $label = $argument_input[$key]['label'];
         $info[] = $label . ': ' . $value;
       }
