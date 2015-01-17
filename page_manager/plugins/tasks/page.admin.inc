@@ -38,7 +38,7 @@ function page_manager_page_menu(&$items, $task) {
   ) + $base;
   if ($access_callback == 'user_access') {
     $items['admin/structure/pages/import']['access callback'] = 'ctools_access_multiperm';
-    $items['admin/structure/pages/import']['access arguments'][] = 'use PHP for settings';
+    $items['admin/structure/pages/import']['access arguments'][] = 'use ctools import';
   }
 
   // AJAX callbacks for argument modal.

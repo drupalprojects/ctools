@@ -9,7 +9,7 @@
  * must be implemented in the module file.
  */
 
-define('CTOOLS_API_VERSION', '2.0.7');
+define('CTOOLS_API_VERSION', '2.0.8');
 
 /**
  * Test the CTools API version.
@@ -534,6 +534,19 @@ function ctools_menu() {
   $items = array();
   ctools_passthrough('ctools', 'menu', $items);
   return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function ctools_permission() {
+  return array(
+    'use ctools import' => array(
+      'title' => t('Use CTools importer'),
+      'description' => t('The import functionality allows users to execute arbitrary PHP code, so extreme caution must be taken.'),
+      'restrict access' => TRUE,
+    ),
+  );
 }
 
 /**

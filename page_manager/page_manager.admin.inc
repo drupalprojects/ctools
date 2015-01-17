@@ -577,8 +577,8 @@ function page_manager_get_operations($page, $operations = NULL) {
     ),
   );
 
-  // Restrict variant import to users who can already execute arbitrary PHP
-  if (user_access('use PHP for settings')) {
+  // Restrict variant import due to security implications.
+  if (user_access('use ctools import')) {
     $result['actions']['children']['import'] = array(
       'title' => t('Import variant'),
       'description' => t('Add a new variant to this page from code exported from another page.'),
@@ -1446,15 +1446,16 @@ function page_manager_handler_import($form, &$form_state) {
     '#description' => t('Enter the name of the new variant.'),
   );
 
-  if (user_access('use PHP for settings')) {
+  if (user_access('use ctools import')) {
     $form['object'] = array(
       '#type' => 'textarea',
       '#title' => t('Paste variant code here'),
       '#rows' => 15,
     );
   }
-  // Users ordinarily can't get here without the PHP block visibility perm.
-  // In case they somehow do, though, disable the form widget for extra safety.
+  // Users ordinarily can't get here without the 'import' permission, due to
+  // security implications. In case they somehow do, though, disable the form
+  // widget for extra safety.
   else {
     $form['shoveoff'] = array(
       '#markup' => '<div>' . t('You do not have sufficient permissions to perform this action.') . '</div>',
@@ -1468,7 +1469,7 @@ function page_manager_handler_import($form, &$form_state) {
  * Make sure that an import actually provides a handler.
  */
 function page_manager_handler_import_validate($form, &$form_state) {
-  if (!user_access('use PHP for settings')) {
+  if (!user_access('use ctools import')) {
     form_error($form['shoveoff'], t('You account permissions do not permit you to import.'));
     return;
   }
