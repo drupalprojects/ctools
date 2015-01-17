@@ -673,7 +673,7 @@ function ctools_plugin_process($info, $module, $identifier, $path, $file = NULL,
     if (!function_exists($function)) {
       return NULL;
     }
-    $result = $function();
+    $result = $function($info);
     if (!isset($result) || !is_array($result)) {
       return NULL;
     }
