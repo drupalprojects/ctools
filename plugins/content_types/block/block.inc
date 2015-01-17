@@ -155,12 +155,12 @@ function ctools_block_content_type_render($subtype, $conf) {
     // hook_block_view_alter() or hook_block_view_MODULE_DELTA_alter().
     drupal_alter(array('block_view', "block_view_{$module}_{$block_delta}"), $block, $info);
   }
-  $block = (object) $block;
 
   if (empty($block)) {
     return;
   }
 
+  $block = (object) $block;
   $block->module = $module;
   $block->delta = $delta;
 
