@@ -95,6 +95,7 @@ function page_manager_list_page($js = NULL) {
 
   $header = array(
     array('data' => t('Type'), 'class' => array('page-manager-page-type')),
+    array('data' => t('Module'), 'class' => array('page-manager-page-module')),
     array('data' => t('Name'), 'class' => array('page-manager-page-name')),
     array('data' => t('Title'), 'class' => array('page-manager-page-title')),
     array('data' => t('Path'), 'class' => array('page-manager-page-path')),
@@ -175,9 +176,18 @@ function page_manager_get_pages($tasks, &$pages, $task_id = NULL) {
     $row = array('data' => array(), 'class' => $class, 'title' => strip_tags($task['admin description']));
 
     $type = isset($task['admin type']) ? $task['admin type'] : t('System');
+    if (isset($task['module'])) {
+      $module = $task['module'];
+    }
+    elseif (isset($task['subtask']->export_module)) {
+      $module = $task['subtask']->export_module;
+    }
+    else {
+      $module = '';
+    }
     $pages['types'][$type] = $type;
     $row['data']['type'] = array('data' => $type, 'class' => array('page-manager-page-type'));
-
+    $row['data']['module'] = array('data' => $module, 'class' => array('page-manager-page-module'));
     $row['data']['name'] = array('data' => $task_name, 'class' => array('page-manager-page-name'));
     $row['data']['title'] = array('data' => $task['admin title'], 'class' => array('page-manager-page-title'));
     $row['data']['path'] = array('data' => $visible_path, 'class' => array('page-manager-page-path'));
