@@ -379,9 +379,9 @@
     css.filter = 'alpha(opacity=' + (100 * css.opacity) + ')';
     content.hide();
 
-    // if we already ahve a modalContent, remove it
-    if ( $('#modalBackdrop')) $('#modalBackdrop').remove();
-    if ( $('#modalContent')) $('#modalContent').remove();
+    // If we already have modalContent, remove it.
+    if ($('#modalBackdrop').length) $('#modalBackdrop').remove();
+    if ($('#modalContent').length) $('#modalContent').remove();
 
     // position code lifted from http://www.quirksmode.org/viewport/compatibility.html
     if (self.pageYOffset) { // all except Explorer
