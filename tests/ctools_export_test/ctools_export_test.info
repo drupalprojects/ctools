@@ -2,6 +2,7 @@ name = CTools export test
 description = CTools export test module
 core = 7.x
 package = Chaos tool suite
+version = CTOOLS_MODULE_VERSION
 dependencies[] = ctools
 hidden = TRUE
 

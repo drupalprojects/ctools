@@ -12,6 +12,20 @@
 define('CTOOLS_API_VERSION', '2.0.8');
 
 /**
+ * The current working ctools version.
+ *
+ * In a release, it should be 7.x-1.x, which should match what drush make will
+ * create. In a dev format, it should be 7.x-1.(x+1)-dev, which will allow
+ * modules depending on new features in ctools to depend on ctools > 7.x-1.x.
+ *
+ * To define a specific version of CTools as a dependency for another module,
+ * simply include a dependency line in that module's info file, e.g.:
+ *   ; Requires CTools v7.x-1.4 or newer.
+ *   dependencies[] = ctools (>=1.4)
+ */
+define('CTOOLS_MODULE_VERSION', '7.x-1.6-dev');
+
+/**
  * Test the CTools API version.
  *
  * This function can always be used to safely test if CTools has the minimum
