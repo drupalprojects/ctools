@@ -214,7 +214,12 @@ function ctools_plugin_api_get_hook($owner, $api) {
 function ctools_get_plugins($module, $type, $id = NULL) {
   // Store local caches of plugins and plugin info so we don't have to do full
   // lookups everytime.
-  $plugins = &drupal_static('ctools_plugins', array());
+  static $drupal_static_fast;
+  if (!isset($drupal_static_fast)) {
+    $drupal_static_fast['plugins'] = &drupal_static('ctools_plugins', array());
+  }
+  $plugins = &$drupal_static_fast['plugins'];
+
   $info = ctools_plugin_get_plugin_type_info();
 
   // Bail out noisily if an invalid module/type combination is requested.
