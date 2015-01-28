@@ -1318,6 +1318,7 @@ function page_manager_handler_add_submit(&$form, &$form_state) {
   else {
     $handler->conf['title'] = $plugin['title'];
   }
+  $handler->conf['name'] = $form_state['values']['name'];
   $cache->new_handler = $handler;
 
   // Figure out which forms to present them with
@@ -1408,6 +1409,21 @@ function page_manager_handler_add_form($form, $form_state, $features = array()) 
       '#title' => t('Title'),
       '#description' => t('Administrative title of this variant. If you leave blank it will be automatically assigned.'),
     );
+
+    $form['name'] = array(
+      '#type' => 'machine_name',
+      '#title' => t('Machine name'),
+      '#required' => FALSE,
+      '#description' => t("A unique machine-readable name for this variant. It must only contain lowercase letters, numbers, and underscores. This name will be used when exporting the variant. If left empty the variant's name will be used instead."),
+      '#size' => 32,
+      '#maxlength' => 32,
+      '#machine_name' => array(
+        'exists' => 'page_manager_handler_check_machine_name',
+        'source' => array('title'),
+      ),
+      '#field_prefix' => '<span dir="ltr">' . $task['name'] . '__',
+      '#field_suffix' => '</span>&lrm;',
+    );
   }
 
   $form['handler'] = array(
@@ -1444,6 +1460,15 @@ function page_manager_handler_add_form($form, $form_state, $features = array()) 
   }
 
   return $form;
+}
+
+/*
+ * Check if handler's machine-name is unique
+ */
+function page_manager_handler_check_machine_name($name, $element, $form_state) {
+  $name = $form_state['task']['name'] . '__' . $name;
+
+  return count(ctools_export_load_object('page_manager_handlers', 'names', array($name)));
 }
 
 /**

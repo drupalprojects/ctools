@@ -440,16 +440,17 @@ function page_manager_cache_load($task_name) {
  */
 function page_manager_handler_get_name($task_name, $handlers, $handler) {
   $base = str_replace('-', '_', $task_name);
-  // Generate a unique name. Unlike most named objects, we don't let people choose
-  // names for task handlers because they mostly don't make sense.
-  $base .= '_' . $handler->handler;
+  // Optional machine name.
+  if (!empty($handler->conf['name'])) {
+    $name = $base . '__' . $handler->conf['name'];
+  }
 
-  // Once we have a base, check to see if it is used. If it is, start counting up.
-  $name = $base;
-  $count = 1;
-  // If taken
-  while (isset($handlers[$name])) {
-    $name = $base . '_' . ++$count;
+  // If no machine name was provided, generate a unique name.
+  else {
+    $base .= '__' . $handler->handler;
+
+    // Use the ctools uuid generator to generate a unique id.
+    $name = $base . '_' . ctools_uuid_generate();
   }
 
   return $name;
