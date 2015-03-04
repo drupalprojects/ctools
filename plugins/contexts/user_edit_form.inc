@@ -154,7 +154,7 @@ function ctools_context_user_edit_form_settings_form_validate($form, &$form_stat
     $uid = $preg_matches[1];
   }
   if (is_numeric($uid)) {
-    $user = db_query('SELECT uid FROM {user} WHEREuid = :uid', array(':uid' => $uid))->fetchObject();
+    $user = db_query('SELECT uid FROM {user} WHERE uid = :uid', array(':uid' => $uid))->fetchObject();
   }
   else {
     $user = db_query('SELECT uid FROM {user} WHERE LOWER(name) = LOWER(:name)', array(':name' => $uid))->fetchObject();
