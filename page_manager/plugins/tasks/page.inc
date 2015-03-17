@@ -406,6 +406,8 @@ function page_manager_page_load_all($task = NULL) {
  * Write a page subtask to the database.
  */
 function page_manager_page_save(&$page) {
+  module_invoke_all('page_manager_page_presave', $page);
+  
   $update = (isset($page->pid)) ? array('pid') : array();
   $task = page_manager_get_task($page->task);
 

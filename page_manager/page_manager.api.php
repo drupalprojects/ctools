@@ -11,6 +11,15 @@
  */
 
 /**
+ * Implements hook_page_manager_page_presave
+ * 
+ * @parm stdClass $page
+ */
+function hook_page_manager_page_presave($page) {
+  // Custom logic
+}
+
+/**
  * @todo.
  *
  * @param array $result
