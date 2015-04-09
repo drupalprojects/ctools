@@ -1,0 +1,16 @@
+ctools.wizard:
+  path: '/ctools/wizard'
+  defaults:
+    _wizard: '\Drupal\ctools\Wizard\WizardTest'
+    _title: 'Wizard Test'
+    tempstore_id: 'ctools.wizard.test'
+  requirements:
+    _access: 'TRUE'
+ctools.wizard.step:
+  path: '/ctools/wizard/{machine_name}/{step}'
+  defaults:
+    _wizard: '\Drupal\ctools\Wizard\WizardTest'
+    _title: 'Wizard Test'
+    tempstore_id: 'ctools.wizard.test'
+  requirements:
+    _access: 'TRUE'

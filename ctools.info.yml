@@ -1,0 +1,6 @@
+name: 'Chaos Tools Suite'
+type: module
+description: 'Provides a number of utility and helper APIs for Drupal developers and site builders.'
+package: CTools
+version: 3.x
+core: 8.x

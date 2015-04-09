@@ -1,0 +1,8 @@
+services:
+  ctools.wizard.form:
+    class: Drupal\ctools\Controller\WizardFormController
+    arguments: ['@controller_resolver', '@form_builder', '@class_resolver', '@user.shared_tempstore']
+  ctools.wizard.controller_subscriber:
+    class: Drupal\ctools\EventSubscriber\WizardControllerSubscriber
+    tags:
+      - { name: event_subscriber }
