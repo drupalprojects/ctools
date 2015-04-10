@@ -1,7 +1,8 @@
 <?php
+
 /**
  * @file
- * Contains \Drupal\ctools\wizard\FormWizardBase.
+ * Contains \Drupal\ctools\Wizard\FormWizardBase.
  */
 
 namespace Drupal\ctools\Wizard;
@@ -13,6 +14,9 @@ use Drupal\Core\Form\FormInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\user\SharedTempStoreFactory;
 
+/**
+ * The base class for all form wizard.
+ */
 abstract class FormWizardBase extends FormBase implements FormWizardInterface {
 
   /**
@@ -59,28 +63,28 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
   }
 
   /**
-   * @return string
+   * {@inheritdoc}
    */
   public function getTempstoreId() {
     return $this->tempstore_id;
   }
 
   /**
-   * @return \Drupal\user\SharedTempStore
+   * {@inheritdoc}
    */
   public function getTempstore() {
     return $this->tempstore->get($this->getTempstoreId());
   }
 
   /**
-   * @return null|string
+   * {@inheritdoc}
    */
   public function getMachineName() {
     return $this->machine_name;
   }
 
   /**
-   * @return string
+   * {@inheritdoc}
    */
   public function getStep($cached_values) {
     if (!$this->step) {
@@ -92,8 +96,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
   }
 
   /**
-   * @return string
-   *   The class name to instantiate.
+   * {@inheritdoc}
    */
   public function getOperation($cached_values) {
     $operations = $this->getOperations();
@@ -104,6 +107,9 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
     return reset($operations);
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getNextParameters($cached_values) {
     // Get the steps by key.
     $operations = $this->getOperations();
@@ -118,6 +124,9 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
     ];
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getPreviousParameters($cached_values) {
     $operations = $this->getOperations();
     $step = $this->getStep($cached_values);
@@ -137,25 +146,18 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
   }
 
   /**
-   * Returns a unique string identifying the form.
-   *
-   * @return string
-   *   The unique string identifying the form.
+   * {@inheritdoc}
    */
   public function getFormId() {
-    return 'wizard_form';
+    $cached_values = $this->getTempstore()->get($this->getMachineName());
+    $operation = $this->getOperation($cached_values);
+    /* @var $operation \Drupal\Core\Form\FormInterface */
+    $operation = $this->classResolver->getInstanceFromDefinition($operation);
+    return $operation->getFormId();
   }
 
   /**
-   * Form constructor.
-   *
-   * @param array $form
-   *   An associative array containing the structure of the form.
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   The current state of the form.
-   *
-   * @return array
-   *   The form structure.
+   * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     // Get the cached values out of the tempstore.
@@ -176,24 +178,14 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
   }
 
   /**
-   * Form validation handler.
-   *
-   * @param array $form
-   *   An associative array containing the structure of the form.
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   The current state of the form.
+   * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
     // TODO: Implement validateForm() method.
   }
 
   /**
-   * Form submission handler.
-   *
-   * @param array $form
-   *   An associative array containing the structure of the form.
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   The current state of the form.
+   * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $cached_values = $form_state->get('wizard');
@@ -208,17 +200,31 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
     }
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function previous(array &$form, FormStateInterface $form_state) {
     $cached_values = $form_state->get('wizard');
     $form_state->setRedirect($this->getRouteName(), $this->getPreviousParameters($cached_values));
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function finish(array &$form, FormStateInterface $form_state) {
     $this->getTempstore()->delete($this->getMachineName());
   }
 
+  /**
+   * Helper function for generating label and id form elements.
+   *
+   * @param mixed $cached_values
+   *   The values returned by $this->getTempstore()->get($this->getMachineName());
+   *
+   * @return array
+   */
   protected function getDefaultFormElements($cached_values) {
-    // Create machine name and label form elements.
+    // Create id and label form elements.
     $form['name'] = array(
       '#type' => 'fieldset',
       '#attributes' => array('class' => array('fieldset-no-legend')),
@@ -248,6 +254,16 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
     return $form;
   }
 
+  /**
+   * Generates action elements for navigating between the operation steps.
+   *
+   * @param \Drupal\Core\Form\FormInterface $form
+   *   The current operation form.
+   * @param $cached_values
+   *   The values returned by $this->getTempstore()->get($this->getMachineName());
+   *
+   * @return array
+   */
   protected function actions(FormInterface $form, $cached_values) {
     $operations = $this->getOperations();
     $step = $this->getStep($cached_values);

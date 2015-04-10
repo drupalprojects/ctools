@@ -1,10 +1,11 @@
 <?php
+
 /**
  * @file
- * Contains \Drupal\CTools\EventSubscriber\WizardControllerSubscriber.
+ * Contains \Drupal\ctools\EventSubscriber\WizardControllerSubscriber.
  */
 
-namespace Drupal\CTools\EventSubscriber;
+namespace Drupal\ctools\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -16,7 +17,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 class WizardControllerSubscriber implements EventSubscriberInterface {
 
   /**
-   * Sets the _controller on a request when a _form is defined.
+   * Sets the _controller on a request when a _wizard is defined.
    *
    * @param \Symfony\Component\HttpKernel\Event\GetResponseEvent $event
    *   The event to process.

@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains Drupal\ctools\Wizard\WizardTest.
+ * Contains \Drupal\ctools\Wizard\WizardTest.
  */
 
 namespace Drupal\ctools\Wizard;
