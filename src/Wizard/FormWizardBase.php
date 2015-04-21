@@ -13,6 +13,7 @@ use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\user\SharedTempStoreFactory;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * The base class for all form wizard.
@@ -53,13 +54,20 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
    */
   protected $step;
 
-  public function __construct(SharedTempStoreFactory $tempstore, FormBuilderInterface $builder, ClassResolverInterface $class_resolver, $tempstore_id, $machine_name = NULL, $step = NULL) {
+  public function __construct(SharedTempStoreFactory $tempstore, FormBuilderInterface $builder, ClassResolverInterface $class_resolver, EventDispatcherInterface $event_dispatcher, $tempstore_id, $machine_name = NULL, $step = NULL) {
     $this->tempstore = $tempstore;
     $this->builder = $builder;
     $this->classResolver = $class_resolver;
+    $this->dispatcher = $event_dispatcher;
     $this->tempstore_id = $tempstore_id;
     $this->machine_name = $machine_name;
     $this->step = $step;
+  }
+
+  public function initValues($values) {
+    if ($this->getMachineName() && !$this->getTempstore()->get($this->getMachineName())) {
+      $this->getTempstore()->set($this->getMachineName(), $values);
+    }
   }
 
   /**
@@ -104,7 +112,8 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
     if (!empty($operations[$step])) {
       return $operations[$step];
     }
-    return reset($operations);
+    $operation = reset($operations);
+    return $operation;
   }
 
   /**
@@ -117,7 +126,8 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
     // Get the steps after the current step.
     $after = array_slice($operations, array_search($this->getStep($cached_values), $steps) + 1);
     // Get the steps after the current step by key.
-    $step = reset(array_keys($after));
+    $after_keys = array_keys($after);
+    $step = reset($after_keys);
     return [
       'machine_name' => $this->getMachineName(),
       'step' => $step,
@@ -138,7 +148,8 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
     // Get the steps before the current step by key.
     $before = array_keys($before);
     // Reverse the steps for easy access to the next step.
-    $step = reset(array_reverse($before));
+    $before_steps = array_reverse($before);
+    $step = reset($before_steps);
     return [
       'machine_name' => $this->getMachineName(),
       'step' => $step,
@@ -152,7 +163,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
     $cached_values = $this->getTempstore()->get($this->getMachineName());
     $operation = $this->getOperation($cached_values);
     /* @var $operation \Drupal\Core\Form\FormInterface */
-    $operation = $this->classResolver->getInstanceFromDefinition($operation);
+    $operation = $this->classResolver->getInstanceFromDefinition($operation['form']);
     return $operation->getFormId();
   }
 
@@ -166,14 +177,18 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
 
     // Get the current form operation.
     $operation = $this->getOperation($cached_values);
-    $default_operation = reset($this->getOperations());
-    if ($operation == $default_operation) {
+    $operations = $this->getOperations();
+    $default_operation = reset($operations);
+    if ($operation['form'] == $default_operation['form']) {
       $form = $this->getDefaultFormElements($cached_values);
     }
-    /* @var $operation \Drupal\Core\Form\FormInterface */
-    $operation = $this->classResolver->getInstanceFromDefinition($operation);
-    $form = $operation->buildForm($form, $form_state);
-    $form['actions'] = $this->actions($operation, $cached_values);
+    /* @var $formClass \Drupal\Core\Form\FormInterface */
+    $formClass = $this->classResolver->getInstanceFromDefinition($operation['form']);
+    $form = $formClass->buildForm($form, $form_state);
+    if (isset($operation['title'])) {
+      $form['#title'] = $operation['title'];
+    }
+    $form['actions'] = $this->actions($formClass, $cached_values);
     return $form;
   }
 
@@ -193,11 +208,11 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
       $cached_values['label'] = $form_state->getValue('label');
       $cached_values['id'] = $form_state->getValue('id');
       $this->machine_name = $cached_values['id'];
-      $this->getTempstore()->set($this->getMachineName(), $cached_values);
     }
     if ($form_state->getValue('op') == 'Next') {
       $form_state->setRedirect($this->getRouteName(), $this->getNextParameters($cached_values));
     }
+    $this->getTempstore()->set($this->getMachineName(), $cached_values);
   }
 
   /**
@@ -243,7 +258,6 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
       '#type' => 'machine_name',
       '#maxlength' => 128,
       '#machine_name' => array(
-        'exists' => 'page_manager_display_load',
         'source' => array('name', 'label'),
       ),
       '#description' => t('A unique machine-readable name for this View. It must only contain lowercase letters, numbers, and underscores.'),

@@ -28,6 +28,9 @@ class WizardControllerSubscriber implements EventSubscriberInterface {
     if ($request->attributes->has('_wizard')) {
       $request->attributes->set('_controller', 'ctools.wizard.form:getContentResult');
     }
+    if ($request->attributes->has('_entity_wizard')) {
+      $request->attributes->set('_controller', 'ctools.wizard.entity.form:getContentResult');
+    }
   }
 
   /**

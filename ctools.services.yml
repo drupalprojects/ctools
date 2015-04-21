@@ -1,7 +1,10 @@
 services:
   ctools.wizard.form:
     class: Drupal\ctools\Controller\WizardFormController
-    arguments: ['@controller_resolver', '@form_builder', '@class_resolver', '@user.shared_tempstore']
+    arguments: ['@controller_resolver', '@form_builder', '@class_resolver', '@user.shared_tempstore', '@event_dispatcher']
+  ctools.wizard.entity.form:
+    class: Drupal\ctools\Controller\WizardEntityFormController
+    arguments: ['@controller_resolver', '@form_builder', '@class_resolver', '@user.shared_tempstore', '@event_dispatcher', '@entity.manager']
   ctools.wizard.controller_subscriber:
     class: Drupal\ctools\EventSubscriber\WizardControllerSubscriber
     tags:

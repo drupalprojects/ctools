@@ -14,6 +14,16 @@ use Drupal\Core\Form\FormStateInterface;
  */
 interface FormWizardInterface {
 
+  const LOAD_VALUES = 'wizard.load';
+
+  /**
+   * Initialize any values when editing instead of adding.
+   *
+   * @param $values
+   *
+   */
+  public function initValues($values);
+
   /**
    * The fieldset #title for your label & machine name elements.
    *
