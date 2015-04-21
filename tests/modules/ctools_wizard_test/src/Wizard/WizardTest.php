@@ -13,18 +13,22 @@ use Drupal\ctools\Wizard\FormWizardBase;
 
 class WizardTest extends FormWizardBase {
 
+  /**
+   * {@inheritdoc}
+   */
   public function getWizardLabel() {
     return $this->t('Wizard Information');
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getMachineLabel() {
     return $this->t('Wizard Test Name');
   }
 
   /**
-   * A list of FormInterface classes keyed by their step in the wizard.
-   *
-   * @return array
+   * {@inheritdoc}
    */
   public function getOperations() {
     return array(
@@ -39,10 +43,16 @@ class WizardTest extends FormWizardBase {
     );
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getRouteName() {
     return 'ctools.wizard.test.step';
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function finish(array &$form, FormStateInterface $form_state) {
     $cached_values = $form_state->get('wizard');
     drupal_set_message($this->t('Value One: @one', ['@one' => $cached_values['one']]));

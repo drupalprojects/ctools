@@ -41,7 +41,6 @@ class WizardControllerSubscriber implements EventSubscriberInterface {
    */
   static function getSubscribedEvents() {
     $events[KernelEvents::REQUEST][] = array('onRequestDeriveFormWrapper', 29);
-
     return $events;
   }
 

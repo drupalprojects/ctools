@@ -1,9 +1,8 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: kris
- * Date: 4/17/15
- * Time: 10:55 AM
+ * @file
+ * Contains \Drupal\ctools\Wizard\EntityFormWizardBase.
  */
 
 namespace Drupal\ctools\Wizard;
@@ -16,18 +15,45 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\user\SharedTempStoreFactory;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * The base class for all entity form wizards.
+ */
 abstract class EntityFormWizardBase extends FormWizardBase implements EntityFormWizardInterface {
 
   /**
+   * The entity manager.
+   *
    * @var \Drupal\Core\Entity\EntityManagerInterface
    */
   protected $entityManager;
 
+  /**
+   * @param \Drupal\user\SharedTempStoreFactory $tempstore
+   *   Tempstore Factory for keeping track of values in each step of the
+   *   wizard.
+   * @param \Drupal\Core\Form\FormBuilderInterface $builder
+   *   The Form Builder.
+   * @param \Drupal\Core\DependencyInjection\ClassResolverInterface $class_resolver
+   *   The class resolver.
+   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
+   *   The event dispatcher.
+   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
+   *   The entity manager.
+   * @param $tempstore_id
+   *   The shared temp store factory collection name.
+   * @param null $machine_name
+   *   The SharedTempStore key for our current wizard values.
+   * @param null $step
+   *   The current active step of the wizard.
+   */
   public function __construct(SharedTempStoreFactory $tempstore, FormBuilderInterface $builder, ClassResolverInterface $class_resolver, EventDispatcherInterface $event_dispatcher, EntityManagerInterface $entity_manager, $tempstore_id, $machine_name = NULL, $step = NULL) {
     $this->entityManager = $entity_manager;
     parent::__construct($tempstore, $builder, $class_resolver, $event_dispatcher, $tempstore_id, $machine_name, $step);
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function finish(array &$form, FormStateInterface $form_state) {
     $entity = $this->entityManager->getStorage($this->getEntityType())->load($this->machine_name);
     if (!$entity) {

@@ -14,6 +14,9 @@ use Drupal\Core\Form\FormStateInterface;
  */
 interface FormWizardInterface {
 
+  /**
+   * Constant value for wizard load event.
+   */
   const LOAD_VALUES = 'wizard.load';
 
   /**

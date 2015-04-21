@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Contains \Drupal\ctools\Wizard\EntityFormWizardInterface.
@@ -6,7 +7,9 @@
 
 namespace Drupal\ctools\Wizard;
 
-
+/**
+ * Form wizard interface for use with entities.
+ */
 interface EntityFormWizardInterface extends FormWizardInterface {
 
   /**

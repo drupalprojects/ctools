@@ -11,7 +11,11 @@ namespace Drupal\ctools_wizard_test\Form;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 
+/**
+ * Simple wizard step form.
+ */
 class OneForm extends FormBase {
+
   /**
    * Returns a unique string identifying the form.
    *
@@ -63,6 +67,13 @@ class OneForm extends FormBase {
     $form_state->set('wizard', $cached_values);
   }
 
+  /**
+   * Simple load method for the machine name exist check.
+   *
+   * @param $id
+   *
+   * @return bool
+   */
   public static function load($id) {
     return FALSE;
   }

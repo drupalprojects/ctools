@@ -1,17 +1,18 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: kris
- * Date: 4/21/15
- * Time: 12:10 AM
+ * @file
+ * Contains \Drupal\ctools\Event\WizardEvent.
  */
 
 namespace Drupal\ctools\Event;
 
-
 use Drupal\ctools\Wizard\FormWizardInterface;
 use Symfony\Component\EventDispatcher\Event;
 
+/**
+ * An event for altering form wizard values.
+ */
 class WizardEvent extends Event {
 
   /**

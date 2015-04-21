@@ -28,6 +28,8 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
   protected $tempstore;
 
   /**
+   * The Form Builder.
+   *
    * @var \Drupal\Core\Form\FormBuilderInterface
    */
   protected $builder;
@@ -40,20 +42,50 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
   protected $classResolver;
 
   /**
+   * The event dispatcher.
+   *
+   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+   */
+  protected $dispatcher;
+
+  /**
+   * The shared temp store factory collection name.
+   *
    * @var string
    */
   protected $tempstore_id;
 
   /**
-   * @var string
+   * The SharedTempStore key for our current wizard values.
+   *
+   * @var string|NULL
    */
   protected $machine_name;
 
   /**
-   * @var string
+   * The current active step of the wizard.
+   *
+   * @var string|NULL
    */
   protected $step;
 
+  /**
+   * @param \Drupal\user\SharedTempStoreFactory $tempstore
+   *   Tempstore Factory for keeping track of values in each step of the
+   *   wizard.
+   * @param \Drupal\Core\Form\FormBuilderInterface $builder
+   *   The Form Builder.
+   * @param \Drupal\Core\DependencyInjection\ClassResolverInterface $class_resolver
+   *   The class resolver.
+   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
+   *   The event dispatcher.
+   * @param $tempstore_id
+   *   The shared temp store factory collection name.
+   * @param null $machine_name
+   *   The SharedTempStore key for our current wizard values.
+   * @param null $step
+   *   The current active step of the wizard.
+   */
   public function __construct(SharedTempStoreFactory $tempstore, FormBuilderInterface $builder, ClassResolverInterface $class_resolver, EventDispatcherInterface $event_dispatcher, $tempstore_id, $machine_name = NULL, $step = NULL) {
     $this->tempstore = $tempstore;
     $this->builder = $builder;
@@ -237,6 +269,8 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
    *   The values returned by $this->getTempstore()->get($this->getMachineName());
    *
    * @return array
+   *
+   * @todo Consider moving this to EntityFormWizardBase.
    */
   protected function getDefaultFormElements($cached_values) {
     // Create id and label form elements.

@@ -11,7 +11,11 @@ namespace Drupal\ctools_wizard_test\Form;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 
+/**
+ * Simple wizard step form.
+ */
 class TwoForm extends FormBase {
+
   /**
    * Returns a unique string identifying the form.
    *

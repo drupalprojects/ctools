@@ -30,21 +30,31 @@ class WizardFormController extends FormController {
   protected $classResolver;
 
   /**
+   * Tempstore Factory for keeping track of values in each step of the wizard.
+   *
    * @var \Drupal\user\SharedTempStoreFactory
    */
   protected $tempstore;
 
   /**
+   * The event dispatcher.
+   *
    * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
    */
   protected $dispatcher;
 
   /**
    * @param \Drupal\Core\Controller\ControllerResolverInterface $controller_resolver
+   *   The controller resolver.
    * @param \Drupal\Core\Form\FormBuilderInterface $form_builder
+   *   The form builder.
    * @param \Drupal\Core\DependencyInjection\ClassResolverInterface $class_resolver
+   *   The class resolver.
    * @param \Drupal\user\SharedTempStoreFactory $tempstore
+   *   Tempstore Factory for keeping track of values in each step of the
+   *   wizard.
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
+   *   The event dispatcher.
    */
   public function __construct(ControllerResolverInterface $controller_resolver, FormBuilderInterface $form_builder, ClassResolverInterface $class_resolver, SharedTempStoreFactory $tempstore, EventDispatcherInterface $event_dispatcher) {
     parent::__construct($controller_resolver, $form_builder);
