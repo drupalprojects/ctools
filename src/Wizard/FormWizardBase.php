@@ -263,7 +263,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
   }
 
   /**
-   * Helper function for generating label and id form elements.
+   * Helper function for generating default form elements.
    *
    * @param mixed $cached_values
    *   The values returned by $this->getTempstore()->get($this->getMachineName());
@@ -273,33 +273,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
    * @todo Consider moving this to EntityFormWizardBase.
    */
   protected function getDefaultFormElements($cached_values) {
-    // Create id and label form elements.
-    $form['name'] = array(
-      '#type' => 'fieldset',
-      '#attributes' => array('class' => array('fieldset-no-legend')),
-      '#title' => $this->getWizardLabel(),
-    );
-    $form['name']['label'] = array(
-      '#type' => 'textfield',
-      '#title' => $this->getMachineLabel(),
-      '#required' => TRUE,
-      '#size' => 32,
-      '#default_value' => !empty($cached_values['label']) ? $cached_values['label'] : '',
-      '#maxlength' => 255,
-      '#disabled' => !empty($cached_values['label']),
-    );
-    $form['name']['id'] = array(
-      '#type' => 'machine_name',
-      '#maxlength' => 128,
-      '#machine_name' => array(
-        'source' => array('name', 'label'),
-      ),
-      '#description' => t('A unique machine-readable name for this View. It must only contain lowercase letters, numbers, and underscores.'),
-      '#default_value' => !empty($cached_values['id']) ? $cached_values['id'] : '',
-      '#disabled' => !empty($cached_values['id']),
-    );
-
-    return $form;
+    return [];
   }
 
   /**

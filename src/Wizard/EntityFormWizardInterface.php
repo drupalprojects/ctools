@@ -13,10 +13,18 @@ namespace Drupal\ctools\Wizard;
 interface EntityFormWizardInterface extends FormWizardInterface {
 
   /**
-   * Returns the machine name of the entity type.
+   * The machine name of the entity type.
    *
    * @return string
    */
   public function getEntityType();
+
+  /**
+   * A method for determining if this entity already exists.
+   *
+   * @return callable
+   *   The callable to pass the id to via typical machine_name form element.
+   */
+  public function exists();
 
 }

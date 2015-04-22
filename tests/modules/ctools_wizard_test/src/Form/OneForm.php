@@ -39,7 +39,6 @@ class OneForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $cached_values = $form_state->get('wizard');
-    $form['name']['id']['#machine_name']['exists'] = '\Drupal\ctools_wizard_test\Form\OneForm::load';
     $form['one'] = array(
       '#title' => t('One'),
       '#type' => 'textfield',
@@ -65,17 +64,6 @@ class OneForm extends FormBase {
       $cached_values[$key] = $form_state->getValue($key);
     }
     $form_state->set('wizard', $cached_values);
-  }
-
-  /**
-   * Simple load method for the machine name exist check.
-   *
-   * @param $id
-   *
-   * @return bool
-   */
-  public static function load($id) {
-    return FALSE;
   }
 
 }

@@ -59,4 +59,5 @@ class WizardTest extends FormWizardBase {
     drupal_set_message($this->t('Value Two: @two', ['@two' => $cached_values['two']]));
     parent::finish($form, $form_state);
   }
+
 }
