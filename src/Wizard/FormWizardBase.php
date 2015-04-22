@@ -269,8 +269,6 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
    *   The values returned by $this->getTempstore()->get($this->getMachineName());
    *
    * @return array
-   *
-   * @todo Consider moving this to EntityFormWizardBase.
    */
   protected function getDefaultFormElements($cached_values) {
     return [];
