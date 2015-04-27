@@ -59,7 +59,7 @@ abstract class EntityFormWizardBase extends FormWizardBase implements EntityForm
     if (!$entity) {
       $entity = $this->entityManager->getStorage($this->getEntityType())->create([]);
     }
-    foreach ($form_state->get('wizard') as $key => $value) {
+    foreach ($form_state->getTemporaryValue('wizard') as $key => $value) {
       $entity->set($key, $value);
     }
     $status = $entity->save();

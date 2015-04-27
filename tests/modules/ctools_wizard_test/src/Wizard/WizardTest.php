@@ -54,7 +54,7 @@ class WizardTest extends FormWizardBase {
    * {@inheritdoc}
    */
   public function finish(array &$form, FormStateInterface $form_state) {
-    $cached_values = $form_state->get('wizard');
+    $cached_values = $form_state->getTemporaryValue('wizard');
     drupal_set_message($this->t('Value One: @one', ['@one' => $cached_values['one']]));
     drupal_set_message($this->t('Value Two: @two', ['@two' => $cached_values['two']]));
     parent::finish($form, $form_state);

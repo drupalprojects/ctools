@@ -38,7 +38,7 @@ class OneForm extends FormBase {
    *   The form structure.
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $cached_values = $form_state->get('wizard');
+    $cached_values = $form_state->getTemporaryValue('wizard');
     $form['one'] = array(
       '#title' => t('One'),
       '#type' => 'textfield',
@@ -59,11 +59,11 @@ class OneForm extends FormBase {
     $keys = array(
       'one',
     );
-    $cached_values = $form_state->get('wizard');
+    $cached_values = $form_state->getTemporaryValue('wizard');
     foreach ($keys as $key) {
       $cached_values[$key] = $form_state->getValue($key);
     }
-    $form_state->set('wizard', $cached_values);
+    $form_state->setTemporaryValue('wizard', $cached_values);
   }
 
 }

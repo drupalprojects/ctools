@@ -38,7 +38,7 @@ class TwoForm extends FormBase {
    *   The form structure.
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $cached_values = $form_state->get('wizard');
+    $cached_values = $form_state->getTemporaryValue('wizard');
     $form['two'] = array(
       '#title' => t('Two'),
       '#type' => 'textfield',
@@ -59,11 +59,11 @@ class TwoForm extends FormBase {
     $keys = array(
       'two',
     );
-    $cached_values = $form_state->get('wizard');
+    $cached_values = $form_state->getTemporaryValue('wizard');
     foreach ($keys as $key) {
       $cached_values[$key] = $form_state->getValue($key);
     }
-    $form_state->set('wizard', $cached_values);
+    $form_state->setTemporaryValue('wizard', $cached_values);
   }
 
 }

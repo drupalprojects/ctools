@@ -205,7 +205,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
   public function buildForm(array $form, FormStateInterface $form_state) {
     // Get the cached values out of the tempstore.
     $cached_values = $this->getTempstore()->get($this->getMachineName());
-    $form_state->set('wizard', $cached_values);
+    $form_state->setTemporaryValue('wizard', $cached_values);
 
     // Get the current form operation.
     $operation = $this->getOperation($cached_values);
@@ -235,7 +235,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $cached_values = $form_state->get('wizard');
+    $cached_values = $form_state->getTemporaryValue('wizard');
     if (is_null($this->getMachineName())) {
       $cached_values['label'] = $form_state->getValue('label');
       $cached_values['id'] = $form_state->getValue('id');
@@ -251,7 +251,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
    * {@inheritdoc}
    */
   public function previous(array &$form, FormStateInterface $form_state) {
-    $cached_values = $form_state->get('wizard');
+    $cached_values = $form_state->getTemporaryValue('wizard');
     $form_state->setRedirect($this->getRouteName(), $this->getPreviousParameters($cached_values));
   }
 
