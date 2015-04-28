@@ -101,6 +101,13 @@ interface FormWizardInterface {
   public function getRouteName();
 
   /**
+   * The translated text of the "Next" button's text.
+   *
+   * @return string
+   */
+  public function getNextOp();
+
+  /**
    * The Route parameters for a 'next' step.
    *
    * If your route requires more than machine_name and step keys, override and
@@ -133,6 +140,20 @@ interface FormWizardInterface {
   public function getPreviousParameters($cached_values);
 
   /**
+   * Form validation handler that populates the cached values from tempstore.
+   *
+   * Temporary values are only available for a single page load so form
+   * submission will lose all the values. This was we reload and provide them
+   * to the validate and submit process.
+   *
+   * @param array $form
+   *   Drupal form array
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The initial form state before validation or submission of the steps.
+   */
+  public function populateCachedValues(array &$form, FormStateInterface $form_state);
+
+  /**
    * Form submit handler to step backwards in the wizard.
    *
    * "Next" steps are handled by \Drupal\Core\Form\FormInterface::submitForm().
@@ -156,8 +177,6 @@ interface FormWizardInterface {
    *   Drupal form array
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The final form state of the wizard.
-   *
-   * @return
    */
   public function finish(array &$form, FormStateInterface $form_state);
 

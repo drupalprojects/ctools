@@ -151,6 +151,13 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
   /**
    * {@inheritdoc}
    */
+  public function getNextOp() {
+    return $this->t('Next');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getNextParameters($cached_values) {
     // Get the steps by key.
     $operations = $this->getOperations();
@@ -227,24 +234,36 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
   /**
    * {@inheritdoc}
    */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-    // TODO: Implement validateForm() method.
-  }
+  public function validateForm(array &$form, FormStateInterface $form_state) {}
 
   /**
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $cached_values = $form_state->getTemporaryValue('wizard');
-    if (is_null($this->getMachineName())) {
-      $cached_values['label'] = $form_state->getValue('label');
-      $cached_values['id'] = $form_state->getValue('id');
-      $this->machine_name = $cached_values['id'];
-    }
-    if ($form_state->getValue('op') == 'Next') {
+    // Only perform this logic if we're moving to the next page. This prevents
+    // the loss of cached values on ajax submissions.
+    if ($form_state->getValue('op') == $this->getNextOp()) {
+      $cached_values = $form_state->getTemporaryValue('wizard');
+      if ($form_state->hasValue('label')) {
+        $cached_values['label'] = $form_state->getValue('label');
+      }
+      if ($form_state->hasValue('id')) {
+        $cached_values['id'] = $form_state->getValue('id');
+      }
+      if (is_null($this->machine_name) && !empty($cached_values['id'])) {
+        $this->machine_name = $cached_values['id'];
+      }
       $form_state->setRedirect($this->getRouteName(), $this->getNextParameters($cached_values));
+      $this->getTempstore()->set($this->getMachineName(), $cached_values);
     }
-    $this->getTempstore()->set($this->getMachineName(), $cached_values);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function populateCachedValues(array &$form, FormStateInterface $form_state) {
+    $cached_values = $this->getTempstore()->get($this->getMachineName());
+    $form_state->setTemporaryValue('wizard', $cached_values);
   }
 
   /**
@@ -298,6 +317,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
       'submit' => array(
         '#value' => $this->t('Next'),
         '#validate' => array(
+          array($this, 'populateCachedValues'),
           array($form, 'validateForm'),
           array($this, 'validateForm'),
         ),
