@@ -7,11 +7,14 @@
 
 namespace Drupal\ctools\Wizard;
 
+use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\CloseModalDialogCommand;
 use Drupal\Core\DependencyInjection\ClassResolverInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\ctools\Ajax\OpenModalWizardCommand;
 use Drupal\user\SharedTempStoreFactory;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -170,6 +173,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
     return [
       'machine_name' => $this->getMachineName(),
       'step' => $step,
+      'js' => 'nojs',
     ];
   }
 
@@ -192,6 +196,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
     return [
       'machine_name' => $this->getMachineName(),
       'step' => $step,
+      'js' => 'nojs',
     ];
   }
 
@@ -210,10 +215,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    // Get the cached values out of the tempstore.
-    $cached_values = $this->getTempstore()->get($this->getMachineName());
-    $form_state->setTemporaryValue('wizard', $cached_values);
-
+    $cached_values = $form_state->getTemporaryValue('wizard');
     // Get the current form operation.
     $operation = $this->getOperation($cached_values);
     $operations = $this->getOperations();
@@ -227,7 +229,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
     if (isset($operation['title'])) {
       $form['#title'] = $operation['title'];
     }
-    $form['actions'] = $this->actions($formClass, $cached_values);
+    $form['actions'] = $this->actions($formClass, $form_state);
     return $form;
   }
 
@@ -271,6 +273,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
    */
   public function previous(array &$form, FormStateInterface $form_state) {
     $cached_values = $form_state->getTemporaryValue('wizard');
+    drupal_set_message(var_export($cached_values, TRUE));
     $form_state->setRedirect($this->getRouteName(), $this->getPreviousParameters($cached_values));
   }
 
@@ -298,12 +301,13 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
    *
    * @param \Drupal\Core\Form\FormInterface $form
    *   The current operation form.
-   * @param $cached_values
-   *   The values returned by $this->getTempstore()->get($this->getMachineName());
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current form state.
    *
    * @return array
    */
-  protected function actions(FormInterface $form, $cached_values) {
+  protected function actions(FormInterface $form, FormStateInterface $form_state) {
+    $cached_values = $form_state->getTemporaryValue('wizard');
     $operations = $this->getOperations();
     $step = $this->getStep($cached_values);
 
@@ -316,6 +320,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
     $actions = array(
       'submit' => array(
         '#value' => $this->t('Next'),
+        '#button_type' => 'primary',
         '#validate' => array(
           array($this, 'populateCachedValues'),
           array($form, 'validateForm'),
@@ -327,12 +332,6 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
         ),
       ),
     );
-
-    // If there are not steps after this one, label the button "Finish".
-    if (!$after) {
-      $actions['submit']['#value'] = t('Finish');
-      $actions['submit']['#submit'][] = array($this, 'finish');
-    }
 
     // If there are steps before this one, label the button "previous"
     // otherwise do not display a button.
@@ -350,10 +349,45 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
       );
     }
 
-    foreach ($actions as &$action) {
+    foreach ($actions as $key => &$action) {
       $action['#type'] = 'submit';
+      if ($form_state->get('ajax')) {
+        $action['#ajax']['callback'] = [$this, 'ajax' . ucfirst($key)];
+      }
     }
+
+    // If there are not steps after this one, label the button "Finish".
+    if (!$after) {
+      $actions['submit']['#value'] = t('Finish');
+      $actions['submit']['#submit'][] = array($this, 'finish');
+      if ($form_state->get('ajax')) {
+        $actions['submit']['#ajax']['callback'] = [$this, 'ajaxFinish'];
+      }
+    }
+
     return $actions;
+  }
+
+  public function ajaxSubmit(array $form, FormStateInterface $form_state) {
+    $cached_values = $form_state->getTemporaryValue('wizard');
+    $response = new AjaxResponse();
+    $parameters = $this->getNextParameters($cached_values);
+    $response->addCommand(new OpenModalWizardCommand(get_class($this), $this->getTempstoreId(), $parameters['machine_name'], $parameters['step']));
+    return $response;
+  }
+
+  public function ajaxPrevious(array $form, FormStateInterface $form_state) {
+    $cached_values = $form_state->getTemporaryValue('wizard');
+    $response = new AjaxResponse();
+    $parameters = $this->getPreviousParameters($cached_values);
+    $response->addCommand(new OpenModalWizardCommand(get_class($this), $this->getTempstoreId(), $parameters['machine_name'], $parameters['step']));
+    return $response;
+  }
+
+  public function ajaxFinish(array $form, FormStateInterface $form_state) {
+    $response = new AjaxResponse();
+    $response->addCommand(new CloseModalDialogCommand());
+    return $response;
   }
 
 }

@@ -7,12 +7,13 @@
 
 namespace Drupal\ctools\Wizard;
 
+use Drupal\Core\Form\FormInterface;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Form wizard interface.
  */
-interface FormWizardInterface {
+interface FormWizardInterface extends FormInterface {
 
   /**
    * Constant value for wizard load event.
@@ -179,5 +180,11 @@ interface FormWizardInterface {
    *   The final form state of the wizard.
    */
   public function finish(array &$form, FormStateInterface $form_state);
+
+  public function ajaxSubmit(array $form, FormStateInterface $form_state);
+
+  public function ajaxPrevious(array $form, FormStateInterface $form_state);
+
+  public function ajaxFinish(array $form, FormStateInterface $form_state);
 
 }
