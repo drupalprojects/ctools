@@ -8,12 +8,12 @@
 namespace Drupal\ctools\Controller;
 
 use Drupal\Core\Controller\ControllerResolverInterface;
-use Drupal\Core\Controller\FormController;
 use Drupal\Core\DependencyInjection\ClassResolverInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\ctools\Event\WizardEvent;
+use Drupal\ctools\Wizard\EntityFormWizardInterface;
 use Drupal\ctools\Wizard\FormWizardInterface;
 use Drupal\user\SharedTempStoreFactory;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -21,24 +21,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 /**
  * Wrapping controller for wizard forms that serve as the main page body.
  */
-class WizardEntityFormController extends FormController {
-
-  /**
-   * The class resolver.
-   *
-   * @var \Drupal\Core\DependencyInjection\ClassResolverInterface;
-   */
-  protected $classResolver;
-
-  /**
-   * @var \Drupal\user\SharedTempStoreFactory
-   */
-  protected $tempstore;
-
-  /**
-   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
-   */
-  protected $dispatcher;
+class WizardEntityFormController extends WizardFormController {
 
   /**
    * The entity manager service.
@@ -63,10 +46,7 @@ class WizardEntityFormController extends FormController {
    *   The entity manager.
    */
   public function __construct(ControllerResolverInterface $controller_resolver, FormBuilderInterface $form_builder, ClassResolverInterface $class_resolver, SharedTempStoreFactory $tempstore, EventDispatcherInterface $event_dispatcher, EntityManagerInterface $manager) {
-    parent::__construct($controller_resolver, $form_builder);
-    $this->classResolver = $class_resolver;
-    $this->tempstore = $tempstore;
-    $this->dispatcher = $event_dispatcher;
+    parent::__construct($controller_resolver, $form_builder, $class_resolver, $tempstore, $event_dispatcher);
     $this->entityManager = $manager;
   }
 
@@ -74,50 +54,46 @@ class WizardEntityFormController extends FormController {
    * {@inheritdoc}
    */
   protected function getFormArgument(RouteMatchInterface $route_match) {
-    return $route_match->getRouteObject()->getDefault('_entity_wizard');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function getFormObject(RouteMatchInterface $route_match, $form_arg) {
+    $form_arg = $route_match->getRouteObject()->getDefault('_entity_wizard');
     list($entity_type_id, $operation) = explode('.', $form_arg);
     $definition = $this->entityManager->getDefinition($entity_type_id);
     $handlers = $definition->getHandlerClasses();
     if (empty($handlers['wizard'][$operation])) {
       throw new \Exception(sprintf('Unsupported wizard operation %s', $operation));
     }
-    $class = $handlers['wizard'][$operation];
-    $parameters = $route_match->getParameters()->all();
-    $parameters += [
+    return $handlers['wizard'][$operation];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function getParameters() {
+    return [
       'tempstore' => $this->tempstore,
       'builder' => $this->formBuilder,
       'class_resolver' => $this->classResolver,
       'entity_manager' => $this->entityManager,
       'event_dispatcher' => $this->dispatcher,
     ];
-    $arguments = [];
-    $reflection = new \ReflectionClass($class);
-    $constructor = $reflection->getMethod('__construct');
-    foreach ($constructor->getParameters() as $parameter) {
-      $name = $parameter->getName();
-      if (!empty($parameters[$name])) {
-        $arguments[] = $parameters[$name];
-      }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function prepareValues(EventDispatcherInterface $dispatcher, FormWizardInterface $wizard) {
+    if (!$wizard instanceof EntityFormWizardInterface) {
+      throw new \Exception("The wizard variable must be an instance of EntityFormWizardInterface");
     }
-    /** @var $instance \Drupal\ctools\Wizard\EntityFormWizardInterface */
-    $instance = $reflection->newInstanceArgs($arguments);
     $values = [];
-    if (isset($parameters['machine_name'])) {
-      $entity = $this->entityManager->getStorage($instance->getEntityType())->load($parameters['machine_name']);
+    if ($wizard->getMachineName()) {
+      $entity = $this->entityManager->getStorage($wizard->getEntityType())->load($wizard->getMachineName());
       if ($entity) {
         $values = $entity->toArray();
       }
     }
-    $event = new WizardEvent($instance, $values);
+    $event = new WizardEvent($wizard, $values);
     $this->dispatcher->dispatch(FormWizardInterface::LOAD_VALUES, $event);
-    $instance->initValues($event->getValues());
-    return $instance;
+    $wizard->initValues($event->getValues());
   }
 
 }

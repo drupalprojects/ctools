@@ -11,10 +11,10 @@ use Drupal\Core\Controller\ControllerResolverInterface;
 use Drupal\Core\Controller\FormController;
 use Drupal\Core\DependencyInjection\ClassResolverInterface;
 use Drupal\Core\Form\FormBuilderInterface;
-use Drupal\Core\Form\FormState;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\ctools\Event\WizardEvent;
 use Drupal\ctools\Wizard\FormWizardInterface;
+use Drupal\ctools\Wizard\WizardUsageTrait;
 use Drupal\user\SharedTempStoreFactory;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Wrapping controller for wizard forms that serve as the main page body.
  */
 class WizardFormController extends FormController {
+  use WizardUsageTrait;
 
   /**
    * The class resolver.
@@ -73,64 +74,35 @@ class WizardFormController extends FormController {
   }
 
   /**
-   * {@inheritdoc}
+   * Wizards are not instantiated as simply as forms, so this method is unused.
    */
-  protected function getFormObject(RouteMatchInterface $route_match, $form_arg) {
-    $class = $this->getFormArgument($route_match);
-    $parameters = $route_match->getParameters()->all();
-    $parameters += [
-      'tempstore' => $this->tempstore,
-      'builder' => $this->formBuilder,
-      'class_resolver' => $this->classResolver,
-      'event_dispatcher' => $this->dispatcher,
-    ];
-    $arguments = [];
-    $reflection = new \ReflectionClass($class);
-    $constructor = $reflection->getMethod('__construct');
-    foreach ($constructor->getParameters() as $parameter) {
-      $name = $parameter->getName();
-      if (!empty($parameters[$name])) {
-        $arguments[] = $parameters[$name];
-      }
-    }
-    /** @var $instance \Drupal\ctools\Wizard\FormWizardInterface */
-    $instance = $reflection->newInstanceArgs($arguments);
-    $values = [];
-    $event = new WizardEvent($instance, $values);
-    $this->dispatcher->dispatch(FormWizardInterface::LOAD_VALUES, $event);
-    $instance->initValues($event->getValues());
-    return $instance;
-  }
+  protected function getFormObject(RouteMatchInterface $route_match, $form_arg) {}
 
   /**
    * {@inheritdoc}
    */
   public function getContentResult(Request $request, RouteMatchInterface $route_match) {
-    $form_arg = $this->getFormArgument($route_match);
-    $form_object = $this->getFormObject($route_match, $form_arg);
+    $class = $this->getFormArgument($route_match);
+    $parameters = $route_match->getParameters()->all();
+    $ajax = $request->attributes->get('js') == 'ajax' ? TRUE : FALSE;
 
-    // Add the form and form_state to trick the getArguments method of the
-    // controller resolver.
-    $form_state = new FormState();
+    return $this->getWizardForm($class, $parameters, $ajax, $this->formBuilder, $this->dispatcher);
+  }
 
-    // Get the cached values out of the tempstore.
-    $ajax = $route_match->getRouteObject()->getDefault('js') == 'ajax' ? TRUE : FALSE;
-    $cached_values = $form_object->getTempstore()->get($form_object->getMachineName());
-    $form_state->setTemporaryValue('wizard', $cached_values);
-    $form_state->set('ajax', $ajax);
+  protected function prepareValues(EventDispatcherInterface $dispatcher, FormWizardInterface $wizard) {
+    $values = [];
+    $event = new WizardEvent($wizard, $values);
+    $dispatcher->dispatch(FormWizardInterface::LOAD_VALUES, $event);
+    $wizard->initValues($values);
+  }
 
-    $request->attributes->set('form', []);
-    $request->attributes->set('form_state', $form_state);
-    $args = $this->controllerResolver->getArguments($request, [$form_object, 'buildForm']);
-    $request->attributes->remove('form');
-    $request->attributes->remove('form_state');
-
-    // Remove $form and $form_state from the arguments, and re-index them.
-    unset($args[0], $args[1]);
-    $form_state->addBuildInfo('args', array_values($args));
-
-    $form = $this->formBuilder->buildForm($form_object, $form_state);
-    return $form;
+  protected function getParameters() {
+    return [
+      'tempstore' => $this->tempstore,
+      'builder' => $this->formBuilder,
+      'class_resolver' => $this->classResolver,
+      'event_dispatcher' => $this->dispatcher,
+    ];
   }
 
 }

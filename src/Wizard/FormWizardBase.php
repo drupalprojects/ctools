@@ -273,7 +273,6 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
    */
   public function previous(array &$form, FormStateInterface $form_state) {
     $cached_values = $form_state->getTemporaryValue('wizard');
-    drupal_set_message(var_export($cached_values, TRUE));
     $form_state->setRedirect($this->getRouteName(), $this->getPreviousParameters($cached_values));
   }
 
