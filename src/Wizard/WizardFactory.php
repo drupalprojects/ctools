@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\ctools\Wizard\WizardTrait.
+ * Contains \Drupal\ctools\Wizard\WizardFactory.
  */
 
 namespace Drupal\ctools\Wizard;
@@ -10,7 +10,32 @@ use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormState;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-trait WizardUsageTrait {
+class WizardFactory implements WizardFactoryInterface {
+
+  /**
+   * The Form Builder.
+   *
+   * @var \Drupal\Core\Form\FormBuilderInterface
+   */
+  protected $builder;
+
+  /**
+   * The event dispatcher.
+   *
+   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+   */
+  protected $dispatcher;
+
+  /**
+   * @param \Drupal\Core\Form\FormBuilderInterface $form_builder
+   *   The form builder.
+   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
+   *   The event dispatcher.
+   */
+  public function __construct(FormBuilderInterface $form_builder, EventDispatcherInterface $event_dispatcher) {
+    $this->builder = $form_builder;
+    $this->dispatcher = $event_dispatcher;
+  }
 
   /**
    * Get the wizard form.
@@ -21,19 +46,15 @@ trait WizardUsageTrait {
    *   The array of default parameters specific to this wizard.
    * @param bool $ajax
    *   Whether or not this wizard is displayed via ajax modals.
-   * @param \Drupal\Core\Form\FormBuilderInterface $builder
-   *   The form builder.
-   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher
-   *   The event dispatcher.
    *
    * @return array
    */
-  public function getWizardForm($class, array $parameters = array(), $ajax = FALSE, FormBuilderInterface $builder, EventDispatcherInterface $dispatcher) {
-    $parameters += $this->getParameters();
-    $wizard = $this->instantiateWizard($class, $parameters);
-    $this->prepareValues($dispatcher, $wizard);
+  public function getWizardForm($class, array $parameters = array(), $ajax = FALSE) {
+    $parameters += $class::getParameters();
+    $wizard = $this->createWizard($class, $parameters);
+    $wizard->prepareValues($this->dispatcher, $wizard);
     $form_state = $this->getFormState($wizard, $parameters, $ajax);
-    return $builder->buildForm($wizard, $form_state);
+    return $this->builder->buildForm($wizard, $form_state);
   }
 
   /**
@@ -44,7 +65,7 @@ trait WizardUsageTrait {
    *
    * @return \Drupal\ctools\Wizard\FormWizardInterface
    */
-  public function instantiateWizard($class, array $parameters) {
+  public function createWizard($class, array $parameters) {
     $arguments = [];
     $reflection = new \ReflectionClass($class);
     $constructor = $reflection->getMethod('__construct');
@@ -96,24 +117,5 @@ trait WizardUsageTrait {
     $form_state->addBuildInfo('args', array_values($arguments));
     return $form_state;
   }
-
-  /**
-   * Return the wizard type specific parameters.
-   *
-   * @return array
-   */
-  abstract protected function getParameters();
-
-  /**
-   * Prepare and load values for the wizard.
-   *
-   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher
-   *   The event dispatcher.
-   * @param \Drupal\ctools\Wizard\FormWizardInterface $wizard
-   *   The form wizard.
-   *
-   * @return void
-   */
-  abstract protected function prepareValues(EventDispatcherInterface $dispatcher, FormWizardInterface $wizard);
 
 }

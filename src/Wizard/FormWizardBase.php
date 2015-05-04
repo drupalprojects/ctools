@@ -15,6 +15,7 @@ use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\ctools\Ajax\OpenModalWizardCommand;
+use Drupal\ctools\Event\WizardEvent;
 use Drupal\user\SharedTempStoreFactory;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -97,6 +98,23 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
     $this->tempstore_id = $tempstore_id;
     $this->machine_name = $machine_name;
     $this->step = $step;
+  }
+
+  public static function getParameters() {
+    return [
+      'tempstore' => \Drupal::service('user.shared_tempstore'),
+      'builder' => \Drupal::service('form_builder'),
+      'class_resolver' => \Drupal::service('class_resolver'),
+      'event_dispatcher' => \Drupal::service('event_dispatcher'),
+    ];
+  }
+
+  public function prepareValues() {
+    $values = [];
+    $event = new WizardEvent($this, $values);
+    $this->dispatcher->dispatch(FormWizardInterface::LOAD_VALUES, $event);
+    $this->initValues($values);
+    return $this;
   }
 
   public function initValues($values) {

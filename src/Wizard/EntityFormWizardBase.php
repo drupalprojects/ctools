@@ -12,6 +12,7 @@ use Drupal\Core\DependencyInjection\ClassResolverInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\ctools\Event\WizardEvent;
 use Drupal\user\SharedTempStoreFactory;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -49,6 +50,36 @@ abstract class EntityFormWizardBase extends FormWizardBase implements EntityForm
   public function __construct(SharedTempStoreFactory $tempstore, FormBuilderInterface $builder, ClassResolverInterface $class_resolver, EventDispatcherInterface $event_dispatcher, EntityManagerInterface $entity_manager, $tempstore_id, $machine_name = NULL, $step = NULL) {
     $this->entityManager = $entity_manager;
     parent::__construct($tempstore, $builder, $class_resolver, $event_dispatcher, $tempstore_id, $machine_name, $step);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getParameters() {
+    return [
+      'tempstore' => \Drupal::service('user.shared_tempstore'),
+      'builder' => \Drupal::service('form_builder'),
+      'class_resolver' => \Drupal::service('class_resolver'),
+      'event_dispatcher' => \Drupal::service('event_dispatcher'),
+      'entity_manager' => \Drupal::service('entity.manager'),
+    ];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareValues() {
+    $values = [];
+    if ($this->getMachineName()) {
+      $entity = $this->entityManager->getStorage($this->getEntityType())->load($this->getMachineName());
+      if ($entity) {
+        $values = $entity->toArray();
+      }
+    }
+    $event = new WizardEvent($this, $values);
+    $this->dispatcher->dispatch(FormWizardInterface::LOAD_VALUES, $event);
+    $this->initValues($event->getValues());
+    return $this;
   }
 
   /**
