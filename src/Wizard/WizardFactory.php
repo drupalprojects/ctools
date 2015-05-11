@@ -54,7 +54,16 @@ class WizardFactory implements WizardFactoryInterface {
     $wizard = $this->createWizard($class, $parameters);
     $wizard->prepareValues($this->dispatcher, $wizard);
     $form_state = $this->getFormState($wizard, $parameters, $ajax);
-    return $this->builder->buildForm($wizard, $form_state);
+    $form = $this->builder->buildForm($wizard, $form_state);
+    if ($ajax) {
+      $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
+      $status_messages = array('#type' => 'status_messages');
+      // @todo properly inject the renderer.
+      if ($messages = \Drupal::service('renderer')->renderRoot($status_messages)) {
+        $form['#prefix'] = '<div class="wizard-messages">' . $messages . '</div>';
+      }
+    }
+    return $form;
   }
 
   /**

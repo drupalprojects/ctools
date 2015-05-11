@@ -389,7 +389,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
     $cached_values = $form_state->getTemporaryValue('wizard');
     $response = new AjaxResponse();
     $parameters = $this->getNextParameters($cached_values);
-    $response->addCommand(new OpenModalWizardCommand(get_class($this), $this->getTempstoreId(), $parameters['machine_name'], $parameters['step']));
+    $response->addCommand(new OpenModalWizardCommand(get_class($this), $this->getTempstoreId(), $parameters));
     return $response;
   }
 
@@ -397,7 +397,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
     $cached_values = $form_state->getTemporaryValue('wizard');
     $response = new AjaxResponse();
     $parameters = $this->getPreviousParameters($cached_values);
-    $response->addCommand(new OpenModalWizardCommand(get_class($this), $this->getTempstoreId(), $parameters['machine_name'], $parameters['step']));
+    $response->addCommand(new OpenModalWizardCommand(get_class($this), $this->getTempstoreId(), $parameters));
     return $response;
   }
 

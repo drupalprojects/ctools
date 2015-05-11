@@ -13,6 +13,20 @@ namespace Drupal\ctools\Wizard;
 interface EntityFormWizardInterface extends FormWizardInterface {
 
   /**
+   * The fieldset #title for your label & machine name elements.
+   *
+   * @return string
+   */
+  public function getWizardLabel();
+
+  /**
+   * The form element #title for your unique identifier label.
+   *
+   * @return string
+   */
+  public function getMachineLabel();
+
+  /**
    * The machine name of the entity type.
    *
    * @return string

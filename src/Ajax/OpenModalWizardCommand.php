@@ -10,15 +10,14 @@ use Drupal\Core\Ajax\OpenModalDialogCommand;
 
 class OpenModalWizardCommand extends OpenModalDialogCommand {
 
-  public function __construct($class, $tempstore_id, $machine_name = NULL, $step = NULL, array $dialog_options = array(), $settings = NULL) {
+  public function __construct($class, $tempstore_id, array $parameters = array(), array $dialog_options = array(), $settings = NULL) {
     // Instantiate the wizard class properly.
-    $parameters = [
+    $parameters += [
       'tempstore_id' => $tempstore_id,
-      'machine_name' => $machine_name,
-      'step' => $step,
+      'machine_name' => NULL,
+      'step' => NULL,
     ];
     $form = \Drupal::service('ctools.wizard.factory')->getWizardForm($class, $parameters, TRUE);
-    $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
     $title = isset($form['#title']) ? $form['#title'] : '';
     $content = $form;
 

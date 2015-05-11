@@ -29,20 +29,6 @@ interface FormWizardInterface extends FormInterface {
   public function initValues($values);
 
   /**
-   * The fieldset #title for your label & machine name elements.
-   *
-   * @return string
-   */
-  public function getWizardLabel();
-
-  /**
-   * The form element #title for your unique identifier label.
-   *
-   * @return string
-   */
-  public function getMachineLabel();
-
-  /**
    * The shared temp store factory collection name.
    *
    * @return string
