@@ -88,13 +88,6 @@ interface FormWizardInterface extends FormInterface {
   public function getRouteName();
 
   /**
-   * The translated text of the "Next" button's text.
-   *
-   * @return string
-   */
-  public function getNextOp();
-
-  /**
    * The Route parameters for a 'next' step.
    *
    * If your route requires more than machine_name and step keys, override and

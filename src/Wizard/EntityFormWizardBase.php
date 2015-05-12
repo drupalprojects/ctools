@@ -113,37 +113,58 @@ abstract class EntityFormWizardBase extends FormWizardBase implements EntityForm
 
   /**
    * Helper function for generating label and id form elements.
+   *
+   * @param array $form
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *
+   * @return array
    */
-  protected function getDefaultFormElements($cached_values) {
-    // Get the plugin definition of this entity.
-    $definition = $this->entityManager->getDefinition($this->getEntityType());
-    // Create id and label form elements.
-    $form['name'] = array(
-      '#type' => 'fieldset',
-      '#attributes' => array('class' => array('fieldset-no-legend')),
-      '#title' => $this->getWizardLabel(),
-    );
-    $form['name']['label'] = array(
-      '#type' => 'textfield',
-      '#title' => $this->getMachineLabel(),
-      '#required' => TRUE,
-      '#size' => 32,
-      '#default_value' => !empty($cached_values['label']) ? $cached_values['label'] : '',
-      '#maxlength' => 255,
-      '#disabled' => !empty($cached_values['label']),
-    );
-    $form['name']['id'] = array(
-      '#type' => 'machine_name',
-      '#maxlength' => 128,
-      '#machine_name' => array(
-        'source' => array('name', 'label'),
-        'exists' => $this->exists(),
-      ),
-      '#description' => $this->t('A unique machine-readable name for this !entity_type. It must only contain lowercase letters, numbers, and underscores.', ['!entity_type' => $definition->getLabel()]),
-      '#default_value' => !empty($cached_values['id']) ? $cached_values['id'] : '',
-      '#disabled' => !empty($cached_values['id']),
-    );
+  protected function customizeForm(array $form, FormStateInterface $form_state) {
+    $form = parent::customizeForm($form, $form_state);
+    $entity = $this->entityManager->getStorage($this->getEntityType())->load($this->machine_name);
+    // If the entity already exists, allow for non-linear step interaction.
+    if ($entity) {
+      // Setup the step rendering theme element.
+      $prefix = ['#theme' => ['ctools_wizard_trail_links'], '#wizard' => $this];
+      $form['#prefix'] = \Drupal::service('renderer')->render($prefix);
+    }
+    $cached_values = $form_state->getTemporaryValue('wizard');
+    // Get the current form operation.
+    $operation = $this->getOperation($cached_values);
+    $operations = $this->getOperations();
+    $default_operation = reset($operations);
+    if ($operation['form'] == $default_operation['form']) {
+      // Get the plugin definition of this entity.
+      $definition = $this->entityManager->getDefinition($this->getEntityType());
+      // Create id and label form elements.
+      $form['name'] = array(
+        '#type' => 'fieldset',
+        '#attributes' => array('class' => array('fieldset-no-legend')),
+        '#title' => $this->getWizardLabel(),
+      );
+      $form['name']['label'] = array(
+        '#type' => 'textfield',
+        '#title' => $this->getMachineLabel(),
+        '#required' => TRUE,
+        '#size' => 32,
+        '#default_value' => !empty($cached_values['label']) ? $cached_values['label'] : '',
+        '#maxlength' => 255,
+        '#disabled' => !empty($cached_values['label']),
+      );
+      $form['name']['id'] = array(
+        '#type' => 'machine_name',
+        '#maxlength' => 128,
+        '#machine_name' => array(
+          'source' => array('name', 'label'),
+          'exists' => $this->exists(),
+        ),
+        '#description' => $this->t('A unique machine-readable name for this !entity_type. It must only contain lowercase letters, numbers, and underscores.', ['!entity_type' => $definition->getLabel()]),
+        '#default_value' => !empty($cached_values['id']) ? $cached_values['id'] : '',
+        '#disabled' => !empty($cached_values['id']),
+      );
+    }
 
     return $form;
   }
+
 }

@@ -170,9 +170,11 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
   }
 
   /**
-   * {@inheritdoc}
+   * The translated text of the "Next" button's text.
+   *
+   * @return string
    */
-  public function getNextOp() {
+  protected function getNextOp() {
     return $this->t('Next');
   }
 
@@ -236,11 +238,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
     $cached_values = $form_state->getTemporaryValue('wizard');
     // Get the current form operation.
     $operation = $this->getOperation($cached_values);
-    $operations = $this->getOperations();
-    $default_operation = reset($operations);
-    if ($operation['form'] == $default_operation['form']) {
-      $form = $this->getDefaultFormElements($cached_values);
-    }
+    $form = $this->customizeForm($form, $form_state);
     /* @var $formClass \Drupal\Core\Form\FormInterface */
     $formClass = $this->classResolver->getInstanceFromDefinition($operation['form']);
     $form = $formClass->buildForm($form, $form_state);
@@ -304,13 +302,17 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
   /**
    * Helper function for generating default form elements.
    *
-   * @param mixed $cached_values
-   *   The values returned by $this->getTempstore()->get($this->getMachineName());
+   * @param array $form
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
    *
    * @return array
    */
-  protected function getDefaultFormElements($cached_values) {
-    return [];
+  protected function customizeForm(array $form, FormStateInterface $form_state) {
+    // Setup the step rendering theme element.
+    $prefix = ['#theme' => ['ctools_wizard_trail'], '#wizard' => $this];
+    // @todo properly inject the renderer.
+    $form['#prefix'] = \Drupal::service('renderer')->render($prefix);
+    return $form;
   }
 
   /**
