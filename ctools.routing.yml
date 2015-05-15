@@ -1,0 +1,8 @@
+wizard.ajax:
+  path: '/wizard/ajax/{tempstore_id}/{machine_name}'
+  defaults:
+    _controller: '\Drupal\ctools\Controller\WizardAjaxController::content'
+  options:
+    _theme: ajax_base_page
+  requirements:
+    _access: 'TRUE'
