@@ -356,7 +356,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
     // otherwise do not display a button.
     if ($before) {
       $actions['previous'] = array(
-        '#value' => t('Previous'),
+        '#value' => $this->t('Previous'),
         '#validate' => array(
           array($this, 'populateCachedValues'),
         ),
