@@ -545,24 +545,27 @@ function ctools_preprocess_node(&$vars) {
 function ctools_preprocess_page(&$variables) {
   $tokens = ctools_set_page_token();
   if (!empty($tokens)) {
+    $temp_tokens = array();
     foreach ($tokens as $token => $key) {
       list($type, $argument) = $key;
       switch ($type) {
         case 'variable':
-          $tokens[$token] = isset($variables[$argument]) ? $variables[$argument] : '';
+          $temp_tokens[$token] = isset($variables[$argument]) ? $variables[$argument] : '';
           break;
         case 'callback':
           if (is_string($argument) && function_exists($argument)) {
-            $tokens[$token] = $argument($variables);
+            $temp_tokens[$token] = $argument($variables);
           }
           if (is_array($argument) && function_exists($argument[0])) {
             $function = array_shift($argument);
             $argument = array_merge(array(&$variables), $argument);
-            $tokens[$token] = call_user_func_array($function, $argument);
+            $temp_tokens[$token] = call_user_func_array($function, $argument);
           }
           break;
       }
     }
+    $tokens = $temp_tokens;
+    unset($temp_tokens);
     $variables['content'] = strtr($variables['content'], $tokens);
   }
 
