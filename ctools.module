@@ -1018,3 +1018,50 @@ function ctools_ctools_entity_context_alter(&$plugin, &$entity, $plugin_id) {
     }
   }
 }
+
+/**
+ * Implements hook_field_create_field().
+ */
+function ctools_field_create_field($field) {
+  ctools_flush_field_caches();
+}
+
+/**
+ * Implements hook_field_create_instance().
+ */
+function ctools_field_create_instance($instance) {
+  ctools_flush_field_caches();
+}
+/**
+ * Implements hook_field_delete_field().
+ */
+function ctools_field_delete_field($field) {
+  ctools_flush_field_caches();
+}
+/**
+ * Implements hook_field_delete_instance().
+ */
+function ctools_field_delete_instance($instance) {
+  ctools_flush_field_caches();
+}
+/**
+ * Implements hook_field_update_field().
+ */
+function ctools_field_update_field($field, $prior_field, $has_data) {
+  ctools_flush_field_caches();
+}
+
+/**
+ * Implements hook_field_update_instance().
+ */
+function ctools_field_update_instance($instance, $prior_instance) {
+  ctools_flush_field_caches();
+}
+
+/**
+ * Clear field related caches.
+ */
+function ctools_flush_field_caches() {
+  // Clear caches of 'Entity field' content type plugin.
+  cache_clear_all('ctools_entity_field_content_type_content_types', 'cache');
+}
