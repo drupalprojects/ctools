@@ -110,7 +110,7 @@ function ctools_plugin_api_info($owner, $api, $minimum_version, $current_version
     }
 
     // Allow other modules to hook in.
-    drupal_alter($hook, $cache[$owner][$api]);
+    drupal_alter($hook, $cache[$owner][$api], $owner, $api);
   }
 
   return $cache[$owner][$api];
