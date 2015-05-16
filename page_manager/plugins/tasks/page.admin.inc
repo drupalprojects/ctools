@@ -61,7 +61,7 @@ function page_manager_page_menu(&$items, $task) {
     }
 
     $path             = array();
-    $page_arguments   = array($subtask_id);
+    $page_arguments   = array((string) $subtask_id);
     $access_arguments = array($subtask->access);
     $load_arguments   = array($subtask_id, '%index', '%map');
 
