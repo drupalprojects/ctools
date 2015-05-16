@@ -472,6 +472,10 @@ function page_manager_handler_add_to_page(&$page, &$handler, $title = NULL) {
 
   if ($title) {
     $handler->conf['title'] = $title;
+    $handler->conf['name'] = preg_replace('/[^a-z0-9_]+/', '-', strtolower($title));
+  }
+  else {
+    $handler->conf['name'] = '';
   }
 
   $name = page_manager_handler_get_name($page->task_name, $page->handlers, $handler);
