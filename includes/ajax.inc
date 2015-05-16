@@ -414,12 +414,15 @@ function ctools_ajax_command_restripe($selector) {
  *   A delay before applying the redirection, in milliseconds.
  * @param $options
  *   An array of options to pass to the url() function.
+ * @param $new_window
+ *   A bool to determine if the URL should open in a new window.
  */
-function ctools_ajax_command_redirect($url, $delay = 0, $options = array()) {
+function ctools_ajax_command_redirect($url, $delay = 0, $options = array(), $new_window = FALSE) {
   return array(
     'command' => 'redirect',
     'url' => url($url, $options),
     'delay' => $delay,
+    'new_window' => $new_window,
   );
 }
 
