@@ -60,7 +60,9 @@ class WizardAjaxController extends FormAjaxController implements ContainerInject
     );
   }
 
-
+  /**
+   * {@inheritdoc}
+   */
   protected function getForm(Request $request) {
     $ajax_form = parent::getForm($request);
     $form_state = $ajax_form->getFormState();
