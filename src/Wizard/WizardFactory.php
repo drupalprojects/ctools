@@ -52,7 +52,6 @@ class WizardFactory implements WizardFactoryInterface {
   public function getWizardForm($class, array $parameters = array(), $ajax = FALSE) {
     $parameters += $class::getParameters();
     $wizard = $this->createWizard($class, $parameters);
-    $wizard->prepareValues($this->dispatcher, $wizard);
     $form_state = $this->getFormState($wizard, $parameters, $ajax);
     $form = $this->builder->buildForm($wizard, $form_state);
 
@@ -109,7 +108,13 @@ class WizardFactory implements WizardFactoryInterface {
    */
   public function getFormState(FormWizardInterface $wizard, array $parameters, $ajax = FALSE) {
     $form_state = new FormState();
-    $cached_values = $wizard->getTempstore()->get($wizard->getMachineName());
+    // If a wizard has no values, initialize them.
+    if (!$wizard->getTempstore()->get($wizard->getMachineName())) {
+      $cached_values = $wizard->initValues();
+    }
+    else {
+      $cached_values = $wizard->getTempstore()->get($wizard->getMachineName());
+    }
     $form_state->setTemporaryValue('wizard', $cached_values);
     $form_state->set('ajax', $ajax);
 
