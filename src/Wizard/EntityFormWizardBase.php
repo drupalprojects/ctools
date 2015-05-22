@@ -68,18 +68,22 @@ abstract class EntityFormWizardBase extends FormWizardBase implements EntityForm
   /**
    * {@inheritdoc}
    */
-  public function prepareValues() {
-    $values = [];
+  public function initValues() {
+    $storage = $this->entityManager->getStorage($this->getEntityType());
     if ($this->getMachineName()) {
-      $entity = $this->entityManager->getStorage($this->getEntityType())->load($this->getMachineName());
-      if ($entity) {
-        $values = $entity->toArray();
+      $values = $this->getTempstore()->get($this->getMachineName());
+      if (!$values) {
+        $entity = $storage->load($this->getMachineName());
+        $values[$this->getEntityType()] = $entity;
       }
+    }
+    else {
+      $entity = $storage->create([]);
+      $values[$this->getEntityType()] = $entity;
     }
     $event = new WizardEvent($this, $values);
     $this->dispatcher->dispatch(FormWizardInterface::LOAD_VALUES, $event);
-    $this->initValues($event->getValues());
-    return $this;
+    return $event->getValues();
   }
 
   /**

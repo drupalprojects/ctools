@@ -21,12 +21,11 @@ interface FormWizardInterface extends FormInterface {
   const LOAD_VALUES = 'wizard.load';
 
   /**
-   * Initialize any values when editing instead of adding.
+   * Initialize wizard values.
    *
-   * @param $values
-   *
+   * return mixed.
    */
-  public function initValues($values);
+  public function initValues();
 
   /**
    * The shared temp store factory collection name.

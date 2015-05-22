@@ -109,18 +109,14 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
     ];
   }
 
-  public function prepareValues() {
+  /**
+   * {@inheritdoc}
+   */
+  public function initValues() {
     $values = [];
     $event = new WizardEvent($this, $values);
     $this->dispatcher->dispatch(FormWizardInterface::LOAD_VALUES, $event);
-    $this->initValues($values);
-    return $this;
-  }
-
-  public function initValues($values) {
-    if ($this->getMachineName() && !$this->getTempstore()->get($this->getMachineName())) {
-      $this->getTempstore()->set($this->getMachineName(), $values);
-    }
+    return $event->getValues();
   }
 
   /**
@@ -281,6 +277,9 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
    */
   public function populateCachedValues(array &$form, FormStateInterface $form_state) {
     $cached_values = $this->getTempstore()->get($this->getMachineName());
+    if (!$cached_values) {
+      $cached_values = $this->initValues();
+    }
     $form_state->setTemporaryValue('wizard', $cached_values);
   }
 
