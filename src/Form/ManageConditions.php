@@ -53,10 +53,7 @@ abstract class ManageConditions extends FormBase {
     $this->machine_name = $cached_values['id'];
     $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
     $options = [];
-    $contexts = [];
-    foreach ($this->getContexts($cached_values) as $context) {
-      $contexts[] = new Context(ContextDefinition::create($context['context']));
-    }
+    $contexts = $this->getContexts($cached_values);
     foreach ($this->manager->getDefinitionsForContexts($contexts) as $plugin_id => $definition) {
       $options[$plugin_id] = (string) $definition['label'];
     }
@@ -206,7 +203,7 @@ abstract class ManageConditions extends FormBase {
    *
    * @param $cached_values
    *
-   * @return array
+   * @return \Drupal\Core\Plugin\Context\ContextInterface[]
    */
   abstract protected function getContexts($cached_values);
 

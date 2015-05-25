@@ -53,3 +53,10 @@ function template_preprocess_ctools_wizard_trail_links(&$variables) {
   }
   $variables['trail'] = $trail;
 }
+
+function ctools_condition_info_alter(&$definitions) {
+  // If the node_type's class is unaltered, use a custom ctools implementation.
+  if (isset($definitions['node_type']) && $definitions['node_type']['class'] == 'Drupal\node\Plugin\Condition\NodeType') {
+    $definitions['node_type']['class'] = 'Drupal\ctools\Plugin\Condition\NodeType';
+  }
+}
