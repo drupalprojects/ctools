@@ -7,10 +7,12 @@
 
 namespace Drupal\ctools\Form;
 
+use Drupal\Component\Plugin\PluginManagerInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\ConfirmFormHelper;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Drupal\ctools\ConstraintConditionInterface;
 use Drupal\user\SharedTempStoreFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -20,6 +22,11 @@ abstract class ConditionDelete extends ConfirmFormBase {
    * @var \Drupal\user\SharedTempStoreFactory
    */
   protected $tempstore;
+
+  /**
+   * @var \Drupal\Core\Condition\ConditionManager
+   */
+  protected $manager;
 
   /**
    * @var string
@@ -40,11 +47,12 @@ abstract class ConditionDelete extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static($container->get('user.shared_tempstore'));
+    return new static($container->get('user.shared_tempstore'), $container->get('plugin.manager.condition'));
   }
 
-  function __construct(SharedTempStoreFactory $tempstore) {
+  function __construct(SharedTempStoreFactory $tempstore, PluginManagerInterface $manager) {
     $this->tempstore = $tempstore;
+    $this->manager = $manager;
   }
 
   /**
@@ -84,6 +92,11 @@ abstract class ConditionDelete extends ConfirmFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $cached_values = $this->tempstore->get($this->tempstore_id)->get($this->machine_name);
     $conditions = $this->getConditions($cached_values);
+    /** @var  $instance \Drupal\ctools\ConstraintConditionInterface */
+    $instance = $this->manager->createInstance($conditions[$this->id]['id'], $conditions[$this->id]);
+    if ($instance instanceof ConstraintConditionInterface) {
+      $instance->removeConstraints($this->getContexts($cached_values));
+    }
     unset($conditions[$this->id]);
     $cached_values = $this->setConditions($cached_values, $conditions);
     $this->tempstore->get($this->tempstore_id)->set($this->machine_name, $cached_values);
@@ -186,5 +199,14 @@ abstract class ConditionDelete extends ConfirmFormBase {
    *   Return the $cached_values
    */
   abstract protected function setConditions($cached_values, $conditions);
+
+  /**
+   * Custom logic for retrieving the contexts array from cached_values.
+   *
+   * @param $cached_values
+   *
+   * @return \Drupal\Core\Plugin\Context\ContextInterface[]
+   */
+  abstract protected function getContexts($cached_values);
 
 }

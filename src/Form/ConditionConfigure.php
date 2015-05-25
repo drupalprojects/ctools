@@ -14,9 +14,8 @@ use Drupal\Core\Ajax\CloseModalDialogCommand;
 use Drupal\Core\Ajax\RedirectCommand;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Plugin\Context\Context;
-use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\Core\Plugin\ContextAwarePluginInterface;
+use Drupal\ctools\ConstraintConditionInterface;
 use Drupal\user\SharedTempStoreFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -79,12 +78,7 @@ abstract class ConditionConfigure extends FormBase {
     else {
       $instance = $this->manager->createInstance($condition, []);
     }
-    // Build the contexts array so that we can get an internal mapping.
-    $contexts = [];
-    foreach ($this->getContexts($cached_values) as $context) {
-      $contexts[$context['machine_name']] = new Context(ContextDefinition::create($context['context']));
-    }
-    $form_state->setTemporaryValue('gathered_contexts', $contexts);
+    $form_state->setTemporaryValue('gathered_contexts', $this->getContexts($cached_values));
     /** @var $instance \Drupal\Core\Condition\ConditionInterface */
     $form = $instance->buildConfigurationForm($form, $form_state);
     if (isset($id)) {
@@ -118,8 +112,13 @@ abstract class ConditionConfigure extends FormBase {
     $instance->submitConfigurationForm($form, $form_state);
     $conditions = $this->getConditions($cached_values);
     if ($instance instanceof ContextAwarePluginInterface) {
+      /** @var  $instance \Drupal\Core\Plugin\ContextAwarePluginInterface */
       $context_mapping = $form_state->hasValue('context_mapping')? $form_state->getValue('context_mapping') : [];
       $instance->setContextMapping($context_mapping);
+    }
+    if ($instance instanceof ConstraintConditionInterface) {
+      /** @var  $instance \Drupal\ctools\ConstraintConditionInterface */
+      $instance->applyConstraints($this->getContexts($cached_values));
     }
     if ($form_state->hasValue('id')) {
       $conditions[$form_state->getValue('id')] = $instance->getConfiguration();
@@ -177,7 +176,7 @@ abstract class ConditionConfigure extends FormBase {
    *
    * @param $cached_values
    *
-   * @return array
+   * @return \Drupal\Core\Plugin\Context\ContextInterface[]
    */
   abstract protected function getContexts($cached_values);
 
