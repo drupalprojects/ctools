@@ -90,13 +90,9 @@ abstract class EntityFormWizardBase extends FormWizardBase implements EntityForm
    * {@inheritdoc}
    */
   public function finish(array &$form, FormStateInterface $form_state) {
-    $entity = $this->entityManager->getStorage($this->getEntityType())->load($this->machine_name);
-    if (!$entity) {
-      $entity = $this->entityManager->getStorage($this->getEntityType())->create([]);
-    }
-    foreach ($form_state->getTemporaryValue('wizard') as $key => $value) {
-      $entity->set($key, $value);
-    }
+    $cached_values = $form_state->getTemporaryValue('wizard');
+    /** @var $entity \Drupal\Core\Entity\EntityInterface */
+    $entity = $cached_values[$this->getEntityType()];
     $status = $entity->save();
     $definition = $this->entityManager->getDefinition($this->getEntityType());
     if ($status) {
