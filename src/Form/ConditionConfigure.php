@@ -99,6 +99,10 @@ abstract class ConditionConfigure extends FormBase {
         'callback' => [$this, 'ajaxSave'],
       ]
     ];
+    if (empty($id)) {
+      list($route_name, $route_parameters) = $this->getRouteInfo($condition);
+      $form['submit']['#ajax']['url'] = $this->url($route_name, $route_parameters);
+    }
     return $form;
   }
 
@@ -128,13 +132,13 @@ abstract class ConditionConfigure extends FormBase {
     }
     $cached_values = $this->setConditions($cached_values, $conditions);
     $this->tempstore->get($this->tempstore_id)->set($this->machine_name, $cached_values);
-    list($route_name, $route_parameters) = $this->getRouteInfo();
+    list($route_name, $route_parameters) = $this->getParentRouteInfo();
     $form_state->setRedirect($route_name, $route_parameters);
   }
 
   public function ajaxSave(array &$form, FormStateInterface $form_state) {
     $response = new AjaxResponse();
-    list($route_name, $route_parameters) = $this->getRouteInfo();
+    list($route_name, $route_parameters) = $this->getParentRouteInfo();
     $response->addCommand(new RedirectCommand($this->url($route_name, $route_parameters)));
     $response->addCommand(new CloseModalDialogCommand());
     return $response;
@@ -145,9 +149,18 @@ abstract class ConditionConfigure extends FormBase {
    *
    * @return array
    *   In the format of
-   *   return ['route.name', ['machine_name' => $this->machine_name, 'step' => 'step_name]];
+   *   return ['route.name', ['machine_name' => $this->machine_name, 'step' => 'step_name']];
    */
-  abstract protected function getRouteInfo();
+  abstract protected function getParentRouteInfo();
+
+  /**
+   * @param $condition
+   *
+   * @return array
+   *   In the format of
+   *   return ['route.name', ['machine_name' => $this->machine_name, 'condition' => $condition]];
+   */
+  abstract protected function getRouteInfo($condition);
 
   /**
    * Custom logic for retrieving the conditions array from cached_values.
