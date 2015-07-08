@@ -112,7 +112,7 @@ class WizardFactory implements WizardFactoryInterface {
     if (!$wizard->getTempstore()->get($wizard->getMachineName())) {
       $cached_values = $wizard->initValues();
       // Save the cached values that were initialized.
-      $wizard->getTempstore()->set($wizard->getMachineName(), $cached_values);
+      //$wizard->getTempstore()->set($wizard->getMachineName(), $cached_values);
     }
     else {
       $cached_values = $wizard->getTempstore()->get($wizard->getMachineName());

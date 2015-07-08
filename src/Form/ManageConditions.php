@@ -74,10 +74,10 @@ abstract class ManageConditions extends FormBase {
       '#type' => 'submit',
       '#name' => 'add',
       '#value' => t('Configure Condition'),
-      '#ajax' => [
+      /*'#ajax' => [
         'callback' => [$this, 'add'],
         'event' => 'click',
-      ],
+      ],*/
       '#submit' => [
         'callback' => [$this, 'submitForm'],
       ]
@@ -89,14 +89,16 @@ abstract class ManageConditions extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    list($route_name, $route_parameters) = $this->getOperationsRouteInfo($this->machine_name, $form_state->getValue('conditions'));
-    $form_state->setRedirect($route_name . '.edit', $route_parameters);
+    list(, $route_parameters) = $this->getOperationsRouteInfo($this->machine_name, $form_state->getValue('conditions'));
+    $form_state->setRedirect($this->getEditRoute(), $route_parameters);
   }
 
   public function add(array &$form, FormStateInterface $form_state) {
     $condition = $form_state->getValue('conditions');
     $content = \Drupal::formBuilder()->getForm($this->getConditionClass(), $condition, $this->getTempstoreId(), $this->machine_name);
     $content['#attached']['library'][] = 'core/drupal.dialog.ajax';
+    list(, $route_parameters) = $this->getOperationsRouteInfo($this->machine_name, $form_state->getValue('conditions'));
+    $content['#action'] = $this->url($this->getEditRoute(), $route_parameters);
     $response = new AjaxResponse();
     $response->addCommand(new OpenModalDialogCommand($this->t('Configure Required Context'), $content, array('width' => '700')));
     return $response;
@@ -166,6 +168,13 @@ abstract class ManageConditions extends FormBase {
    * @return string
    */
   abstract protected function getConditionClass();
+
+  /**
+   * The route to which condition 'add' actions should submit.
+   *
+   * @return string
+   */
+  abstract protected function getEditRoute();
 
   /**
    * Provide the tempstore id for your specified use case.

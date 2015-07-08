@@ -60,7 +60,7 @@ abstract class ConditionConfigure extends FormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'ctools_context_configure';
+    return 'ctools_condition_configure';
   }
 
   /**
