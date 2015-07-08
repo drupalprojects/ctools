@@ -93,6 +93,8 @@ abstract class EntityFormWizardBase extends FormWizardBase implements EntityForm
     $cached_values = $form_state->getTemporaryValue('wizard');
     /** @var $entity \Drupal\Core\Entity\EntityInterface */
     $entity = $cached_values[$this->getEntityType()];
+    $entity->set('id', $cached_values['id']);
+    $entity->set('label', $cached_values['label']);
     $status = $entity->save();
     $definition = $this->entityManager->getDefinition($this->getEntityType());
     if ($status) {

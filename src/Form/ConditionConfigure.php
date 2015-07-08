@@ -99,7 +99,7 @@ abstract class ConditionConfigure extends FormBase {
         'callback' => [$this, 'ajaxSave'],
       ]
     ];
-    if (empty($id)) {
+    if (!empty($id)) {
       list($route_name, $route_parameters) = $this->getRouteInfo($condition);
       $form['submit']['#ajax']['url'] = $this->url($route_name, $route_parameters);
     }
