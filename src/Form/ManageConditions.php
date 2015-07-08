@@ -9,12 +9,11 @@ namespace Drupal\ctools\Form;
 
 
 use Drupal\Component\Plugin\PluginManagerInterface;
+use Drupal\Component\Serialization\Json;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\OpenModalDialogCommand;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Plugin\Context\Context;
-use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -74,10 +73,10 @@ abstract class ManageConditions extends FormBase {
       '#type' => 'submit',
       '#name' => 'add',
       '#value' => t('Configure Condition'),
-      /*'#ajax' => [
+      '#ajax' => [
         'callback' => [$this, 'add'],
         'event' => 'click',
-      ],*/
+      ],
       '#submit' => [
         'callback' => [$this, 'submitForm'],
       ]
@@ -90,7 +89,7 @@ abstract class ManageConditions extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     list(, $route_parameters) = $this->getOperationsRouteInfo($this->machine_name, $form_state->getValue('conditions'));
-    $form_state->setRedirect($this->getEditRoute(), $route_parameters);
+    $form_state->setRedirect($this->getAddRoute(), $route_parameters);
   }
 
   public function add(array &$form, FormStateInterface $form_state) {
@@ -98,7 +97,9 @@ abstract class ManageConditions extends FormBase {
     $content = \Drupal::formBuilder()->getForm($this->getConditionClass(), $condition, $this->getTempstoreId(), $this->machine_name);
     $content['#attached']['library'][] = 'core/drupal.dialog.ajax';
     list(, $route_parameters) = $this->getOperationsRouteInfo($this->machine_name, $form_state->getValue('conditions'));
-    $content['#action'] = $this->url($this->getEditRoute(), $route_parameters);
+    $action = $this->url($this->getAddRoute(), $route_parameters);
+    $content['#action'] = $action;
+    $content['submit']['#attached']['drupalSettings']['ajax'][$content['submit']['#id']]['url'] = $action;
     $response = new AjaxResponse();
     $response->addCommand(new OpenModalDialogCommand($this->t('Configure Required Context'), $content, array('width' => '700')));
     return $response;
@@ -136,11 +137,11 @@ abstract class ManageConditions extends FormBase {
       'url' => new Url($route_name_base . '.edit', $route_parameters),
       'weight' => 10,
       'attributes' => array(
-        'class' => array('use-ajax'),
-        'data-accepts' => 'application/vnd.drupal-modal',
-        'data-dialog-options' => json_encode(array(
+        'class' => ['use-ajax'],
+        'data-dialog-type' => 'modal',
+        'data-dialog-options' => Json::encode([
           'width' => 700,
-        )),
+        ]),
       ),
     );
     $route_parameters['id'] = $route_parameters['condition'];
@@ -150,10 +151,10 @@ abstract class ManageConditions extends FormBase {
       'weight' => 100,
       'attributes' => array(
         'class' => array('use-ajax'),
-        'data-accepts' => 'application/vnd.drupal-modal',
-        'data-dialog-options' => json_encode(array(
+        'data-dialog-type' => 'modal',
+        'data-dialog-options' => Json::encode([
           'width' => 700,
-        )),
+        ]),
       ),
     );
     return $operations;
@@ -174,7 +175,7 @@ abstract class ManageConditions extends FormBase {
    *
    * @return string
    */
-  abstract protected function getEditRoute();
+  abstract protected function getAddRoute();
 
   /**
    * Provide the tempstore id for your specified use case.
