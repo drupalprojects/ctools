@@ -75,6 +75,8 @@ abstract class EntityFormWizardBase extends FormWizardBase implements EntityForm
       if (!$values) {
         $entity = $storage->load($this->getMachineName());
         $values[$this->getEntityType()] = $entity;
+        $values['id'] = $entity->id();
+        $values['label'] = $entity->label();
       }
     }
     else {
