@@ -13,6 +13,7 @@ use Drupal\Component\Serialization\Json;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\OpenModalDialogCommand;
 use Drupal\Core\Form\FormBase;
+use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -97,9 +98,7 @@ abstract class ManageConditions extends FormBase {
     $content = \Drupal::formBuilder()->getForm($this->getConditionClass(), $condition, $this->getTempstoreId(), $this->machine_name);
     $content['#attached']['library'][] = 'core/drupal.dialog.ajax';
     list(, $route_parameters) = $this->getOperationsRouteInfo($this->machine_name, $form_state->getValue('conditions'));
-    $action = $this->url($this->getAddRoute(), $route_parameters);
-    $content['#action'] = $action;
-    $content['submit']['#attached']['drupalSettings']['ajax'][$content['submit']['#id']]['url'] = $action;
+    $content['submit']['#attached']['drupalSettings']['ajax'][$content['submit']['#id']]['url'] = $this->url($this->getAddRoute(), $route_parameters, ['query' => [FormBuilderInterface::AJAX_FORM_REQUEST => TRUE]]);
     $response = new AjaxResponse();
     $response->addCommand(new OpenModalDialogCommand($this->t('Configure Required Context'), $content, array('width' => '700')));
     return $response;
