@@ -186,6 +186,9 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
     // Get the steps after the current step by key.
     $after_keys = array_keys($after);
     $step = reset($after_keys);
+    if (!$step) {
+      $step = end(array_keys($operations));
+    }
     return [
       'machine_name' => $this->getMachineName(),
       'step' => $step,
@@ -317,14 +320,14 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
   /**
    * Generates action elements for navigating between the operation steps.
    *
-   * @param \Drupal\Core\Form\FormInterface $form
+   * @param \Drupal\Core\Form\FormInterface $form_object
    *   The current operation form.
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The current form state.
    *
    * @return array
    */
-  protected function actions(FormInterface $form, FormStateInterface $form_state) {
+  protected function actions(FormInterface $form_object, FormStateInterface $form_state) {
     $cached_values = $form_state->getTemporaryValue('wizard');
     $operations = $this->getOperations();
     $step = $this->getStep($cached_values);
@@ -335,26 +338,32 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
     // Slice to find the operations that occur after the current operation.
     $after = array_slice($operations, array_search($step, $steps) + 1);
 
-    $actions = array(
-      'submit' => array(
+    $actions = [
+      'submit' => [
+        '#type' => 'submit',
         '#value' => $this->t('Next'),
         '#button_type' => 'primary',
-        '#validate' => array(
-          array($this, 'populateCachedValues'),
-          array($form, 'validateForm'),
-          array($this, 'validateForm'),
-        ),
-        '#submit' => array(
-          array($form, 'submitForm'),
-          array($this, 'submitForm'),
-        ),
-      ),
-    );
+        '#validate' => [
+          [$this, 'populateCachedValues'],
+          [$form_object, 'validateForm'],
+          [$this, 'validateForm'],
+        ],
+        '#submit' => [
+          [$form_object, 'submitForm'],
+          [$this, 'submitForm'],
+        ],
+      ],
+    ];
+    if ($form_state->get('ajax')) {
+      $actions['submit']['#ajax']['callback'] = [$this, 'ajaxSubmit'];
+      //$actions['submit']['#attached']['drupalSettings']['ajax'][$actions['submit']['#id']]['url'] = $this->url($this->getRouteName(), $this->getNextParameters($cached_values), ['query' => [FormBuilderInterface::AJAX_FORM_REQUEST => TRUE]]);
+    }
 
     // If there are steps before this one, label the button "previous"
     // otherwise do not display a button.
     if ($before) {
       $actions['previous'] = array(
+        '#type' => 'submit',
         '#value' => $this->t('Previous'),
         '#validate' => array(
           array($this, 'populateCachedValues'),
@@ -365,12 +374,8 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
         '#limit_validation_errors' => array(),
         '#weight' => -10,
       );
-    }
-
-    foreach ($actions as $key => &$action) {
-      $action['#type'] = 'submit';
       if ($form_state->get('ajax')) {
-        $action['#ajax']['callback'] = [$this, 'ajax' . ucfirst($key)];
+        $actions['previous']['#ajax']['callback'] = [$this, 'ajaxPrevious'];
       }
     }
 
@@ -390,7 +395,9 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
     $cached_values = $form_state->getTemporaryValue('wizard');
     $response = new AjaxResponse();
     $parameters = $this->getNextParameters($cached_values);
-    $response->addCommand(new OpenModalWizardCommand(get_class($this), $this->getTempstoreId(), $parameters));
+    $response->addCommand(new OpenModalWizardCommand(get_class($this), $response, $this->getTempstoreId(), $parameters));
+    //$main_content['#attached']['library'][] = 'core/drupal.dialog.ajax';
+    //$response->setAttachments($main_content['#attached']);
     return $response;
   }
 
@@ -398,7 +405,9 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
     $cached_values = $form_state->getTemporaryValue('wizard');
     $response = new AjaxResponse();
     $parameters = $this->getPreviousParameters($cached_values);
-    $response->addCommand(new OpenModalWizardCommand(get_class($this), $this->getTempstoreId(), $parameters));
+    $response->addCommand(new OpenModalWizardCommand(get_class($this), $response, $this->getTempstoreId(), $parameters));
+    //$main_content['#attached']['library'][] = 'core/drupal.dialog.ajax';
+    //$response->setAttachments($main_content['#attached']);
     return $response;
   }
 
