@@ -57,6 +57,15 @@ class WizardFactory implements WizardFactoryInterface {
 
     if ($ajax) {
       $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
+      $status_messages = array('#type' => 'status_messages');
+      // @todo properly inject the renderer. Core should really be doing this work.
+      if ($messages = \Drupal::service('renderer')->renderRoot($status_messages)) {
+        if (!empty($form['#prefix'])) {
+          // Form prefix is expected to be a string. Prepend the messages to
+          // that string.
+          $form['#prefix'] = '<div class="wizard-messages">' . $messages . '</div>' . $form['#prefix'];
+        }
+      }
     }
     return $form;
   }

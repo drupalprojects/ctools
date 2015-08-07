@@ -411,9 +411,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
     $cached_values = $form_state->getTemporaryValue('wizard');
     $response = new AjaxResponse();
     $parameters = $this->getNextParameters($cached_values);
-    $response->addCommand(new OpenModalWizardCommand(get_class($this), $response, $this->getTempstoreId(), $parameters));
-    //$main_content['#attached']['library'][] = 'core/drupal.dialog.ajax';
-    //$response->setAttachments($main_content['#attached']);
+    $response->addCommand(new OpenModalWizardCommand(get_class($this), $this->getTempstoreId(), $parameters));
     return $response;
   }
 
@@ -421,9 +419,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
     $cached_values = $form_state->getTemporaryValue('wizard');
     $response = new AjaxResponse();
     $parameters = $this->getPreviousParameters($cached_values);
-    $response->addCommand(new OpenModalWizardCommand(get_class($this), $response, $this->getTempstoreId(), $parameters));
-    //$main_content['#attached']['library'][] = 'core/drupal.dialog.ajax';
-    //$response->setAttachments($main_content['#attached']);
+    $response->addCommand(new OpenModalWizardCommand(get_class($this), $this->getTempstoreId(), $parameters));
     return $response;
   }
 
