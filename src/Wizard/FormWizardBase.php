@@ -14,6 +14,7 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 use Drupal\ctools\Ajax\OpenModalWizardCommand;
 use Drupal\ctools\Event\WizardEvent;
 use Drupal\user\SharedTempStoreFactory;
@@ -270,7 +271,9 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
       if (is_null($this->machine_name) && !empty($cached_values['id'])) {
         $this->machine_name = $cached_values['id'];
       }
-      $form_state->setRedirect($this->getRouteName(), $this->getNextParameters($cached_values));
+      if (!$form_state->get('ajax')) {
+        $form_state->setRedirect($this->getRouteName(), $this->getNextParameters($cached_values));
+      }
       $this->getTempstore()->set($this->getMachineName(), $cached_values);
     }
   }
@@ -344,19 +347,25 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
         '#value' => $this->t('Next'),
         '#button_type' => 'primary',
         '#validate' => [
-          [$this, 'populateCachedValues'],
+          '::populateCachedValues',
           [$form_object, 'validateForm'],
-          [$this, 'validateForm'],
+          '::validateForm',
         ],
         '#submit' => [
           [$form_object, 'submitForm'],
-          [$this, 'submitForm'],
+          '::submitForm',
         ],
       ],
     ];
     if ($form_state->get('ajax')) {
-      $actions['submit']['#ajax']['callback'] = [$this, 'ajaxSubmit'];
-      //$actions['submit']['#attached']['drupalSettings']['ajax'][$actions['submit']['#id']]['url'] = $this->url($this->getRouteName(), $this->getNextParameters($cached_values), ['query' => [FormBuilderInterface::AJAX_FORM_REQUEST => TRUE]]);
+      // Ajax submissions need to submit to the current step, not "next".
+      $parameters = $this->getNextParameters($cached_values);
+      $parameters['step'] = $this->getStep($cached_values);
+      $actions['submit']['#ajax'] = [
+        'callback' => '::ajaxSubmit',
+        'url' => Url::fromRoute($this->getRouteName(), $parameters),
+        'options' => ['query' => \Drupal::request()->query->all() + [FormBuilderInterface::AJAX_FORM_REQUEST => TRUE]],
+      ];
     }
 
     // If there are steps before this one, label the button "previous"
@@ -375,7 +384,14 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
         '#weight' => -10,
       );
       if ($form_state->get('ajax')) {
-        $actions['previous']['#ajax']['callback'] = [$this, 'ajaxPrevious'];
+        // Ajax submissions need to submit to the current step, not "previous".
+        $parameters = $this->getPreviousParameters($cached_values);
+        $parameters['step'] = $this->getStep($cached_values);
+        $actions['previous']['#ajax'] = [
+          'callback' => '::ajaxPrevious',
+          'url' => Url::fromRoute($this->getRouteName(), $parameters),
+          'options' => ['query' => \Drupal::request()->query->all() + [FormBuilderInterface::AJAX_FORM_REQUEST => TRUE]],
+        ];
       }
     }
 
