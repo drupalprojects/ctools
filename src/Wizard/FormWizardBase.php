@@ -188,7 +188,8 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
     $after_keys = array_keys($after);
     $step = reset($after_keys);
     if (!$step) {
-      $step = end(array_keys($operations));
+      $keys = array_keys($operations);
+      $step = end($keys);
     }
     return [
       'machine_name' => $this->getMachineName(),
