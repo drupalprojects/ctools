@@ -125,7 +125,13 @@ abstract class EntityFormWizardBase extends FormWizardBase implements EntityForm
    */
   protected function customizeForm(array $form, FormStateInterface $form_state) {
     $form = parent::customizeForm($form, $form_state);
-    $entity = $this->entityManager->getStorage($this->getEntityType())->load($this->machine_name);
+    if ($this->machine_name) {
+      $entity = $this->entityManager->getStorage($this->getEntityType())
+        ->load($this->machine_name);
+    }
+    else {
+      $entity = NULL;
+    }
     // If the entity already exists, allow for non-linear step interaction.
     if ($entity) {
       // Setup the step rendering theme element.
