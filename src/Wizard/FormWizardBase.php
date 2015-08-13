@@ -272,10 +272,10 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
       if (is_null($this->machine_name) && !empty($cached_values['id'])) {
         $this->machine_name = $cached_values['id'];
       }
+      $this->getTempstore()->set($this->getMachineName(), $cached_values);
       if (!$form_state->get('ajax')) {
         $form_state->setRedirect($this->getRouteName(), $this->getNextParameters($cached_values));
       }
-      $this->getTempstore()->set($this->getMachineName(), $cached_values);
     }
   }
 
