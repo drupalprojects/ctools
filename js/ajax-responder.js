@@ -8,7 +8,7 @@
   Drupal.CTools = Drupal.CTools || {};
   Drupal.CTools.AJAX = Drupal.CTools.AJAX || {};
   Drupal.CTools.AJAX.commands = Drupal.CTools.AJAX.commands || {};
-  Drupal.CTools.AJAX.commandCache = Drupal.CTools.AJAX.comandCache || {} ;
+  Drupal.CTools.AJAX.commandCache = Drupal.CTools.AJAX.commandCache || {};
   Drupal.CTools.AJAX.scripts = {};
   Drupal.CTools.AJAX.css = {};
 
