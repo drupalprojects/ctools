@@ -21,6 +21,7 @@
    * Drupal.CTools.AJAX.commands space.
    */
   Drupal.CTools.AJAX.respond = function(data) {
+    var i;
     for (i in data) {
       if (data[i]['command'] && Drupal.CTools.AJAX.commands[data[i]['command']]) {
         Drupal.CTools.AJAX.commands[data[i]['command']](data[i]);
@@ -33,8 +34,8 @@
    */
   Drupal.CTools.AJAX.warmCache = function () {
     // Store this expression for a minor speed improvement.
-    $this = $(this);
-    var old_url = $this.attr('href');
+    var $this = $(this),
+        old_url = $this.attr('href');
     // If we are currently fetching, or if we have fetched this already which is
     // ideal for things like pagers, where the previous page might already have
     // been seen in the cache.
@@ -45,10 +46,10 @@
     // Grab all the links that match this url and add the fetching class.
     // This allows the caching system to grab each url once and only once
     // instead of grabbing the url once per <a>.
-    var $objects = $('a[href="' + old_url + '"]')
+    var $objects = $('a[href="' + old_url + '"]');
     $objects.addClass('ctools-fetching');
     try {
-      url = Drupal.CTools.AJAX.urlReplaceNojs(url);
+      var url = Drupal.CTools.AJAX.urlReplaceNojs(url);
       $.ajax({
         type: "POST",
         url: url,
@@ -76,7 +77,7 @@
    * Cachable click handler to fetch the commands out of the cache or from url.
    */
   Drupal.CTools.AJAX.clickAJAXCacheLink = function () {
-    $this = $(this);
+    var $this = $(this);
     if ($this.hasClass('ctools-fetching')) {
       $this.bind('ctools-cache-warm', function (event, data) {
         Drupal.CTools.AJAX.respond(data);
@@ -104,7 +105,6 @@
     }
 
     var url = $(this).attr('href');
-    var object = $(this);
     $(this).addClass('ctools-ajaxing');
     try {
       url = Drupal.CTools.AJAX.urlReplaceNojs(url);
@@ -146,10 +146,9 @@
 
     var url = Drupal.CTools.AJAX.findURL(this);
     $(this).addClass('ctools-ajaxing');
-    var object = $(this);
     try {
       if (url) {
-        url = Drupal.CTools.AJAX.urlReplaceNojs(url);;
+        url = Drupal.CTools.AJAX.urlReplaceNojs(url);
         $.ajax({
           type: "POST",
           url: url,
@@ -186,7 +185,7 @@
    * is needed when submitting wysiwyg controlled forms, for example.
    */
   Drupal.CTools.AJAX.ajaxSubmit = function (form, url) {
-    $form = $(form);
+    var $form = $(form);
 
     if ($form.hasClass('ctools-ajaxing')) {
       return false;
@@ -240,7 +239,7 @@
   Drupal.CTools.AJAX.iFrameJsonRespond = function(data) {
     var myJson = eval(data);
     Drupal.CTools.AJAX.respond(myJson);
-  }
+  };
 
   /**
    * Display error in a more fashion way
@@ -270,7 +269,7 @@
     }
 
     alert(Drupal.t("An error occurred at @path.\n\nError Description: @error", {'@path': path, '@error': error_text}));
-  }
+  };
 
   /**
    * Generic replacement for change handler to execute ajax method.
@@ -352,7 +351,7 @@
     }
 
     return link;
-  }
+  };
 
   Drupal.CTools.AJAX.commands.prepend = function(data) {
     $(data.selector).prepend(data.data);
@@ -448,7 +447,6 @@
 
   Drupal.CTools.AJAX.commands.scripts = function(data) {
     // Build a list of scripts already loaded:
-    var scripts = {};
     $('script').each(function () {
       var link = Drupal.CTools.AJAX.getPath($(this).attr('src'));
       if (link) {
@@ -456,8 +454,8 @@
       }
     });
 
-    var html = '';
-    var head = document.getElementsByTagName('head')[0];
+    var html = '',
+        head = document.getElementsByTagName('head')[0];
     for (var i = 0; i < data.argument.length; i++) {
       var link = Drupal.CTools.AJAX.getPath(data.argument[i]);
       if (!Drupal.CTools.AJAX.scripts[link]) {
@@ -523,7 +521,7 @@
 
   Drupal.CTools.AJAX.commands.submit = function(data) {
     $(data.selector).submit();
-  }
+  };
 
   /**
    * Replacing 'nojs' with 'ajax' in the URL allows for an easy method to let
@@ -540,7 +538,7 @@
    */
   Drupal.CTools.AJAX.urlReplaceNojs = function(url) {
     return url.replace(/\/nojs(\/|$|\?|&|#)/g, '/ajax$1');
-  }
+  };
 
   /**
    * Bind links that will open modals to the appropriate function.
