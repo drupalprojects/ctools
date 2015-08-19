@@ -446,6 +446,26 @@ function ctools_forms() {
 }
 
 /**
+ * Implements hook_form_alter().
+ */
+function ctools_form_alter(&$form, $form_state, $form_id) {
+  $form['#after_build'][] = 'ctools_ajax_form_after_build';
+}
+
+/**
+ * #after_build callback: Mark the $form['#action'] as a trusted URL for Ajax.
+ */
+function ctools_ajax_form_after_build($form, $form_state) {
+  $settings = array(
+    'CToolsUrlIsAjaxTrusted' => array(
+      $form['#action'] => TRUE,
+    ),
+  );
+  drupal_add_js($settings, 'setting');
+  return $form;
+}
+
+/**
  * Implementation of hook_file_download()
  *
  * When using the private file system, we have to let Drupal know it's ok to

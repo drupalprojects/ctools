@@ -457,6 +457,10 @@ function ctools_ajax_command_submit($selector) {
  * to the AJAX requester.
  */
 function ctools_ajax_render($commands = array()) {
+  // Although ajax_deliver() does this, some contributed and custom modules
+  // render AJAX responses without using that delivery callback.
+  ctools_ajax_set_verification_header();
+
   $js_files = array();
   $settings = ctools_process_js_files($js_files, 'header');
   $settings += ctools_process_js_files($js_files, 'footer');
@@ -519,6 +523,25 @@ function ctools_ajax_render($commands = array()) {
     drupal_json($commands);
   }
   exit;
+}
+
+/**
+ * Sets a response header for ajax.js to trust the response body.
+ *
+ * It is not safe to invoke JS commands within user-uploaded files, so this
+ * header protects against those being invoked.
+ *
+ * @see Drupal.ajax.ajax.options.success()
+ */
+function ctools_ajax_set_verification_header() {
+  $set = &ctools_static(__FUNCTION__);
+
+  if (!isset($set)) {
+    // User-uploaded files cannot set any response headers, so the token value
+    // does not need to be hard to guess.
+    drupal_set_header('X-Drupal-Ajax-Token: 1');
+    $set = TRUE;
+  }
 }
 
 /**
