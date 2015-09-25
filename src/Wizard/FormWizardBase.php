@@ -261,7 +261,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     // Only perform this logic if we're moving to the next page. This prevents
     // the loss of cached values on ajax submissions.
-    if ($form_state->getValue('op') == $this->getNextOp()) {
+    if ((string)$form_state->getValue('op') == (string)$this->getNextOp()) {
       $cached_values = $form_state->getTemporaryValue('wizard');
       if ($form_state->hasValue('label')) {
         $cached_values['label'] = $form_state->getValue('label');
