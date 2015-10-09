@@ -38,20 +38,9 @@ class WizardFactory implements WizardFactoryInterface {
   }
 
   /**
-   * Get the wizard form.
-   *
-   * @param string $class
-   *   A class name implementing FormWizardInterface.
-   * @param array $parameters
-   *   The array of default parameters specific to this wizard.
-   * @param bool $ajax
-   *   Whether or not this wizard is displayed via ajax modals.
-   *
-   * @return array
+   * {@inheritdoc}
    */
-  public function getWizardForm($class, array $parameters = array(), $ajax = FALSE) {
-    $parameters += $class::getParameters();
-    $wizard = $this->createWizard($class, $parameters);
+  public function getWizardForm(FormWizardInterface $wizard, array $parameters = [], $ajax = FALSE) {
     $form_state = $this->getFormState($wizard, $parameters, $ajax);
     $form = $this->builder->buildForm($wizard, $form_state);
 

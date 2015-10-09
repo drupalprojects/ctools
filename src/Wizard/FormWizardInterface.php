@@ -21,6 +21,13 @@ interface FormWizardInterface extends FormInterface {
   const LOAD_VALUES = 'wizard.load';
 
   /**
+   * Return an array of parameters required to construct this wizard.
+   *
+   * @return array
+   */
+  public static function getParameters();
+
+  /**
    * Initialize wizard values.
    *
    * return mixed.

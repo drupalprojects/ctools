@@ -11,6 +11,7 @@ use Drupal\Core\Controller\ControllerResolverInterface;
 use Drupal\Core\Controller\FormController;
 use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\ctools\Wizard\FormWizardInterface;
 use Drupal\ctools\Wizard\WizardFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -63,17 +64,24 @@ class WizardFormController extends FormController {
   /**
    * Wizards are not instantiated as simply as forms, so this method is unused.
    */
-  protected function getFormObject(RouteMatchInterface $route_match, $form_arg) {}
+  protected function getFormObject(RouteMatchInterface $route_match, $form_arg) {
+    if (!is_subclass_of($form_arg, '\Drupal\ctools\Wizard\FormWizardInterface')) {
+      throw new \Exception("The _wizard default must reference a class instance of \\Drupal\\ctools\\Wizard\\FormWizardInterface.");
+    }
+    $parameters = $route_match->getParameters()->all();
+    $parameters += $form_arg::getParameters();
+    $parameters['route_match'] = $route_match;
+    return $this->wizardFactory->createWizard($form_arg, $parameters);
+  }
 
   /**
    * {@inheritdoc}
    */
   public function getContentResult(Request $request, RouteMatchInterface $route_match) {
-    $class = $this->getFormArgument($route_match);
-    $parameters = $route_match->getParameters()->all();
+    $wizard = $this->getFormObject($route_match, $this->getFormArgument($route_match));
     $ajax = $request->attributes->get('js') == 'ajax' ? TRUE : FALSE;
 
-    return $this->wizardFactory->getWizardForm($class, $parameters, $ajax);
+    return $this->wizardFactory->getWizardForm($wizard, $request->attributes->all(), $ajax);
   }
 
 }

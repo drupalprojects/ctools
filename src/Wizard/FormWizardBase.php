@@ -14,6 +14,7 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Url;
 use Drupal\ctools\Ajax\OpenModalWizardCommand;
 use Drupal\ctools\Event\WizardEvent;
@@ -91,16 +92,20 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
    * @param null $step
    *   The current active step of the wizard.
    */
-  public function __construct(SharedTempStoreFactory $tempstore, FormBuilderInterface $builder, ClassResolverInterface $class_resolver, EventDispatcherInterface $event_dispatcher, $tempstore_id, $machine_name = NULL, $step = NULL) {
+  public function __construct(SharedTempStoreFactory $tempstore, FormBuilderInterface $builder, ClassResolverInterface $class_resolver, EventDispatcherInterface $event_dispatcher, RouteMatchInterface $route_match, $tempstore_id, $machine_name = NULL, $step = NULL) {
     $this->tempstore = $tempstore;
     $this->builder = $builder;
     $this->classResolver = $class_resolver;
     $this->dispatcher = $event_dispatcher;
+    $this->routeMatch = $route_match;
     $this->tempstore_id = $tempstore_id;
     $this->machine_name = $machine_name;
     $this->step = $step;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public static function getParameters() {
     return [
       'tempstore' => \Drupal::service('user.shared_tempstore'),
@@ -428,6 +433,10 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
     $response = new AjaxResponse();
     $response->addCommand(new CloseModalDialogCommand());
     return $response;
+  }
+
+  public function getRouteName() {
+    $this->routeMatch->getRouteName();
   }
 
 }
