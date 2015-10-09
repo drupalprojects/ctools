@@ -9,8 +9,8 @@ interface WizardFactoryInterface {
   /**
    * Get the wizard form.
    *
-   * @param string $class
-   *   A class name implementing FormWizardInterface.
+   * @param FormWizardInterface $wizard
+   *   The form wizard
    * @param array $parameters
    *   The array of default parameters specific to this wizard.
    * @param bool $ajax
@@ -18,7 +18,7 @@ interface WizardFactoryInterface {
    *
    * @return array
    */
-  public function getWizardForm($class, array $parameters = array(), $ajax = FALSE);
+  public function getWizardForm(FormWizardInterface $wizard, array $parameters = [], $ajax = FALSE);
 
   /**
    * @param string $class
