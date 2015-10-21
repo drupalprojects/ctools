@@ -9,6 +9,7 @@ namespace Drupal\ctools\Form;
 
 
 use Drupal\Component\Plugin\PluginManagerInterface;
+use Drupal\Component\Uuid\Uuid;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\CloseModalDialogCommand;
 use Drupal\Core\Ajax\RedirectCommand;
@@ -70,7 +71,7 @@ abstract class ConditionConfigure extends FormBase {
     $this->tempstore_id = $tempstore_id;
     $this->machine_name = $machine_name;
     $cached_values = $this->tempstore->get($this->tempstore_id)->get($this->machine_name);
-    if (is_numeric($condition)) {
+    if (is_numeric($condition) || Uuid::isValid($condition)) {
       $id = $condition;
       $condition = $this->getConditions($cached_values)[$id];
       $instance = $this->manager->createInstance($condition['id'], $condition);
