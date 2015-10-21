@@ -11,6 +11,7 @@ use Drupal\Component\Plugin\Derivative\DeriverBase;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Plugin\Discovery\ContainerDeriverInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\Core\StringTranslation\TranslationInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -32,9 +33,12 @@ abstract class EntityDeriverBase extends DeriverBase implements ContainerDeriver
    *
    * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
    *   The entity manager.
+   * @param \Drupal\Core\StringTranslation\TranslationInterface $string_translation
+   *   The string translation service.
    */
-  public function __construct(EntityManagerInterface $entity_manager) {
+  public function __construct(EntityManagerInterface $entity_manager, TranslationInterface $string_translation) {
     $this->entityManager = $entity_manager;
+    $this->stringTranslation = $string_translation;
   }
 
   /**
@@ -42,8 +46,10 @@ abstract class EntityDeriverBase extends DeriverBase implements ContainerDeriver
    */
   public static function create(ContainerInterface $container, $base_plugin_id) {
     return new static(
-      $container->get('entity.manager')
+      $container->get('entity.manager'),
+      $container->get('string_translation')
     );
   }
+
 }
 
