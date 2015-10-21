@@ -436,7 +436,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
   }
 
   public function getRouteName() {
-    $this->routeMatch->getRouteName();
+    return $this->routeMatch->getRouteName();
   }
 
 }
