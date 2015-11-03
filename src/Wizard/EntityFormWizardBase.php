@@ -101,15 +101,15 @@ abstract class EntityFormWizardBase extends FormWizardBase implements EntityForm
     $status = $entity->save();
     $definition = $this->entityManager->getDefinition($this->getEntityType());
     if ($status) {
-      drupal_set_message($this->t('Saved the %label !entity_type.', array(
+      drupal_set_message($this->t('Saved the %label @entity_type.', array(
         '%label' => $entity->label(),
-        '!entity_type' => $definition->getLabel(),
+        '@entity_type' => $definition->getLabel(),
       )));
     }
     else {
-      drupal_set_message($this->t('The %label !entity_type was not saved.', array(
+      drupal_set_message($this->t('The %label @entity_type was not saved.', array(
         '%label' => $entity->label(),
-        '!entity_type' => $definition->getLabel(),
+        '@entity_type' => $definition->getLabel(),
       )));
     }
     $form_state->setRedirectUrl($entity->urlInfo('collection'));
@@ -169,7 +169,7 @@ abstract class EntityFormWizardBase extends FormWizardBase implements EntityForm
           'source' => array('name', 'label'),
           'exists' => $this->exists(),
         ),
-        '#description' => $this->t('A unique machine-readable name for this !entity_type. It must only contain lowercase letters, numbers, and underscores.', ['!entity_type' => $definition->getLabel()]),
+        '#description' => $this->t('A unique machine-readable name for this @entity_type. It must only contain lowercase letters, numbers, and underscores.', ['@entity_type' => $definition->getLabel()]),
         '#default_value' => !empty($cached_values['id']) ? $cached_values['id'] : '',
         '#disabled' => !empty($cached_values['id']),
       );
