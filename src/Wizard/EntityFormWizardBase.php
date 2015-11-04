@@ -133,16 +133,20 @@ abstract class EntityFormWizardBase extends FormWizardBase implements EntityForm
     else {
       $entity = NULL;
     }
+    $cached_values = $form_state->getTemporaryValue('wizard');
     // If the entity already exists, allow for non-linear step interaction.
     if ($entity) {
       // Setup the step rendering theme element.
-      $prefix = ['#theme' => ['ctools_wizard_trail_links'], '#wizard' => $this];
+      $prefix = [
+        '#theme' => ['ctools_wizard_trail_links'],
+        '#wizard' => $this,
+        '#cached_values' => $cached_values,
+      ];
       $form['#prefix'] = \Drupal::service('renderer')->render($prefix);
     }
-    $cached_values = $form_state->getTemporaryValue('wizard');
     // Get the current form operation.
     $operation = $this->getOperation($cached_values);
-    $operations = $this->getOperations();
+    $operations = $this->getOperations($cached_values);
     $default_operation = reset($operations);
     if ($operation['form'] == $default_operation['form']) {
       // Get the plugin definition of this entity.

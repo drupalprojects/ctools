@@ -45,4 +45,57 @@ class CToolsWizardTest extends WebTestBase {
     $this->assertText('Value Two: Second test');
   }
 
+  function testEntityWizard() {
+    $this->drupalLogin($this->drupalCreateUser(['administer site configuration']));
+
+    // Start adding a new config entity.
+    $this->drupalGet('admin/structure/ctools_wizard_test_config_entity/add');
+    $this->assertText('Example entity');
+    $this->assertNoText('Existing entity');
+
+    // Submit the general step.
+    $edit = [
+      'id' => 'test123',
+      'label' => 'Test Config Entity 123',
+    ];
+    $this->drupalPostForm(NULL, $edit, t('Next'));
+
+    // Submit the first step.
+    $edit = [
+      'one' => 'The first bit',
+    ];
+    $this->drupalPostForm(NULL, $edit, t('Next'));
+
+    // Submit the second step.
+    $edit = [
+      'two' => 'The second bit',
+    ];
+    $this->drupalPostForm(NULL, $edit, t('Finish'));
+
+    // Now we should be looking at the list of entities.
+    $this->assertUrl('admin/structure/ctools_wizard_test_config_entity');
+    $this->assertText('Test Config Entity 123');
+
+    // Edit the entity again and make sure the values are what we expect.
+    $this->clickLink(t('Edit'));
+    $this->assertText('Existing entity');
+    $this->assertFieldByName('label', 'Test Config Entity 123');
+    $this->drupalPostForm(NULL, [], t('Next'));
+    $this->assertFieldByName('one', 'The first bit');
+    // Change the value for 'one'.
+    $this->drupalPostForm(NULL, ['one' => 'New value'], t('Next'));
+    $this->assertFieldByName('two', 'The second bit');
+    $this->drupalPostForm(NULL, [], t('Next'));
+    // Make sure we get the additional step because the entity exists.
+    $this->assertText('This step only shows if the entity is already existing!');
+    $this->drupalPostForm(NULL, [], t('Finish'));
+
+    // Edit the entity again and make sure the change stuck.
+    $this->assertUrl('admin/structure/ctools_wizard_test_config_entity');
+    $this->clickLink(t('Edit'));
+    $this->drupalPostForm(NULL, [], t('Next'));
+    $this->assertFieldByName('one', 'New value');
+  }
+
 }
+

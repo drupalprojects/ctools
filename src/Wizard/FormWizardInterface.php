@@ -70,10 +70,16 @@ interface FormWizardInterface extends FormInterface {
   /**
    * Retrieve a list of FormInterface classes by their step key in the wizard.
    *
+   * @param mixed $cached_values
+   *   The values returned by $this->getTempstore()->get($this->getMachineName());   *
+   *
    * @return array
-   *   A
+   *   An associative array keyed on the step name with an array value with the
+   *   following keys:
+   *   - title (string): Human-readable title of the step.
+   *   - form (string): Fully-qualified class name of the form for this step.
    */
-  public function getOperations();
+  public function getOperations($cached_values);
 
   /**
    * Retrieve the current Operation.

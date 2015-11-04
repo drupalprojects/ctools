@@ -151,7 +151,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
    */
   public function getStep($cached_values) {
     if (!$this->step) {
-      $operations = $this->getOperations();
+      $operations = $this->getOperations($cached_values);
       $steps = array_keys($operations);
       $this->step = reset($steps);
     }
@@ -162,7 +162,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
    * {@inheritdoc}
    */
   public function getOperation($cached_values) {
-    $operations = $this->getOperations();
+    $operations = $this->getOperations($cached_values);
     $step = $this->getStep($cached_values);
     if (!empty($operations[$step])) {
       return $operations[$step];
@@ -185,7 +185,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
    */
   public function getNextParameters($cached_values) {
     // Get the steps by key.
-    $operations = $this->getOperations();
+    $operations = $this->getOperations($cached_values);
     $steps = array_keys($operations);
     // Get the steps after the current step.
     $after = array_slice($operations, array_search($this->getStep($cached_values), $steps) + 1);
@@ -207,7 +207,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
    * {@inheritdoc}
    */
   public function getPreviousParameters($cached_values) {
-    $operations = $this->getOperations();
+    $operations = $this->getOperations($cached_values);
     $step = $this->getStep($cached_values);
 
     // Get the steps by key.
@@ -320,7 +320,11 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
    */
   protected function customizeForm(array $form, FormStateInterface $form_state) {
     // Setup the step rendering theme element.
-    $prefix = ['#theme' => ['ctools_wizard_trail'], '#wizard' => $this];
+    $prefix = [
+      '#theme' => ['ctools_wizard_trail'],
+      '#wizard' => $this,
+      '#cached_values' => $form_state->getTemporaryValue('wizard'),
+    ];
     // @todo properly inject the renderer.
     $form['#prefix'] = \Drupal::service('renderer')->render($prefix);
     return $form;
@@ -338,7 +342,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
    */
   protected function actions(FormInterface $form_object, FormStateInterface $form_state) {
     $cached_values = $form_state->getTemporaryValue('wizard');
-    $operations = $this->getOperations();
+    $operations = $this->getOperations($cached_values);
     $step = $this->getStep($cached_values);
 
     $steps = array_keys($operations);
