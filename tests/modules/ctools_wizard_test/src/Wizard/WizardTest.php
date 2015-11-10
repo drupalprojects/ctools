@@ -30,7 +30,7 @@ class WizardTest extends FormWizardBase {
   /**
    * {@inheritdoc}
    */
-  public function getOperations() {
+  public function getOperations($cached_values) {
     return array(
       'one' => [
         'form' => 'Drupal\ctools_wizard_test\Form\OneForm',

@@ -8,6 +8,7 @@ function ctools_theme($existing, $type, $theme, $path) {
     'ctools_wizard_trail' => [
       'variables' => [
         'wizard' => NULL,
+        'cached_values' => [],
         'trail' => [],
         'divider' => ' » ',
         'step' => NULL,
@@ -16,6 +17,7 @@ function ctools_theme($existing, $type, $theme, $path) {
     'ctools_wizard_trail_links' => [
       'variables' => [
         'wizard' => NULL,
+        'cached_values' => [],
         'trail' => [],
         'divider' => ' » ',
         'step' => NULL,
@@ -27,10 +29,10 @@ function ctools_theme($existing, $type, $theme, $path) {
 function template_preprocess_ctools_wizard_trail(&$variables) {
   /** @var $wizard \Drupal\ctools\Wizard\FormWizardInterface|\Drupal\ctools\Wizard\EntityFormWizardInterface */
   $wizard = $variables['wizard'];
+  $cached_values = $variables['cached_values'];
   $trail = $variables['trail'];
-  $cached_values = $wizard->getTempstore()->get($wizard->getMachineName());
   $variables['step'] = $wizard->getStep($cached_values);
-  foreach ($wizard->getOperations() as $step => $operation) {
+  foreach ($wizard->getOperations($cached_values) as $step => $operation) {
     $trail[$step] = !empty($operation['title']) ? $operation['title'] : '';
   }
   $variables['trail'] = $trail;
@@ -39,10 +41,10 @@ function template_preprocess_ctools_wizard_trail(&$variables) {
 function template_preprocess_ctools_wizard_trail_links(&$variables) {
   /** @var $wizard \Drupal\ctools\Wizard\FormWizardInterface|\Drupal\ctools\Wizard\EntityFormWizardInterface */
   $wizard = $variables['wizard'];
+  $cached_values = $variables['cached_values'];
   $trail = $variables['trail'];
-  $cached_values = $wizard->getTempstore()->get($wizard->getMachineName());
   $variables['step'] = $wizard->getStep($cached_values);
-  foreach ($wizard->getOperations() as $step => $operation) {
+  foreach ($wizard->getOperations($cached_values) as $step => $operation) {
     $parameters = $wizard->getNextParameters($cached_values);
     // Override step to be the step we want.
     $parameters['step'] = $step;
