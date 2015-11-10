@@ -12,3 +12,16 @@ services:
   ctools.wizard.factory:
     class: Drupal\ctools\Wizard\WizardFactory
     arguments: ['@form_builder', '@event_dispatcher']
+  ctools.typed_data.resolver:
+    class: Drupal\ctools\TypedDataResolver
+    arguments: ['@typed_data_manager', '@string_translation']
+    tags:
+      - { name: service_collector, tag: type_resolver, call: addTypeResolver }
+  ctools.default.type.resolver:
+      class: Drupal\ctools\TypeResolver\DefaultTypeResolver
+      tags:
+        - { name: type_resolver }
+  ctools.entity_reference.type.resolver:
+    class: Drupal\ctools\TypeResolver\EntityReferenceTypeResolver
+    tags:
+      - { name: type_resolver, priority: 10 }
