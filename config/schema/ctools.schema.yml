@@ -1,0 +1,10 @@
+ctools.relationship:
+  type: mapping
+  label: 'Relationship'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    label:
+      type: label
+      label: 'Label'
