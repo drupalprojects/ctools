@@ -1,0 +1,10 @@
+<?php
+
+use Drupal\views\Plugin\views\display\Block as CoreBlock;
+use Drupal\ctools_views\Plugin\Display\Block;
+
+function ctools_views_views_plugins_display_alter(&$displays) {
+  if (!empty($displays['block']['class']) && $displays['block']['class'] == CoreBlock::class) {
+    $displays['block']['class'] = Block::class;
+  }
+}
