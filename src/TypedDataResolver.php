@@ -166,8 +166,9 @@ class TypedDataResolver {
       return $contexts[$token];
     }
     else {
-      // Find the base context id and property.
-      list($base, $property_name, $subtoken) = explode(':', $token, 3);
+      // Find the base context id and property, sub token is optional, so make
+      // sure we have enough array elements.
+      list($base, $property_name, $subtoken) = array_merge(explode(':', $token, 3), array(NULL));
       // A base must always be set. This method recursively calls itself
       // setting bases for this reason.
       if (!empty($contexts[$base])) {
