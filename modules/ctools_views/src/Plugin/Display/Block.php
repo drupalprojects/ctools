@@ -59,16 +59,44 @@ class Block extends CoreBlock {
         case 'hide_fields':
           $field_options = [];
           $fields = $this->getOption('fields');
+          $header = [
+            'hide' => $this->t('Hide'),
+            'label' => $this->t('Label'),
+            'weight' => $this->t('Weight')
+          ];
+          $form['override']['order_fields'] = [
+            '#type' => 'table',
+            '#header' => $header,
+            '#rows' => array(),
+            '#tabledrag' => [
+              [
+                'action' => 'order',
+                'relationship' => 'sibling',
+                'group' => 'field-weight',
+              ]
+            ],
+            '#attributes' => ['id' => 'order-fields'],
+          ];
           foreach ($fields as $field_name => $field_info) {
             $field_options[$field_name] = $field_info['label'];
+            $form['override']['order_fields'][$field_name]['#attributes']['class'][] = 'draggable';
+            $form['override']['order_fields'][$field_name]['#weight'] = !empty($block_configuration['fields'][$field_name]['weight']) ? $block_configuration['fields'][$field_name]['weight'] : '';
+            $form['override']['order_fields'][$field_name]['hide'] = [
+              '#type' => 'checkbox',
+              '#default_value' => !empty($block_configuration['fields'][$field_name]['hide']) ? $block_configuration['fields'][$field_name]['hide'] : 0,
+            ];
+            $form['override']['order_fields'][$field_name]['label'] = [
+              '#markup' => $field_info['label'],
+            ];
+            $form['override']['order_fields'][$field_name]['weight'] = [
+              '#type' => 'weight',
+              '#title' => $this->t('Weight for @title', ['@title' => $field_info['label']]),
+              '#title_display' => 'invisible',
+              '#delta' => 50,
+              '#default_value' => !empty($block_configuration['fields'][$field_name]['weight']) ? $block_configuration['fields'][$field_name]['weight'] : 0,
+              '#attributes' => ['class' => ['field-weight']],
+            ];
           }
-          $form['override']['hide_fields'] = [
-            '#type' => 'checkboxes',
-            '#title' => $this->t('Hide selected fields.'),
-            '#description' => $this->t('The selected fields will be removed from the view during rendering.'),
-            '#options' => $field_options,
-            '#default_value' => !empty($block_configuration['hide_fields']) ? $block_configuration['hide_fields'] : [],
-          ];
           break;
         case 'configure_filters':
           $filters = $this->getOption('filters');
@@ -108,13 +136,14 @@ class Block extends CoreBlock {
   public function blockSubmit(ViewsBlock $block, $form, FormStateInterface $form_state) {
     parent::blockSubmit($block, $form, $form_state);
     $configuration = $block->getConfiguration();
-    if ($fields = array_filter($form_state->getValue(array('override', 'hide_fields')))) {
-      $configuration['hide_fields'] = $fields;
+    unset($configuration['hide_fields']);
+    if ($fields = array_filter($form_state->getValue(['override', 'order_fields']))) {
+      $configuration['fields'] = $fields;
     }
-    $form_state->unsetValue(array('override', 'hide_fields'));
+    $form_state->unsetValue(['override', 'hide_fields']);
 
     // Handle exposed filters as configuration options.
-    if ($filters = $form_state->getValue(array('override', 'filters'))) {
+    if ($filters = $form_state->getValue(['override', 'filters'])) {
       foreach ($filters as $filter_name => $filter) {
         /** @var \Drupal\views\Plugin\views\filter\FilterPluginBase $plugin */
         $plugin = $form_state->getValue(['override', 'filters', $filter_name, 'plugin']);
@@ -170,9 +199,13 @@ class Block extends CoreBlock {
     parent::preBlockBuild($block);
     list(, $display_id) = explode('-', $block->getDerivativeId());
     $config = $block->getConfiguration();
-    if (!empty($config['hide_fields']) && $this->view->getStyle()->usesFields()) {
-      foreach ($config['hide_fields'] as $field_name) {
+    if (!empty($config['fields']) && $this->view->getStyle()->usesFields()) {
+      $fields = $this->view->getHandlers('field');
+      foreach ($config['fields'] as $field_name => $values) {
         $this->view->removeHandler($display_id, 'field', $field_name);
+        if (!$values['hide']) {
+          $this->view->addHandler($display_id, 'field', $fields[$field_name]['table'], $field_name, $fields[$field_name]);
+        }
       }
     }
     /** @var \Drupal\views\Plugin\views\filter\FilterPluginBase[] $filters */
