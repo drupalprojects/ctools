@@ -90,7 +90,6 @@ function _ctools_custom_content_type_content_type($content) {
   $info = array(
     'name' => $content->name,
     'title' => check_plain($content->admin_title),
-    'title_heading' => check_plain($content->title_heading),
     'description' => check_plain($content->admin_description),
     'category' => $content->category ? check_plain($content->category) : t('Miscellaneous'),
     'all contexts' => TRUE,
