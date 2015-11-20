@@ -138,13 +138,14 @@ abstract class ContextConfigure extends FormBase {
     }
     $cached_values = $this->setContexts($cached_values, $contexts);
     $this->tempstore->get($this->tempstore_id)->set($this->machine_name, $cached_values);
-    list($route_name, $route_parameters) = $this->getRouteInfo();
+    list($route_name, $route_parameters) = $this->getParentRouteInfo($cached_values);
     $form_state->setRedirect($route_name, $route_parameters);
   }
 
   public function ajaxSave(array &$form, FormStateInterface $form_state) {
     $response = new AjaxResponse();
-    list($route_name, $route_parameters) = $this->getRouteInfo();
+    $cached_values = $this->tempstore->get($this->tempstore_id)->get($this->machine_name);
+    list($route_name, $route_parameters) = $this->getParentRouteInfo($cached_values);
     $response->addCommand(new RedirectCommand($this->url($route_name, $route_parameters)));
     $response->addCommand(new CloseModalDialogCommand());
     return $response;
@@ -153,11 +154,13 @@ abstract class ContextConfigure extends FormBase {
   /**
    * Document the route name and parameters for redirect after submission.
    *
+   * @param $cached_values
+   *
    * @return array
    *   In the format of
    *   return ['route.name', ['machine_name' => $this->machine_name, 'step' => 'step_name]];
    */
-  abstract protected function getRouteInfo();
+  abstract protected function getParentRouteInfo($cached_values);
 
   /**
    * Custom logic for retrieving the contexts array from cached_values.
