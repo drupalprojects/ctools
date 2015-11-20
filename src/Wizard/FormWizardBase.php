@@ -247,6 +247,12 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
     $form = $this->customizeForm($form, $form_state);
     /* @var $formClass \Drupal\Core\Form\FormInterface */
     $formClass = $this->classResolver->getInstanceFromDefinition($operation['form']);
+    // Pass include any custom values for this operation.
+    if (!empty($operation['values'])) {
+      $cached_values = array_merge($cached_values, $operation['values']);
+      $form_state->setTemporaryValue('wizard', $cached_values);
+    }
+    // Build the form.
     $form = $formClass->buildForm($form, $form_state);
     if (isset($operation['title'])) {
       $form['#title'] = $operation['title'];

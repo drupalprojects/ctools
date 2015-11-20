@@ -39,11 +39,16 @@ class TwoForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $cached_values = $form_state->getTemporaryValue('wizard');
-    $form['two'] = array(
-      '#title' => t('Two'),
+    $form['two'] = [
+      '#title' => $this->t('Two'),
       '#type' => 'textfield',
       '#default_value' => !empty($cached_values['two']) ? $cached_values['two'] : '',
-    );
+    ];
+    $form['dynamic'] = [
+      '#title' => $this->t('Dynamic value'),
+      '#type' => 'item',
+      '#markup' => !empty($cached_values['dynamic']) ? $cached_values['dynamic'] : '',
+    ];
     return $form;
   }
 

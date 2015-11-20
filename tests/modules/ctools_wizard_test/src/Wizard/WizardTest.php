@@ -35,10 +35,12 @@ class WizardTest extends FormWizardBase {
       'one' => [
         'form' => 'Drupal\ctools_wizard_test\Form\OneForm',
         'title' => $this->t('Form One'),
+        'values' => ['dynamic' => 'Xylophone'],
       ],
       'two' => [
         'form' => 'Drupal\ctools_wizard_test\Form\TwoForm',
         'title' => $this->t('Form Two'),
+        'values' => ['dynamic' => 'Zebra'],
       ],
     );
   }
