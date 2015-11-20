@@ -88,7 +88,8 @@ abstract class RequiredContext extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    list($route_name, $route_parameters) = $this->getOperationsRouteInfo($this->machine_name, $form_state->getValue('contexts'));
+    $cached_values = $form_state->getTemporaryValue('wizard');
+    list($route_name, $route_parameters) = $this->getOperationsRouteInfo($cached_values, $this->machine_name, $form_state->getValue('contexts'));
     $form_state->setRedirect($route_name . '.edit', $route_parameters);
   }
 
@@ -118,7 +119,7 @@ abstract class RequiredContext extends FormBase {
     $configured_contexts = array();
     foreach ($this->getContexts($cached_values) as $row => $context) {
       list($plugin_id, $label, $machine_name, $description) = array_values($context);
-      list($route_name, $route_parameters) = $this->getOperationsRouteInfo($cached_values['id'], $row);
+      list($route_name, $route_parameters) = $this->getOperationsRouteInfo($cached_values, $cached_values['id'], $row);
       $build = array(
         '#type' => 'operations',
         '#links' => $this->getOperations($route_name, $route_parameters),
@@ -192,11 +193,17 @@ abstract class RequiredContext extends FormBase {
    * '\Drupal\ctools\Form\RequiredContextDelete' should set you up for using
    * this approach quite seamlessly.
    *
+   * @param mixed $cached_values
+   *
+   * @param string $machine_name
+   *
+   * @param string $row
+   *
    * @return array
    *   In the format of
    *   return ['route.base.name', ['machine_name' => $machine_name, 'context' => $row]];
    */
-  abstract protected function getOperationsRouteInfo($machine_name, $row);
+  abstract protected function getOperationsRouteInfo($cached_values, $machine_name, $row);
 
   /**
    * Custom logic for retrieving the contexts array from cached_values.

@@ -23,17 +23,22 @@ class CToolsWizardTest extends WebTestBase {
     $this->drupalGet('ctools/wizard');
     $this->assertText('Form One');
     $this->dumpHeaders = TRUE;
+    // Check that $operations['one']['values'] worked.
+    $this->assertText('Xylophone');
+    // Submit first step in the wizard.
     $edit = [
       'one' => 'test',
     ];
-    // First step in the wizard.
     $this->drupalPostForm('ctools/wizard', $edit, t('Next'));
     // Redirected to the second step.
     $this->assertText('Form Two');
+    // Check that $operations['two']['values'] worked.
+    $this->assertText('Zebra');
     // Hit previous to make sure our form value are preserved.
     $this->drupalPostForm(NULL, [], t('Previous'));
     // Check the known form values.
     $this->assertFieldByName('one', 'test');
+    $this->assertText('Xylophone');
     // Goto next step again and finish this wizard.
     $this->drupalPostForm(NULL, [], t('Next'));
     $edit = [
