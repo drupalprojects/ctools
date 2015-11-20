@@ -98,10 +98,12 @@ class WizardFactory implements WizardFactoryInterface {
   public function getFormState(FormWizardInterface $wizard, array $parameters, $ajax = FALSE) {
     $form_state = new FormState();
     // If a wizard has no values, initialize them.
-    if (!$wizard->getTempstore()->get($wizard->getMachineName())) {
+    if (!$wizard->getMachineName() || !$wizard->getTempstore()->get($wizard->getMachineName())) {
       $cached_values = $wizard->initValues();
       // Save the cached values that were initialized.
-      //$wizard->getTempstore()->set($wizard->getMachineName(), $cached_values);
+      if ($wizard->getMachineName()) {
+        $wizard->getTempstore()->set($wizard->getMachineName(), $cached_values);
+      }
     }
     else {
       $cached_values = $wizard->getTempstore()->get($wizard->getMachineName());
