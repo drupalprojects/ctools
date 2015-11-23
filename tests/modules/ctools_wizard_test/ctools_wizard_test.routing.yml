@@ -61,6 +61,16 @@ entity.ctools_wizard_test_config_entity.edit_form:
   options:
     _admin_route: TRUE
 
+entity.ctools_wizard_test_config_entity.external_form:
+  path: '/admin/structure/ctools_wizard_test_config_entity/{machine_name}/external'
+  defaults:
+    _title: 'Edit Example config entity'
+    _form: '\Drupal\ctools_wizard_test\Form\ExampleConfigEntityExternalForm'
+  requirements:
+    _permission: 'administer site configuration'
+  options:
+    _admin_route: TRUE
+
 entity.ctools_wizard_test_config_entity.delete_form:
   path: '/admin/structure/ctools_wizard_test_config_entity/{ctools_wizard_test_config_entity}/delete'
   defaults:

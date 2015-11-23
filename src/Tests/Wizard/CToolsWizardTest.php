@@ -85,8 +85,12 @@ class CToolsWizardTest extends WebTestBase {
     $this->clickLink(t('Edit'));
     $this->assertText('Existing entity');
     $this->assertFieldByName('label', 'Test Config Entity 123');
-    $this->drupalPostForm(NULL, [], t('Next'));
+    $this->clickLink(t('Form One'));
     $this->assertFieldByName('one', 'The first bit');
+    $previous = $this->getUrl();
+    $this->clickLink(t('Show on dialog'));
+    $this->assertRaw('Value from one: The first bit');
+    $this->drupalGet($previous);
     // Change the value for 'one'.
     $this->drupalPostForm(NULL, ['one' => 'New value'], t('Next'));
     $this->assertFieldByName('two', 'The second bit');
