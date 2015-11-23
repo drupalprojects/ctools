@@ -10,6 +10,7 @@ namespace Drupal\ctools_wizard_test\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 
 /**
  * Simple wizard step form.
@@ -31,11 +32,24 @@ class ExampleConfigEntityOneForm extends FormBase {
     /** @var $page \Drupal\ctools_wizard_test\Entity\ExampleConfigEntity */
     $config_entity = $cached_values['ctools_wizard_test_config_entity'];
 
-    $form['one'] = array(
+    $form['one'] = [
       '#title' => t('One'),
       '#type' => 'textfield',
       '#default_value' => $config_entity->getOne() ?: '',
-    );
+    ];
+
+    $form['external'] = [
+      '#type' => 'link',
+      '#title' => $this->t('Show on dialog'),
+      '#url' => new Url('entity.ctools_wizard_test_config_entity.external_form', [
+        'machine_name' => $config_entity->id(),
+      ]),
+      '#attributes' => [
+        'class' => 'use-ajax',
+        'data-dialog-type' => 'modal',
+      ],
+    ];
+
     return $form;
   }
 
