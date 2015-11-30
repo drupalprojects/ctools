@@ -32,6 +32,7 @@ class CToolsWizardTest extends WebTestBase {
     $this->drupalPostForm('ctools/wizard', $edit, t('Next'));
     // Redirected to the second step.
     $this->assertText('Form Two');
+    $this->assertText('Dynamic value submitted: Xylophone');
     // Check that $operations['two']['values'] worked.
     $this->assertText('Zebra');
     // Hit previous to make sure our form value are preserved.
@@ -47,6 +48,33 @@ class CToolsWizardTest extends WebTestBase {
     $this->drupalPostForm(NULL, $edit, t('Finish'));
     // Check that the wizard finished properly.
     $this->assertText('Value One: test');
+    $this->assertText('Value Two: Second test');
+  }
+
+  function testStepValidateAndSubmit() {
+    $this->drupalGet('ctools/wizard');
+    $this->assertText('Form One');
+    // Submit first step in the wizard.
+    $edit = [
+      'one' => 'wrong',
+    ];
+    $this->drupalPostForm('ctools/wizard', $edit, t('Next'));
+    // We're still on the first form and the error is present.
+    $this->assertText('Form One');
+    $this->assertText('Cannot set the value to "wrong".');
+    // Try again with the magic value.
+    $edit = [
+      'one' => 'magic',
+    ];
+    $this->drupalPostForm('ctools/wizard', $edit, t('Next'));
+    // Redirected to the second step.
+    $this->assertText('Form Two');
+    $edit = [
+      'two' => 'Second test',
+    ];
+    $this->drupalPostForm(NULL, $edit, t('Finish'));
+    // Check that the magic value triggered our submit callback.
+    $this->assertText('Value One: Abraham');
     $this->assertText('Value Two: Second test');
   }
 

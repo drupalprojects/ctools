@@ -296,9 +296,12 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
   public function populateCachedValues(array &$form, FormStateInterface $form_state) {
     $cached_values = $this->getTempstore()->get($this->getMachineName());
     if (!$cached_values) {
-      $cached_values = $this->initValues();
+      $cached_values = $form_state->getTemporaryValue('wizard');
+      if (!$cached_values) {
+        $cached_values = $this->initValues();
+        $form_state->setTemporaryValue('wizard', $cached_values);
+      }
     }
-    $form_state->setTemporaryValue('wizard', $cached_values);
   }
 
   /**
@@ -350,6 +353,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
     $cached_values = $form_state->getTemporaryValue('wizard');
     $operations = $this->getOperations($cached_values);
     $step = $this->getStep($cached_values);
+    $operation = $operations[$step];
 
     $steps = array_keys($operations);
     // Slice to find the operations that occur before the current operation.
@@ -365,14 +369,23 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
         '#validate' => [
           '::populateCachedValues',
           [$form_object, 'validateForm'],
-          '::validateForm',
         ],
         '#submit' => [
           [$form_object, 'submitForm'],
-          '::submitForm',
         ],
       ],
     ];
+
+    // Add any submit or validate functions for the step and the global ones.
+    if (isset($operation['validate'])) {
+      $actions['submit']['#validate'] = array_merge($actions['submit']['#validate'], $operation['validate']);
+    }
+    $actions['submit']['#validate'][] = '::validateForm';
+    if (isset($operation['submit'])) {
+      $actions['submit']['#submit'] = array_merge($actions['submit']['#submit'], $operation['submit']);
+    }
+    $actions['submit']['#submit'][] = '::submitForm';
+
     if ($form_state->get('ajax')) {
       // Ajax submissions need to submit to the current step, not "next".
       $parameters = $this->getNextParameters($cached_values);

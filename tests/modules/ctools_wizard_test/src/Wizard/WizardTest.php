@@ -36,6 +36,8 @@ class WizardTest extends FormWizardBase {
         'form' => 'Drupal\ctools_wizard_test\Form\OneForm',
         'title' => $this->t('Form One'),
         'values' => ['dynamic' => 'Xylophone'],
+        'validate' => ['::stepOneValidate'],
+        'submit' => ['::stepOneSubmit'],
       ],
       'two' => [
         'form' => 'Drupal\ctools_wizard_test\Form\TwoForm',
@@ -43,6 +45,26 @@ class WizardTest extends FormWizardBase {
         'values' => ['dynamic' => 'Zebra'],
       ],
     );
+  }
+
+  /**
+   * Validation callback for the first step.
+   */
+  public function stepOneValidate($form, FormStateInterface $form_state) {
+    if ($form_state->getValue('one') == 'wrong') {
+      $form_state->setErrorByName('one', $this->t('Cannot set the value to "wrong".'));
+    }
+  }
+
+  /**
+   * Submission callback for the first step.
+   */
+  public function stepOneSubmit($form, FormStateInterface $form_state) {
+    $cached_values = $form_state->getTemporaryValue('wizard');
+    if ($form_state->getValue('one') == 'magic') {
+      $cached_values['one'] = 'Abraham';
+    }
+    $form_state->setTemporaryValue('wizard', $cached_values);
   }
 
   /**
