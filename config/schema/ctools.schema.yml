@@ -9,7 +9,7 @@ ctools.relationship:
       type: label
       label: 'Label'
 
-condition.plugin.entity_type:*:
+condition.plugin.entity_bundle:*:
   type: condition.plugin
   mapping:
     bundles:
