@@ -12,6 +12,11 @@ services:
   ctools.wizard.factory:
     class: Drupal\ctools\Wizard\WizardFactory
     arguments: ['@form_builder', '@event_dispatcher']
+  ctools.paramconverter.tempstore:
+    class: Drupal\ctools\ParamConverter\TempstoreConverter
+    arguments: ['@user.shared_tempstore']
+    tags:
+      - { name: paramconverter }
   ctools.typed_data.resolver:
     class: Drupal\ctools\TypedDataResolver
     arguments: ['@typed_data_manager', '@string_translation']
