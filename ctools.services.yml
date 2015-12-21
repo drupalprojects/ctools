@@ -14,7 +14,7 @@ services:
     arguments: ['@form_builder', '@event_dispatcher']
   ctools.paramconverter.tempstore:
     class: Drupal\ctools\ParamConverter\TempstoreConverter
-    arguments: ['@user.shared_tempstore']
+    arguments: ['@user.shared_tempstore', '@entity_type.manager']
     tags:
       - { name: paramconverter }
   ctools.typed_data.resolver:
@@ -30,3 +30,8 @@ services:
     class: Drupal\ctools\TypeResolver\EntityReferenceTypeResolver
     tags:
       - { name: type_resolver, priority: 10 }
+  ctools.access:
+    class: Drupal\ctools\Access\TempstoreAccess
+    arguments: ['@user.shared_tempstore']
+    tags:
+      - { name: access_check, applies_to: _ctools_access }

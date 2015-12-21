@@ -9,6 +9,7 @@ namespace Drupal\ctools\ParamConverter;
 
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\ParamConverter\ParamConverterInterface;
 use Drupal\user\SharedTempStoreFactory;
 use Symfony\Component\Routing\Route;
@@ -92,12 +93,20 @@ class TempstoreConverter implements ParamConverterInterface {
   protected $tempstore;
 
   /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
    * Constructs a TempstoreConverter.
    *
    * @param \Drupal\user\SharedTempStoreFactory $tempstore
    */
-  public function __construct(SharedTempStoreFactory $tempstore) {
+  public function __construct(SharedTempStoreFactory $tempstore, EntityTypeManagerInterface $entity_type_manager) {
     $this->tempstore = $tempstore;
+    $this->entityTypeManager = $entity_type_manager;
   }
 
   /**
@@ -105,8 +114,7 @@ class TempstoreConverter implements ParamConverterInterface {
    */
   public function convert($value, $definition, $name, array $defaults) {
     $tempstore_id = !empty($definition['tempstore_id']) ? $definition['tempstore_id'] : $defaults['tempstore_id'];
-    $value = $this->convertVariable($value, $defaults);
-    $machine_name = $defaults[$value];
+    $machine_name = $this->convertVariable($value, $defaults);
 
     list(, $parts) = explode(':', $definition['type'], 2);
     $parts = explode(':', $parts);
@@ -114,8 +122,19 @@ class TempstoreConverter implements ParamConverterInterface {
       $parts[$key] = $this->convertVariable($part, $defaults);
     }
     $cached_values = $this->tempstore->get($tempstore_id)->get($machine_name);
-    $value = NestedArray::getValue($cached_values, $parts, $key_exists);
-    return $key_exists ? $value : NULL;
+    // Entity type upcasting is most common, so we just assume that here.
+    // @todo see if there's a better way to do this.
+    if (!$cached_values && $this->entityTypeManager->hasDefinition($name)) {
+      $value = $this->entityTypeManager->getStorage($name)->load($machine_name);
+      return $value;
+    }
+    elseif (!$cached_values) {
+      return NULL;
+    }
+    else {
+      $value = NestedArray::getValue($cached_values, $parts, $key_exists);
+      return $key_exists ? $value : NULL;
+    }
   }
 
   /**
