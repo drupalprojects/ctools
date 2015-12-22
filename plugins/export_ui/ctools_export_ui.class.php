@@ -852,7 +852,8 @@ class ctools_export_ui {
 
     // Figure out if this is a new instance of the wizard
     if (empty($form_state['step'])) {
-      $form_state['step'] = reset(array_keys($form_info['order']));
+      $keys = array_keys($form_info['order']);
+      $form_state['step'] = reset($keys);
     }
 
     if (empty($form_info['order'][$form_state['step']]) && empty($form_info['forms'][$form_state['step']])) {
