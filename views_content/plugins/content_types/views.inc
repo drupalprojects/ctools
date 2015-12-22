@@ -120,9 +120,11 @@ function views_content_views_content_type_render($subtype, $conf, $panel_args, $
     $args = str_replace("%$id", $arg, $args);
   }
 
-  foreach ($panel_args as $id => $arg) {
-    if (is_string($arg)) {
-      $args = str_replace("@$id", $arg, $args);
+  if (!empty($panel_args) && is_array($panel_args)) {
+    foreach ($panel_args as $id => $arg) {
+      if (is_string($arg)) {
+        $args = str_replace("@$id", $arg, $args);
+      }
     }
   }
 
