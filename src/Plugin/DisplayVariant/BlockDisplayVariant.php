@@ -159,8 +159,8 @@ abstract class BlockDisplayVariant extends VariantBase implements ContextAwareVa
    */
   public function setConfiguration(array $configuration) {
     parent::setConfiguration($configuration);
-    $this->getSelectionConditions()->setConfiguration($configuration['selection_conditions']);
-    $this->getBlockCollection()->setConfiguration($configuration['blocks']);
+    $this->getSelectionConditions()->setConfiguration($this->configuration['selection_conditions']);
+    $this->getBlockCollection()->setConfiguration($this->configuration['blocks']);
     return $this;
   }
 
