@@ -8,6 +8,7 @@
 namespace Drupal\ctools\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
@@ -96,8 +97,14 @@ class EntityView extends BlockBase implements ContextAwarePluginInterface, Conta
   public function build() {
     /** @var $entity \Drupal\Core\Entity\EntityInterface */
     $entity = $this->getContextValue('entity');
+
     $view_builder = $this->entityManager->getViewBuilder($entity->getEntityTypeId());
-    return $view_builder->view($entity, $this->configuration['view_mode']);
+    $build = $view_builder->view($entity, $this->configuration['view_mode']);
+
+    CacheableMetadata::createFromObject($this->getContext('entity'))
+      ->applyTo($build);
+
+    return $build;
   }
 
 }
