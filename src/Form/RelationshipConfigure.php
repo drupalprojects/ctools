@@ -75,16 +75,16 @@ abstract class RelationshipConfigure extends FormBase {
       '#type' => 'value',
       '#value' => $context_object,
     ];
-    $form['context_data'] = [
-      '#type' => 'item',
-      '#title' => $this->resolver->getLabelByToken($context, $contexts),
-      '#markup' => $context_object->getContextDefinition()->getDataType(),
-    ];
     $form['label'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Context label'),
-      '#default_value' => !empty($contexts[$context]) ? $contexts[$context]->getContextDefinition()->getLabel() : '',
+      '#default_value' => !empty($contexts[$context]) ? $contexts[$context]->getContextDefinition()->getLabel() : $this->resolver->getLabelByToken($context, $contexts),
       '#required' => TRUE,
+    ];
+    $form['context_data'] = [
+      '#type' => 'item',
+      '#title' => $this->t('Data type'),
+      '#markup' => $context_object->getContextDefinition()->getDataType(),
     ];
     $form['submit'] = [
       '#type' => 'submit',

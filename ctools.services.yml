@@ -20,16 +20,6 @@ services:
   ctools.typed_data.resolver:
     class: Drupal\ctools\TypedDataResolver
     arguments: ['@typed_data_manager', '@string_translation']
-    tags:
-      - { name: service_collector, tag: type_resolver, call: addTypeResolver }
-  ctools.default.type.resolver:
-      class: Drupal\ctools\TypeResolver\DefaultTypeResolver
-      tags:
-        - { name: type_resolver }
-  ctools.entity_reference.type.resolver:
-    class: Drupal\ctools\TypeResolver\EntityReferenceTypeResolver
-    tags:
-      - { name: type_resolver, priority: 10 }
   ctools.access:
     class: Drupal\ctools\Access\TempstoreAccess
     arguments: ['@user.shared_tempstore']

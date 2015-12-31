@@ -97,7 +97,7 @@ abstract class ManageContext extends FormBase {
   protected function getAvailableRelationships($cached_values) {
     /** @var \Drupal\ctools\TypedDataResolver $resolver */
     $resolver = \Drupal::service('ctools.typed_data.resolver');
-    return $resolver->getTokensOfDataType($this->getContexts($cached_values), $this->property_types);
+    return $resolver->getTokensForContexts($this->getContexts($cached_values));
   }
 
   /**

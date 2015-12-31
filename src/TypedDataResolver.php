@@ -10,10 +10,14 @@ namespace Drupal\ctools;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Plugin\Context\Context;
 use Drupal\Core\Plugin\Context\ContextDefinition;
+use Drupal\Core\Plugin\Context\ContextDefinitionInterface;
 use Drupal\Core\Plugin\Context\ContextInterface;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Drupal\Core\TypedData\ComplexDataDefinitionInterface;
+use Drupal\Core\TypedData\DataReferenceDefinitionInterface;
+use Drupal\Core\TypedData\DataReferenceInterface;
 use Drupal\Core\TypedData\ListDataDefinitionInterface;
+use Drupal\Core\TypedData\ListInterface;
 use Drupal\Core\TypedData\TypedDataManagerInterface;
 
 class TypedDataResolver {
@@ -33,20 +37,6 @@ class TypedDataResolver {
   protected $translation;
 
   /**
-   * The unsorted array of resolvers.
-   *
-   * @var \Drupal\ctools\TypeResolverInterface[]
-   */
-  protected $resolvers;
-
-  /**
-   * An array of resolvers sorted by priority.
-   *
-   * @var \Drupal\ctools\TypeResolverInterface[]|NULL
-   */
-  protected $sortedResolvers;
-
-  /**
    * @param \Drupal\Core\TypedData\TypedDataManagerInterface $manager
    *   The typed data manager.
    * @param \Drupal\Core\StringTranslation\TranslationInterface $translation
@@ -58,82 +48,88 @@ class TypedDataResolver {
   }
 
   /**
-   * A method used by the service container to add new type resolvers.
-   *
-   * @param \Drupal\ctools\TypeResolverInterface $resolver
-   *   A resolver to add to the available typed data resolvers.
-   * @param int $priority
-   *   The resolvers priority in relation to other resolvers.
-   *   Higher priority takes precedence.
-   */
-  public function addTypeResolver(TypeResolverInterface $resolver, $priority = 0) {
-    $this->resolvers[$priority][] = $resolver;
-    $this->sortedResolvers = NULL;
-  }
-
-  /**
-   * Converts a ContextInterface object into a TypedDataInterface object.
-   *
-   * This method respects values on the Context object and will ensure they're
-   * maintained on the returned typed data object.
-   *
-   * @param \Drupal\Core\Plugin\Context\ContextInterface $context
-   *   The context object to convert to a typed data object.
-   *
-   * @return \Drupal\Core\TypedData\TypedDataInterface
-   *   A typed data representation of the supplied context object.
-   */
-  public function getTypedDataFromContext(ContextInterface $context) {
-    $data_type = $context->getContextDefinition()->getDataType();
-    $definition = $this->manager->createDataDefinition($data_type);
-    $typed_data = $context->hasContextValue() ? $this->manager->create($definition, $context->getContextValue()) : $typed_data = $this->manager->create($definition);
-    return $typed_data;
-  }
-
-  /**
-   * Gets the contextually relevant data type of a property.
-   *
-   * Properties may not return a useful data type when they reference a
-   * subsequent object such as language, date or entity_reference fields. This
-   * method allows for another set of classes to be involved in the decision of
-   * what data type to return from a property. In the case of entity_reference,
-   * instead of returning "entity_reference" as the data type, this will return
-   * the data type of the thing it references, such as entity:user.
-   *
-   * @param \Drupal\Core\TypedData\ListDataDefinitionInterface $property
-   *   The property to extract an appropriate contextually relevant data type.
-   *
-   * @return string
-   *   The data type of the data held by the property.
-   */
-  public function getDataTypeFromProperty(ListDataDefinitionInterface $property) {
-    $resolver = $this->getFirstApplicableTypeResolver($property);
-    return $resolver->getDataTypeFromProperty($property);
-  }
-
-  /**
    * Convert a property to a context.
    *
    * This method will respect the value of contexts as well, so if a context
    * object is pass that contains a value, the appropriate value will be
    * extracted and injected into the resulting context object if available.
    *
-   * @param string $property_name
+   * @param string $property_path
    *   The name of the property.
-   * @param \Drupal\Core\TypedData\ListDataDefinitionInterface $property
-   *   The property object data definition.
    * @param \Drupal\Core\Plugin\Context\ContextInterface $context
    *   The context from which we will extract values if available.
    *
    * @return \Drupal\Core\Plugin\Context\Context
    *   A context object that represents the definition & value of the property.
+   * @throws \Exception
    */
-  public function getContextFromProperty($property_name, ListDataDefinitionInterface $property, ContextInterface $context) {
+  public function getContextFromProperty($property_path, ContextInterface $context) {
     $value = NULL;
+    $data_definition = NULL;
     if ($context->hasContextValue()) {
-      $value = $this->getFirstApplicableTypeResolver($property)->getValueFromProperty($context->getContextValue()->$property_name);
+      /** @var \Drupal\Core\TypedData\ComplexDataInterface $data */
+      $data = $context->getContextData();
+      foreach (explode(':', $property_path) as $name) {
+
+        if ($data instanceof ListInterface) {
+          if (!is_numeric($name)) {
+            // Implicitly default to delta 0 for lists when not specified.
+            $data = $data->first();
+          }
+          else {
+            // If we have a delta, fetch it and continue with the next part.
+            $data = $data->get($name);
+            continue;
+          }
+        }
+
+        // Forward to the target value if this is a data reference.
+        if ($data instanceof DataReferenceInterface) {
+          $data = $data->getTarget();
+        }
+
+        if (!$data->getDataDefinition()->getPropertyDefinition($name)) {
+          throw new \Exception("Unknown property $name in property path $property_path");
+        }
+        $data = $data->get($name);
+      }
+
+      $value = $data->getValue();
+      $data_definition = $data instanceof DataReferenceInterface ? $data->getDataDefinition()->getTargetDefinition() : $data->getDataDefinition();
     }
-    $context_definition = new ContextDefinition($this->getDataTypeFromProperty($property));
+    else {
+      /** @var \Drupal\Core\TypedData\ComplexDataDefinitionInterface $data_definition */
+      $data_definition = $context->getContextDefinition()->getDataDefinition();
+      foreach (explode(':', $property_path) as $name) {
+
+        if ($data_definition instanceof ListDataDefinitionInterface) {
+          $data_definition = $data_definition->getItemDefinition();
+
+          // If the delta was specified explicitly, continue with the next part.
+          if (is_numeric($name)) {
+            continue;
+          }
+        }
+
+        // Forward to the target definition if this is a data reference
+        // definition.
+        if ($data_definition instanceof DataReferenceDefinitionInterface) {
+          $data_definition = $data_definition->getTargetDefinition();
+        }
+
+        if (!$data_definition->getPropertyDefinition($name)) {
+          throw new \Exception("Unknown property $name in property path $property_path");
+        }
+        $data_definition = $data_definition->getPropertyDefinition($name);
+      }
+
+      // Forward to the target definition if this is a data reference
+      // definition.
+      if ($data_definition instanceof DataReferenceDefinitionInterface) {
+        $data_definition = $data_definition->getTargetDefinition();
+      }
+    }
+    $context_definition = new ContextDefinition($data_definition->getDataType(), $data_definition->getLabel(), $data_definition->isRequired(), FALSE, $data_definition->getDescription());
     return new Context($context_definition, $value);
   }
 
@@ -166,28 +162,11 @@ class TypedDataResolver {
       return $contexts[$token];
     }
     else {
-      // Find the base context id and property, sub token is optional, so make
-      // sure we have enough array elements.
-      list($base, $property_name, $subtoken) = array_merge(explode(':', $token, 3), array(NULL));
+      list($base, $property_path) = explode(':', $token, 2);
       // A base must always be set. This method recursively calls itself
       // setting bases for this reason.
       if (!empty($contexts[$base])) {
-        // createDataDefinition returns objects that implement this interface,
-        // but that is not immediately obvious without a lot of digging.
-        /** @var \Drupal\Core\TypedData\ComplexDataDefinitionInterface $context */
-        $context = $this->manager->createDataDefinition($contexts[$base]->getContextDefinition()
-          ->getDataType());
-        /**
-         * @var \Drupal\Core\Field\BaseFieldDefinition $property
-         */
-        $property = $context->getPropertyDefinition($property_name);
-        if ($property) {
-          // Let's just add this to the contexts array. We can return it
-          // directly or recurse over it again with the new token name.
-          $new_token = "$base--$property_name";
-          $contexts[$new_token] = $this->getContextFromProperty($property_name, $property, $contexts[$base]);
-          return empty($subtoken) ? $contexts[$new_token] : $this->convertTokenToContext("$new_token:$subtoken", $contexts);
-        }
+        return $this->getContextFromProperty($property_path,  $contexts[$base]);
       }
       // @todo improve this exception message.
       throw new ContextNotFoundException("The requested context was not found in the supplied array of contexts.");
@@ -206,57 +185,29 @@ class TypedDataResolver {
    *   The administrative label of $token.
    */
   public function getLabelByToken($token, $contexts) {
-    $token = strrev($token);
-    list($property_name, $base) = explode(':', $token, 2);
-    $base = strrev($base);
-    $property_name = strrev($property_name);
-    if (isset($contexts[$base])) {
-      /** @var \Drupal\Core\TypedData\ComplexDataDefinitionInterface $definition */
-      $definition = $this->manager->createDataDefinition($contexts[$base]->getContextDefinition()->getDataType());
-      /**
-       * @var \Drupal\Core\Field\BaseFieldDefinition $property
-       */
-      $property = $definition->getPropertyDefinition($property_name);
-      if ($property) {
-        return $this->getRelatedPropertyLabel($property, $contexts[$base], $base);
-      }
+    // @todo Optimize this by allowing to limit the desired token?
+    $tokens = $this->getTokensForContexts($contexts);
+    if (isset($tokens[$token])) {
+      return $tokens[$token];
     }
   }
 
   /**
-   * Extracts an array of tokens and labels of the required data type.
-   *
-   * This method can specify a data type to extract from contexts. A classic
-   * example of this would be wanting to find all the 'entity_reference'
-   * properties on an entity. This method will iterate over all supplied
-   * contexts returning an array of tokens of type 'entity_reference' with a
-   * corresponding label that denotes their relationship to the provided
-   * array of contexts.
+   * Extracts an array of tokens and labels.
    *
    * @param \Drupal\Core\Plugin\Context\ContextInterface[] $contexts
    *   The array of contexts with which we are currently dealing.
-   * @param mixed string|array $data_types
-   *   Data types to extract from the array of contexts.
    *
    * @return array
    *   An array of token keys and corresponding labels.
    */
-  public function getTokensOfDataType($contexts, $data_types) {
-    if (!is_array($data_types)) {
-      $data_types = [$data_types];
-    }
+  public function getTokensForContexts($contexts) {
     $tokens = [];
     foreach ($contexts as $context_id => $context) {
-      $data_definition = $this->manager->createDataDefinition($context->getContextDefinition()
-        ->getDataType());
-      /**
-       * @var \Drupal\Core\Field\BaseFieldDefinition $property
-       */
+      $data_definition = $context->getContextDefinition()->getDataDefinition();
       if ($data_definition instanceof ComplexDataDefinitionInterface) {
-        foreach ($data_definition->getPropertyDefinitions() as $property_name => $property) {
-          if (in_array($property->getType(), $data_types)) {
-            $tokens["$context_id:$property_name"] = $this->getRelatedPropertyLabel($property, $context, $context_id);
-          }
+        foreach ($this->getTokensFromComplexData($data_definition) as $token => $label) {
+          $tokens["$context_id:$token"] = $data_definition->getLabel() . ': ' . $label;
         }
       }
     }
@@ -264,76 +215,43 @@ class TypedDataResolver {
   }
 
   /**
-   * Provides a label for a property by its relationship to a context.
+   * Returns tokens for a complex data definition.
    *
-   * @param \Drupal\Core\Field\BaseFieldDefinition $property
-   *   The property for which to generate a label.
-   * @param \Drupal\Core\Plugin\Context\ContextInterface $context
-   *   The context to which the property is related.
-   * @param $context_id
-   *   The context from the previous parameter's id in the contexts array.
+   * @param \Drupal\Core\TypedData\ComplexDataDefinitionInterface $complex_data_definition
    *
-   * @return \Drupal\Core\StringTranslation\TranslatableMarkup
-   *   A label for this property for use in user interfaces.
+   * @return array
+   *   An array of token keys and corresponding labels.
    */
-  protected function getRelatedPropertyLabel(BaseFieldDefinition $property, ContextInterface $context, $context_id) {
-    /** @var \Drupal\Core\StringTranslation\TranslatableMarkup $label */
-    $label = $property->getFieldStorageDefinition()->getLabel();
-    $string = "@context_id: {$label->getUntranslatedString()}";
-    $args = $label->getArguments();
-    $args['@context_id'] = !empty($context->getContextDefinition()
-      ->getLabel()) ? $context->getContextDefinition()
-      ->getLabel() : "$context_id";
-    $options = $label->getOptions();
-    // @todo we need to really think about this label. It informs the UI extensively and should be as clear as possible.
-    return $this->translation->translate($string, $args, $options);
-  }
+  protected function getTokensFromComplexData(ComplexDataDefinitionInterface $complex_data_definition) {
+    $tokens = [];
+    // Loop over all properties.
+    foreach ($complex_data_definition->getPropertyDefinitions() as $property_name => $property_definition) {
 
-  /**
-   * Returns the first applicable resolver for the given type definition.
-   *
-   * @param mixed $type
-   *   Any parameter that could be passed to
-   *     \Drupal\ctools\TypeResolverInterface::applies
-   *     or
-   *     \Drupal\ctools\TypeResolverInterface::appliesToProperty
-   *   is viable for this method.
-   *
-   * @return \Drupal\ctools\TypeResolverInterface|null
-   */
-  protected function getFirstApplicableTypeResolver($type) {
-    if (is_string($type)) {
-      $method = 'applies';
-    }
-    elseif ($type instanceof ListDataDefinitionInterface) {
-      $method = 'appliesToProperty';
-    }
-    foreach ($this->getSortedResolvers() as $resolver) {
-      if ($resolver->$method($type)) {
-        return $resolver;
+      // Item definitions do not always have a label. Use the list definition
+      // label if the item does not have one.
+      $property_label = $property_definition->getLabel();
+      if ($property_definition instanceof ListDataDefinitionInterface) {
+        $property_definition = $property_definition->getItemDefinition();
+        $property_label = $property_definition->getLabel() ?: $property_label;
+      }
+
+      // If the property is complex too, recurse to find child properties.
+      if ($property_definition instanceof ComplexDataDefinitionInterface) {
+        $property_tokens = $this->getTokensFromComplexData($property_definition);
+        foreach ($property_tokens as $token => $label) {
+          $tokens[$property_name . ':' . $token] = count($property_tokens) > 1 ? ($property_label . ': ' . $label) : $property_label;
+        }
+      }
+
+      // Only expose references as tokens.
+      // @todo Consider to expose primitive and non-reference typed data
+      //   definitions too, like strings, integers and dates. The current UI
+      //   will not scale to that.
+      if ($property_definition instanceof DataReferenceDefinitionInterface) {
+        $tokens[$property_name] = $property_definition->getLabel();
       }
     }
-
-    return NULL;
-  }
-
-  /**
-   * Returns the priority sorted array of type resolvers.
-   *
-   * @return \Drupal\ctools\TypeResolverInterface[]
-   *   An array of type resolver objects.
-   */
-  protected function getSortedResolvers() {
-    if (!isset($this->sortedResolvers)) {
-      krsort($this->resolvers);
-
-      $this->sortedResolvers = [];
-      foreach ($this->resolvers as $resolvers) {
-        $this->sortedResolvers = array_merge($this->sortedResolvers, $resolvers);
-      }
-    }
-
-    return $this->sortedResolvers;
+    return $tokens;
   }
 
 }
