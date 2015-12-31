@@ -39,7 +39,7 @@ trait ConditionVariantTrait {
    *   The condition plugin manager.
    */
   protected function getConditionManager() {
-    if ($this->conditionManager) {
+    if (!$this->conditionManager) {
       $this->conditionManager = \Drupal::service('plugin.manager.condition');
     }
     return $this->conditionManager;
@@ -50,7 +50,7 @@ trait ConditionVariantTrait {
    */
   public function getSelectionConditions() {
     if (!$this->selectionConditionCollection) {
-      $this->selectionConditionCollection = new ConditionPluginCollection($this->conditionManager, $this->getSelectionConfiguration());
+      $this->selectionConditionCollection = new ConditionPluginCollection($this->getConditionManager(), $this->getSelectionConfiguration());
     }
     return $this->selectionConditionCollection;
   }

@@ -118,7 +118,9 @@ abstract class BlockDisplayVariant extends VariantBase implements ContextAwareVa
       $container->get('context.handler'),
       $container->get('current_user'),
       $container->get('uuid'),
-      $container->get('token')
+      $container->get('token'),
+      $container->get('plugin.manager.block'),
+      $container->get('plugin.manager.condition')
     );
   }
 
