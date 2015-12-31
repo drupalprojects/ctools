@@ -134,7 +134,7 @@ abstract class ConditionDelete extends ConfirmFormBase {
         '#type' => 'submit',
         '#value' => $this->getConfirmText(),
         '#validate' => array(
-          array($this, 'validate'),
+          array($this, 'validateForm'),
         ),
         '#submit' => array(
           array($this, 'submitForm'),
