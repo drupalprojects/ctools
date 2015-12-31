@@ -73,7 +73,7 @@ abstract class ManageConditions extends FormBase {
     $form['add'] = [
       '#type' => 'submit',
       '#name' => 'add',
-      '#value' => t('Configure Condition'),
+      '#value' => t('Add Condition'),
       '#ajax' => [
         'callback' => [$this, 'add'],
         'event' => 'click',
