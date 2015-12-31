@@ -19,6 +19,13 @@ trait ConditionVariantTrait {
   use ConditionAccessResolverTrait;
 
   /**
+   * The condition plugin manager.
+   *
+   * @var \Drupal\Core\Condition\ConditionManager
+   */
+  protected $conditionManager;
+
+  /**
    * The plugin collection that holds the selection condition plugins.
    *
    * @var \Drupal\Component\Plugin\LazyPluginCollection
@@ -26,11 +33,24 @@ trait ConditionVariantTrait {
   protected $selectionConditionCollection;
 
   /**
+   * Gets the condition plugin manager.
+   *
+   * @return \Drupal\Core\Condition\ConditionManager
+   *   The condition plugin manager.
+   */
+  protected function getConditionManager() {
+    if ($this->conditionManager) {
+      $this->conditionManager = \Drupal::service('plugin.manager.condition');
+    }
+    return $this->conditionManager;
+  }
+
+  /**
    * @see \Drupal\ctools\Plugin\ConditionVariantInterface::getSelectionConditions()
    */
   public function getSelectionConditions() {
     if (!$this->selectionConditionCollection) {
-      $this->selectionConditionCollection = new ConditionPluginCollection(\Drupal::service('plugin.manager.condition'), $this->getSelectionConfiguration());
+      $this->selectionConditionCollection = new ConditionPluginCollection($this->conditionManager, $this->getSelectionConfiguration());
     }
     return $this->selectionConditionCollection;
   }

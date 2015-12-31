@@ -13,6 +13,13 @@ namespace Drupal\ctools\Plugin;
 trait BlockVariantTrait {
 
   /**
+   * The block manager.
+   *
+   * @var \Drupal\Core\Block\BlockManager
+   */
+  protected $blockManager;
+
+  /**
    * The plugin collection that holds the block plugins.
    *
    * @var \Drupal\ctools\Plugin\BlockPluginCollection
@@ -85,6 +92,19 @@ trait BlockVariantTrait {
   }
 
   /**
+   * Gets the block plugin manager.
+   *
+   * @return \Drupal\Core\Block\BlockManager
+   *   The block plugin manager.
+   */
+  protected function getBlockManager() {
+    if (!$this->blockManager) {
+      $this->blockManager = \Drupal::service('plugin.manager.block');
+    }
+    return $this->blockManager;
+  }
+
+  /**
    * Returns the block plugins used for this display variant.
    *
    * @return \Drupal\Core\Block\BlockPluginInterface[]|\Drupal\ctools\Plugin\BlockPluginCollection
@@ -92,7 +112,7 @@ trait BlockVariantTrait {
    */
   protected function getBlockCollection() {
     if (!$this->blockPluginCollection) {
-      $this->blockPluginCollection = new BlockPluginCollection(\Drupal::service('plugin.manager.block'), $this->getBlockConfig());
+      $this->blockPluginCollection = new BlockPluginCollection($this->getBlockManager(), $this->getBlockConfig());
     }
     return $this->blockPluginCollection;
   }
