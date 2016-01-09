@@ -10,7 +10,6 @@ namespace Drupal\ctools\Plugin\DisplayVariant;
 use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Block\BlockManager;
 use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
-use Drupal\Core\Cache\RefinableCacheableDependencyTrait;
 use Drupal\Core\Condition\ConditionManager;
 use Drupal\Core\Display\VariantBase;
 use Drupal\Core\Display\ContextAwareVariantInterface;
@@ -22,18 +21,15 @@ use Drupal\Core\Utility\Token;
 use Drupal\ctools\Form\AjaxFormTrait;
 use Drupal\ctools\Plugin\BlockVariantInterface;
 use Drupal\ctools\Plugin\BlockVariantTrait;
-use Drupal\ctools\Plugin\ConditionVariantInterface;
-use Drupal\ctools\Plugin\ConditionVariantTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides a base class for a display variant that simply contains blocks.
  */
-abstract class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInterface, ConditionVariantInterface, ContainerFactoryPluginInterface, BlockVariantInterface, RefinableCacheableDependencyInterface {
+abstract class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInterface, ContainerFactoryPluginInterface, BlockVariantInterface, RefinableCacheableDependencyInterface {
 
   use AjaxFormTrait;
   use BlockVariantTrait;
-  use ConditionVariantTrait;
 
   /**
    * The context handler.
@@ -127,19 +123,9 @@ abstract class BlockDisplayVariant extends VariantBase implements ContextAwareVa
   /**
    * {@inheritdoc}
    */
-  public function access(AccountInterface $account = NULL) {
-    // Delegate to the conditions.
-    return $this->determineSelectionAccess($this->getContexts());
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function defaultConfiguration() {
     return parent::defaultConfiguration() + [
-      'blocks' => [],
-      'selection_conditions' => [],
-      'selection_logic' => 'and',
+      'blocks' => []
     ];
   }
 
@@ -150,9 +136,6 @@ abstract class BlockDisplayVariant extends VariantBase implements ContextAwareVa
     foreach ($this->getBlockCollection() as $instance) {
       $this->calculatePluginDependencies($instance);
     }
-    foreach ($this->getSelectionConditions() as $instance) {
-      $this->calculatePluginDependencies($instance);
-    }
     return $this->dependencies;
   }
 
@@ -161,7 +144,6 @@ abstract class BlockDisplayVariant extends VariantBase implements ContextAwareVa
    */
   public function getConfiguration() {
     return [
-      'selection_conditions' => $this->getSelectionConditions()->getConfiguration(),
       'blocks' => $this->getBlockCollection()->getConfiguration(),
     ] + parent::getConfiguration();
   }
@@ -171,16 +153,8 @@ abstract class BlockDisplayVariant extends VariantBase implements ContextAwareVa
    */
   public function setConfiguration(array $configuration) {
     parent::setConfiguration($configuration);
-    $this->getSelectionConditions()->setConfiguration($this->configuration['selection_conditions']);
     $this->getBlockCollection()->setConfiguration($this->configuration['blocks']);
     return $this;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getSelectionLogic() {
-    return $this->configuration['selection_logic'];
   }
 
   /**
@@ -211,13 +185,6 @@ abstract class BlockDisplayVariant extends VariantBase implements ContextAwareVa
    */
   protected function contextHandler() {
     return $this->contextHandler;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function getSelectionConfiguration() {
-    return $this->configuration['selection_conditions'];
   }
 
   /**

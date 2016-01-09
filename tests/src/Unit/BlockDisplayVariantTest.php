@@ -27,31 +27,6 @@ use Drupal\Tests\UnitTestCase;
 class BlockDisplayVariantTest extends UnitTestCase {
 
   /**
-   * Tests the access() method.
-   *
-   * @covers ::access
-   */
-  public function testAccess() {
-    $display_variant = $this->getMockBuilder(TestBlockDisplayVariant::class)
-      ->disableOriginalConstructor()
-      ->setMethods(['determineSelectionAccess'])
-      ->getMock();
-    $display_variant->expects($this->once())
-      ->method('determineSelectionAccess')
-      ->willReturn(FALSE);
-    $this->assertSame(FALSE, $display_variant->access());
-
-    $display_variant = $this->getMockBuilder(TestBlockDisplayVariant::class)
-      ->disableOriginalConstructor()
-      ->setMethods(['determineSelectionAccess'])
-      ->getMock();
-    $display_variant->expects($this->once())
-      ->method('determineSelectionAccess')
-      ->willReturn(TRUE);
-    $this->assertSame(TRUE, $display_variant->access());
-  }
-
-  /**
    * Tests the submitConfigurationForm() method.
    *
    * @covers ::submitConfigurationForm

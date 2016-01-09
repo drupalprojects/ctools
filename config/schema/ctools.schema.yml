@@ -39,15 +39,6 @@ ctools.block_display_variant:
   type: display_variant.plugin
   label: 'Block display variant'
   mapping:
-    selection_logic:
-      type: string
-      label: 'Selection logic'
-    selection_conditions:
-      type: sequence
-      label: 'Selection Conditions'
-      sequence:
-        - type: condition.plugin.[id]
-          label: 'Selection Condition'
     blocks:
       type: sequence
       label: 'Blocks'
