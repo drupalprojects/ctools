@@ -75,7 +75,7 @@ class TypedDataRelationshipPluginTest extends KernelTestBase {
       'name' => 'Page'
     ]);
     node_add_body_field($page);
-    $article = $this->createEntity('node_type', [
+    $this->createEntity('node_type', [
       'type' => 'article',
       'name' => 'Article'
     ]);
