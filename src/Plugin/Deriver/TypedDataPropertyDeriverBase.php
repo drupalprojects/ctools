@@ -13,6 +13,8 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Drupal\Core\TypedData\ComplexDataInterface;
 use Drupal\Core\TypedData\DataDefinitionInterface;
+use Drupal\Core\TypedData\DataReferenceDefinitionInterface;
+use Drupal\Core\TypedData\ListDataDefinitionInterface;
 use Drupal\Core\TypedData\TypedDataManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -62,6 +64,21 @@ abstract class TypedDataPropertyDeriverBase extends DeriverBase implements Conta
       }
     }
     return $this->derivatives;
+  }
+
+  /**
+   * @param $property_definition
+   *
+   * @return mixed
+   */
+  protected function getDataType($property_definition) {
+    if ($property_definition instanceof DataReferenceDefinitionInterface) {
+      return $property_definition->getTargetDefinition()->getDataType();
+    }
+    if ($property_definition instanceof ListDataDefinitionInterface) {
+      return $property_definition->getItemDefinition()->getDataType();
+    }
+    return $property_definition->getDataType();
   }
 
   /**

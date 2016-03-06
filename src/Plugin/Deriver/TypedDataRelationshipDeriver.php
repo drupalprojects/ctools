@@ -10,8 +10,6 @@ namespace Drupal\ctools\Plugin\Deriver;
 use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\Core\Plugin\Discovery\ContainerDeriverInterface;
 use Drupal\Core\TypedData\DataDefinitionInterface;
-use Drupal\Core\TypedData\DataReferenceDefinitionInterface;
-use Drupal\Core\TypedData\ListDataDefinitionInterface;
 use Drupal\field\FieldConfigInterface;
 
 class TypedDataRelationshipDeriver extends TypedDataPropertyDeriverBase implements ContainerDeriverInterface {
@@ -76,16 +74,6 @@ class TypedDataRelationshipDeriver extends TypedDataPropertyDeriverBase implemen
         $context_definition->addConstraint('Bundle', $bundles);
       }
     }
-  }
-
-  protected function getDataType($property_definition) {
-    if ($property_definition instanceof DataReferenceDefinitionInterface) {
-      return $property_definition->getTargetDefinition()->getDataType();
-    }
-    if ($property_definition instanceof ListDataDefinitionInterface) {
-      return $property_definition->getItemDefinition()->getDataType();
-    }
-    return $property_definition->getDataType();
   }
 
 }

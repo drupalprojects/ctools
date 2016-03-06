@@ -1,17 +1,15 @@
 <?php
 /**
  * @file
- * Contains TypedDataRelationship.php
+ * Contains \Drupal\ctools\Plugin\Relationship\TypedDataRelationship.
  */
 
 namespace Drupal\ctools\Plugin\Relationship;
 
 
-use Drupal\Core\Field\EntityReferenceFieldItemListInterface;
 use Drupal\Core\Plugin\Context\Context;
 use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\Core\Plugin\Context\ContextInterface;
-use Drupal\Core\TypedData\ComplexDataInterface;
 use Drupal\Core\TypedData\DataReferenceInterface;
 use Drupal\Core\TypedData\ListInterface;
 use Drupal\ctools\Annotation\Relationship;
