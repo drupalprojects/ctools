@@ -6,12 +6,6 @@
 
 namespace Drupal\Tests\ctools\Kernel;
 
-use Drupal\Core\Plugin\Context\Context;
-use Drupal\Core\Plugin\Context\ContextDefinition;
-use Drupal\Core\Plugin\Context\ContextInterface;
-use Drupal\Core\StringTranslation\TranslatableMarkup;
-use Drupal\Core\TypedData\DataReferenceInterface;
-use Drupal\Core\TypedData\ListInterface;
 use Drupal\node\Entity\NodeType;
 use Drupal\user\Entity\User;
 
@@ -21,24 +15,7 @@ use Drupal\user\Entity\User;
  */
 class TypedDataEntityRelationshipPluginTest extends RelationshipsTestBase {
 
-  /**
-   * @covers ::getRelationshipValue
-   */
-  public function testRelationshipValue() {
-    /** @var \Drupal\ctools\Plugin\RelationshipInterface $nid_plugin */
-    $nid_plugin = $this->relationshipManager->createInstance('typed_data_entity_relationship:entity:node:type');
-    $nid_plugin->setContextValue('base', $this->entities['node1']);
-    $value = $nid_plugin->getRelationshipValue();
-    $this->assertSame($this->entities['node1']->get('type')->entity, $value);
-
-    /** @var \Drupal\ctools\Plugin\RelationshipInterface $uid_plugin */
-    $uid_plugin = $this->relationshipManager->createInstance('typed_data_entity_relationship:entity:node:uid');
-    $uid_plugin->setContextValue('base', $this->entities['node3']);
-    $value = $uid_plugin->getRelationshipValue();
-    $this->assertSame($this->entities['node3']->get('uid')->first()->entity, $value);
-  }
-
-  /**
+    /**
    * @covers ::getName
    */
   public function testRelationshipName() {
@@ -55,17 +32,19 @@ class TypedDataEntityRelationshipPluginTest extends RelationshipsTestBase {
    * @covers ::getRelationship
    */
   public function testRelationship() {
-    /** @var \Drupal\ctools\Plugin\RelationshipInterface $nid_plugin */
-    $nid_plugin = $this->relationshipManager->createInstance('typed_data_entity_relationship:entity:node:type');
-    $nid_plugin->setContextValue('base', $this->entities['node1']);
-    $value = $nid_plugin->getRelationship();
-    $this->assertTrue($value->getContextValue()->entity instanceof NodeType);
+    /** @var \Drupal\ctools\Plugin\RelationshipInterface $type_plugin */
+    $type_plugin = $this->relationshipManager->createInstance('typed_data_entity_relationship:entity:node:type');
+    $type_plugin->setContextValue('base', $this->entities['node1']);
+    $relationship = $type_plugin->getRelationship();
+    $this->assertTrue($relationship->getContextValue() instanceof NodeType);
+    $this->assertSame('entity:node_type', $relationship->getContextDefinition()->getDataType());
 
     /** @var \Drupal\ctools\Plugin\RelationshipInterface $uid_plugin */
     $uid_plugin = $this->relationshipManager->createInstance('typed_data_entity_relationship:entity:node:uid');
     $uid_plugin->setContextValue('base', $this->entities['node3']);
-    $value = $uid_plugin->getRelationship();
-    $this->assertTrue($value->getContextValue()->entity instanceof User);
+    $relationship = $uid_plugin->getRelationship();
+    $this->assertTrue($relationship->getContextValue() instanceof User);
+    $this->assertSame('entity:user', $relationship->getContextDefinition()->getDataType());
   }
 
 }

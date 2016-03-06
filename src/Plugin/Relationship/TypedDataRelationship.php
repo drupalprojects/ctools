@@ -7,6 +7,8 @@
 namespace Drupal\ctools\Plugin\Relationship;
 
 
+use Drupal\Core\Field\FieldItemInterface;
+use Drupal\Core\Field\TypedData\FieldItemDataDefinition;
 use Drupal\Core\Plugin\Context\Context;
 use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\Core\Plugin\Context\ContextInterface;
@@ -29,7 +31,8 @@ class TypedDataRelationship extends RelationshipBase {
   public function getRelationship() {
     $plugin_definition = $this->getPluginDefinition();
 
-    $context_definition = new ContextDefinition($plugin_definition['data_type'], $plugin_definition['label']);
+    $data_type = $plugin_definition['data_type'];
+    $context_definition = new ContextDefinition($data_type, $plugin_definition['label']);
     $context_value = NULL;
 
     // If the 'base' context has a value, then get the property value to put on
@@ -37,7 +40,8 @@ class TypedDataRelationship extends RelationshipBase {
     // return the context with the right definition and no value).
     if ($this->getContext('base')->hasContextValue()) {
       $data = $this->getData($this->getContext('base'));
-      $context_value = $data->getValue();
+      $property = $this->getMainPropertyName($data);
+      $context_value = $data->get($property)->getValue();
     }
 
     $context_definition->setDefaultValue($context_value);
@@ -63,18 +67,15 @@ class TypedDataRelationship extends RelationshipBase {
     return $data;
   }
 
-  protected function getMainPropertyName() {
-    /** @var \Drupal\Core\Field\TypedData\FieldItemDataDefinition $data */
-    $data = $this->getRelationship()->getContextData();
-    $definition = $data->getFieldDefinition();
-    return $definition->getFieldStorageDefinition()->getMainPropertyName();
+  protected function getMainPropertyName(FieldItemInterface $data) {
+    return $data->getFieldDefinition()->getFieldStorageDefinition()->getMainPropertyName();
   }
 
   public function getRelationshipValue() {
     $property = $this->getMainPropertyName();
     /** @var \Drupal\Core\TypedData\ComplexDataInterface $data */
     $data = $this->getRelationship()->getContextData();
-    return $data->get($property)->getValue();
+    $data->get($property)->getValue();
   }
 
 }

@@ -29,10 +29,4 @@ interface RelationshipInterface extends ContextAwarePluginInterface, DerivativeI
    */
   public function getName();
 
-  /**
-   * Returns the literal value of the relationship instead of the full context.
-   *
-   * @return mixed
-   */
-  public function getRelationshipValue();
 }

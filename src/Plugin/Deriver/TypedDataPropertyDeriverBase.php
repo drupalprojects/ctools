@@ -8,6 +8,7 @@ namespace Drupal\ctools\Plugin\Deriver;
 
 
 use Drupal\Component\Plugin\Derivative\DeriverBase;
+use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Plugin\Discovery\ContainerDeriverInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\StringTranslation\TranslationInterface;
@@ -16,6 +17,7 @@ use Drupal\Core\TypedData\DataDefinitionInterface;
 use Drupal\Core\TypedData\DataReferenceDefinitionInterface;
 use Drupal\Core\TypedData\ListDataDefinitionInterface;
 use Drupal\Core\TypedData\TypedDataManagerInterface;
+use Drupal\field\Entity\FieldConfig;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 abstract class TypedDataPropertyDeriverBase extends DeriverBase implements ContainerDeriverInterface {
@@ -59,7 +61,9 @@ abstract class TypedDataPropertyDeriverBase extends DeriverBase implements Conta
         /** @var \Drupal\Core\TypedData\ComplexDataDefinitionInterface $base_definition */
         $base_definition = $this->typedDataManager->createDataDefinition($data_type_id);
         foreach ($base_definition->getPropertyDefinitions() as $property_name => $property_definition) {
-          $this->generateDerivativeDefinition($base_plugin_definition, $data_type_id, $data_type_definition, $base_definition, $property_name, $property_definition);
+          if ($property_definition instanceof BaseFieldDefinition || $property_definition instanceof FieldConfig) {
+            $this->generateDerivativeDefinition($base_plugin_definition, $data_type_id, $data_type_definition, $base_definition, $property_name, $property_definition);
+          }
         }
       }
     }

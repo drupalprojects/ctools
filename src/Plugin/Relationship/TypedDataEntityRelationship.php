@@ -22,7 +22,8 @@ class TypedDataEntityRelationship extends TypedDataRelationship {
   public function getRelationship() {
     $plugin_definition = $this->getPluginDefinition();
 
-    $context_definition = new ContextDefinition($plugin_definition['data_type'], $plugin_definition['label']);
+    $entity_type = $this->getData($this->getContext('base'))->getDataDefinition()->getSetting('target_type');
+    $context_definition = new ContextDefinition("entity:$entity_type", $plugin_definition['label']);
     $context_value = NULL;
 
     // If the 'base' context has a value, then get the property value to put on
@@ -33,16 +34,7 @@ class TypedDataEntityRelationship extends TypedDataRelationship {
     }
 
     $context_definition->setDefaultValue($context_value);
-    return new Context($context_definition, $context_value);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getRelationshipValue() {
-    /** @var \Drupal\Core\TypedData\ComplexDataInterface $data */
-    $data = $this->getRelationship()->getContextData();
-    return $data->entity;
+    return new Context($context_definition, $context_value->entity);
   }
 
 }

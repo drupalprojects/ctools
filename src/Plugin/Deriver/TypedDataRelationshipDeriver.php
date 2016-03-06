@@ -35,7 +35,7 @@ class TypedDataRelationshipDeriver extends TypedDataPropertyDeriverBase implemen
         '@property' => $property_definition->getLabel(),
         '@base' => $data_type_definition['label'],
       ]);
-      $derivative['data_type'] = $this->getDataType($property_definition);
+      $derivative['data_type'] = $property_definition->getFieldStorageDefinition()->getPropertyDefinition($property_definition->getFieldStorageDefinition()->getMainPropertyName())->getDataType();
       $derivative['property_name'] = $property_name;
       $context_definition = new ContextDefinition($base_data_type, $this->typedDataManager->createDataDefinition($base_data_type));
       // Add the constraints of the base definition to the context definition.
