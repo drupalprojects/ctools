@@ -30,11 +30,11 @@ class TypedDataEntityRelationship extends TypedDataRelationship {
     // the context (otherwise, mapping hasn't occurred yet and we just want to
     // return the context with the right definition and no value).
     if ($this->getContext('base')->hasContextValue()) {
-      $context_value = $this->getData($this->getContext('base'));
+      $context_value = $this->getData($this->getContext('base'))->entity;
     }
 
     $context_definition->setDefaultValue($context_value);
-    return new Context($context_definition, $context_value->entity);
+    return new Context($context_definition, $context_value);
   }
 
 }
