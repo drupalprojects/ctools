@@ -33,6 +33,9 @@ class RelationshipManagerTest extends RelationshipsTestBase {
 
     // Check that entity relationship labels are formatted properly.
     $this->assertSame('Authored by Entity from Content', (string) $definitions['typed_data_entity_relationship:entity:node:uid']['label']);
+
+    // Check that language relationship labels are formatted properly.
+    $this->assertSame('Language Language from Content', (string) $definitions['typed_data_language_relationship:entity:node:langcode']['label']);
   }
 
   /**
