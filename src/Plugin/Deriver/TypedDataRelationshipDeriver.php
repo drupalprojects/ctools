@@ -31,7 +31,7 @@ class TypedDataRelationshipDeriver extends TypedDataPropertyDeriverBase implemen
     if (!isset($this->derivatives[$base_data_type . ':' . $property_name])) {
       $derivative = $base_plugin_definition;
 
-      $derivative['label'] = $this->t('@property from @base', [
+      $derivative['label'] = $this->t($this->label, [
         '@property' => $property_definition->getLabel(),
         '@base' => $data_type_definition['label'],
       ]);

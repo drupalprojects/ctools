@@ -27,6 +27,12 @@ class RelationshipManagerTest extends RelationshipsTestBase {
       ]
     ];
     $this->assertSame($expected, $definitions['typed_data_relationship:entity:node:body']['context']['base']->getConstraints());
+
+    // Check that typed data primitive labels are formatted properly.
+    $this->assertSame('Body from Page and Foo', (string) $definitions['typed_data_relationship:entity:node:body']['label']);
+
+    // Check that entity relationship labels are formatted properly.
+    $this->assertSame('Authored by Entity from Content', (string) $definitions['typed_data_entity_relationship:entity:node:uid']['label']);
   }
 
   /**

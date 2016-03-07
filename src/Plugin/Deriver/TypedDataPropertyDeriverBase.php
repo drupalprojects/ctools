@@ -30,6 +30,13 @@ abstract class TypedDataPropertyDeriverBase extends DeriverBase implements Conta
   protected $typedDataManager;
 
   /**
+   * The label string for use with derivative labels.
+   *
+   * @var string
+   */
+  protected $label = '@property from @base';
+
+  /**
    * TypedDataPropertyDeriverBase constructor.
    *
    * @param \Drupal\Core\TypedData\TypedDataManagerInterface $typed_data_manager
