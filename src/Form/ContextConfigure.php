@@ -98,6 +98,7 @@ abstract class ContextConfigure extends FormBase {
       '#maxlength' => 128,
       '#machine_name' => [
         'source' => ['label'],
+        'exists' => [$this, 'contextExists'],
       ],
       '#disabled' => $this->disableMachineName($cached_values, $machine_name),
     ];
@@ -230,6 +231,21 @@ abstract class ContextConfigure extends FormBase {
    *   Return the $cached_values
    */
   abstract protected function addContext($cached_values, $context_id, ContextInterface $context);
+
+  /**
+   * Custom "exists" logic for the context to be created.
+   *
+   * @param string $value
+   *   The name of the context.
+   * @param $element
+   *   The machine_name element
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state.
+   *
+   * @return bool
+   *   Return true if a context of this name exists.
+   */
+  abstract public function contextExists($value, $element, $form_state);
 
   /**
    * Determines if the machine_name should be disabled.
