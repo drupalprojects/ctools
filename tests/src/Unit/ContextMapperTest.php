@@ -19,9 +19,9 @@ use Drupal\ctools\ContextMapper;
 use Drupal\Tests\UnitTestCase;
 
 /**
- * @coversDefaultClass \Drupal\page_manager\ContextMapper
+ * @coversDefaultClass \Drupal\ctools\ContextMapper
  *
- * @group PageManager
+ * @group CTools
  */
 class ContextMapperTest extends UnitTestCase {
 

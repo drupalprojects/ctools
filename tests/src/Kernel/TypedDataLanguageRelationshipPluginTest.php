@@ -10,7 +10,7 @@ use Drupal\Core\Language\LanguageInterface;
 
 /**
  * @coversDefaultClass \Drupal\ctools\Plugin\Relationship\TypedDataEntityRelationship
- * @group Plugin
+ * @group CTools
  */
 class TypedDataLanguageRelationshipPluginTest extends RelationshipsTestBase {
 

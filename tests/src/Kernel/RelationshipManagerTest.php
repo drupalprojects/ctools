@@ -11,7 +11,7 @@ use Drupal\Core\Plugin\Context\ContextDefinition;
 
 /**
  * @coversDefaultClass \Drupal\ctools\Plugin\RelationshipManagerInterface
- * @group Plugin
+ * @group CTools
  */
 class RelationshipManagerTest extends RelationshipsTestBase {
 

@@ -10,7 +10,7 @@ use Drupal\Core\Plugin\Context\ContextInterface;
 
 /**
  * @coversDefaultClass \Drupal\ctools\Plugin\Relationship\TypedDataRelationship
- * @group Plugin
+ * @group CTools
  */
 class TypedDataRelationshipPluginTest extends RelationshipsTestBase {
 

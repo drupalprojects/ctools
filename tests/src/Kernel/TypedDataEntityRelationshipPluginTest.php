@@ -11,7 +11,7 @@ use Drupal\user\Entity\User;
 
 /**
  * @coversDefaultClass \Drupal\ctools\Plugin\Relationship\TypedDataEntityRelationship
- * @group Plugin
+ * @group CTools
  */
 class TypedDataEntityRelationshipPluginTest extends RelationshipsTestBase {
 
