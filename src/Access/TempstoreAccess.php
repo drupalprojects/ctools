@@ -33,7 +33,7 @@ class TempstoreAccess implements CoreAccessInterface {
   }
 
   public function access(Route $route, RouteMatch $match, AccountInterface $account) {
-    $tempstore_id = $route->getDefault('tempstore_id');
+    $tempstore_id = $match->getParameter('tempstore_id') ? $match->getParameter('tempstore_id') : $route->getDefault('tempstore_id');
     $id = $match->getParameter($route->getRequirement('_ctools_access'));
     if ($tempstore_id && $id) {
       $cached_values = $this->getTempstore()->get($tempstore_id)->get($id);
