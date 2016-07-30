@@ -265,7 +265,10 @@
           }
           // An empty event means we were triggered via .click() and
           // in jquery 1.4 this won't trigger a submit.
-          if (event.bubbles == undefined) {
+          // We also have to check jQuery version to prevent
+          // IE8 + jQuery 1.4.4 to break on other events
+          // bound to the submit button.
+          if (jQuery.fn.jquery === '1.4' && typeof event.bubbles === "undefined") {
             $(this.form).trigger('submit');
             return false;
           }
