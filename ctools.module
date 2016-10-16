@@ -9,7 +9,7 @@
  * must be implemented in the module file.
  */
 
-define('CTOOLS_API_VERSION', '2.0.8');
+define('CTOOLS_API_VERSION', '2.0.9');
 
 /**
  * The current working ctools version.
@@ -23,7 +23,7 @@ define('CTOOLS_API_VERSION', '2.0.8');
  *   ; Requires CTools v7.x-1.4 or newer.
  *   dependencies[] = ctools (>=1.4)
  */
-define('CTOOLS_MODULE_VERSION', '7.x-1.10');
+define('CTOOLS_MODULE_VERSION', '7.x-1.11');
 
 /**
  * Test the CTools API version.
