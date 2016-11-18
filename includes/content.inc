@@ -155,6 +155,11 @@ function ctools_content_get_subtypes($type) {
   // Walk through the subtypes and ensure minimal settings are
   // retained.
   foreach ($subtypes as $id => $subtype) {
+    // Ensure that the 'subtype_id' value exists.
+    if (!isset($subtype['subtype_id'])) {
+      $subtype['subtype_id'] = $id;
+    }
+
     // Use exact name since this is a modify by reference.
     ctools_content_prepare_subtype($subtypes[$id], $plugin);
   }
@@ -217,6 +222,7 @@ function ctools_content_prepare_subtype(&$subtype, $plugin) {
     }
   }
 
+  // Trigger hook_ctools_content_subtype_alter().
   drupal_alter('ctools_content_subtype', $subtype, $plugin);
 }
 
