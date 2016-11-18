@@ -241,8 +241,8 @@ function ctools_content_prepare_subtype(&$subtype, $plugin) {
  *   Any incoming content, if this display is a wrapper.
  *
  * @return
- *   The content as rendered by the plugin. This content should be an array
- *   with the following possible keys:
+ *   The content as rendered by the plugin, or NULL.
+ *   This content should be an object with the following possible properties:
  *   - title: The safe to render title of the content.
  *   - title_heading: The title heading.
  *   - content: The safe to render HTML content.
