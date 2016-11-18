@@ -5,7 +5,7 @@ class CtoolsContextKeywordsSubstitutionTestCase extends DrupalWebTestCase {
     return array(
       'name' => 'Keywords substitution',
       'description' => 'Verify that keywords are properly replaced with data.',
-      'group' => 'Chaos Tools Suite',
+      'group' => 'ctools',
     );
   }
 
