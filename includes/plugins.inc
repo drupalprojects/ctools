@@ -224,10 +224,14 @@ function ctools_get_plugins($module, $type, $id = NULL) {
 
   $info = ctools_plugin_get_plugin_type_info();
 
-  // Bail out noisily if an invalid module/type combination is requested.
   if (!isset($info[$module][$type])) {
-    watchdog('ctools', 'Invalid plugin module/type combination requested: module @module and type @type', array('@module' => $module, '@type' => $type), WATCHDOG_ERROR);
-    return array();
+    // If we don't find the plugin we attempt a cache rebuild before bailing out
+    $info = ctools_plugin_get_plugin_type_info(TRUE);
+    // Bail out noisily if an invalid module/type combination is requested.
+    if (!isset($info[$module][$type])) {
+      watchdog('ctools', 'Invalid plugin module/type combination requested: module @module and type @type', array('@module' => $module, '@type' => $type), WATCHDOG_ERROR);
+      return array();
+    }
   }
 
   // Make sure our plugins array is populated.
