@@ -760,7 +760,7 @@ function ctools_process(&$variables, $hook) {
 
   // Update the classes within the attributes array to match the classes array
   if (isset($variables['attributes_array']['class'])) {
-    $variables['attributes_array']['class'] = array_unique(array_merge($variables['classes_array'], $variables['attributes_array']['class']));
+    $variables['attributes_array']['class'] = $variables['classes_array'];
     $variables['attributes'] = $variables['attributes_array'] ? drupal_attributes($variables['attributes_array']) : '';
   }
 
