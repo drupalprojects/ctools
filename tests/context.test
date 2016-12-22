@@ -1,20 +1,35 @@
 <?php
 
+/**
+ * Test the keyword substitution functionality.
+ */
 class CtoolsContextKeywordsSubstitutionTestCase extends DrupalWebTestCase {
+
+  /**
+   * {@inheritDoc}
+   */
   public static function getInfo() {
     return array(
       'name' => 'Keywords substitution',
       'description' => 'Verify that keywords are properly replaced with data.',
       'group' => 'ctools',
+      'dependencies' => array('ctools'),
     );
   }
 
-  public function setUp() {
-    parent::setUp('ctools');
+  /**
+   * {@inheritDoc}
+   */
+  function setUp(array $modules = array()) {
+    $modules[] = 'ctools';
+    parent::setUp($modules);
 
     ctools_include('context');
   }
 
+  /**
+   * Test the keyword substitution.
+   */
   public function testKeywordsSubstitution() {
     // Create node context for substitution.
     $node = $this->drupalCreateNode();

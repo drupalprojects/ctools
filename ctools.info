@@ -15,3 +15,11 @@ files[] = tests/ctools.plugins.test
 files[] = tests/math_expression.test
 files[] = tests/math_expression_stack.test
 files[] = tests/object_cache.test
+files[] = tests/object_cache_unit.test
+files[] = tests/page_tokens.test
+files[] = tests/uuid_with_uuid.test
+files[] = tests/uuid_without_uuid.test
+
+; Dependencies that are only used for the tests.
+; @see tests/uuid_with_uuid.test
+test_dependencies[] = uuid
