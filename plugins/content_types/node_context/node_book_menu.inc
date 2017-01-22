@@ -8,7 +8,7 @@ if (module_exists('book')) {
   $plugin = array(
     'single' => TRUE,
     'title' => t('Book navigation menu'),
-    'icon' => '../block/icon_core_block_menu.png',
+    'icon' => drupal_get_path('module', 'ctools') . '/plugins/content_types/block/icon_core_block_menu.png',
     'description' => t('The book menu belonging to the current book node.'),
     'required context' => new ctools_context_required(t('Node'), 'node'),
     'category' => t('Node'),
