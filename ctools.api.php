@@ -267,5 +267,21 @@ function hook_ctools_cleanstring_CLEAN_ID_alter(&$settings) {
 }
 
 /**
+ * Let other modules modify the context handler before it is rendered.
+ *
+ * @param object $handler
+ *   A handler for a  current task and subtask,
+ * @param array $contexts
+ *   An associative array of contexts.
+ * @param array $args
+ *   An array for current args.
+ *
+ * @see ctools_context_handler_pre_render()
+ */
+function ctools_context_handler_pre_render($handler, $contexts, $args) {
+  $handler->conf['css_id'] = 'my-id';
+}
+
+/**
  * @} End of "addtogroup hooks".
  */
