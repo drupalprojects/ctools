@@ -157,7 +157,7 @@ function ctools_content_get_subtypes($type) {
   foreach ($subtypes as $id => $subtype) {
     // Ensure that the 'subtype_id' value exists.
     if (!isset($subtype['subtype_id'])) {
-      $subtype['subtype_id'] = $id;
+      $subtypes[$id]['subtype_id'] = $id;
     }
 
     // Use exact name since this is a modify by reference.
@@ -207,6 +207,13 @@ function ctools_content_get_subtype($type, $subtype_id) {
   }
 
   if ($subtype) {
+    // Ensure that the 'subtype_id' value exists. This is also done in
+    // ctools_content_get_subtypes(), but it wouldn't be called if the plugin
+    // provides the subtype through its own function.
+    if (!isset($subtype['subtype_id'])) {
+      $subtype['subtype_id'] = $subtype_id;
+    }
+
     ctools_content_prepare_subtype($subtype, $plugin);
   }
   return $subtype;
