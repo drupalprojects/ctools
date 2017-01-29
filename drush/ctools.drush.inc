@@ -475,7 +475,7 @@ function ctools_drush_export_op_command() {
   }
 
   if (drush_get_option('all', FALSE)) {
-    $info = _ctools_drush_export_info('', TRUE);
+    $info = _ctools_drush_export_info(array(), TRUE);
     $exportable_info = $info['exportables'];
 
     $all = drush_confirm(dt('Are you sure you would like to !op all exportables on the system?',
