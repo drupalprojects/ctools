@@ -4,3 +4,5 @@ core = 7.x
 dependencies[] = ctools
 package = Chaos tool suite
 version = CTOOLS_MODULE_VERSION
+
+files[] = tests/head_links.test
