@@ -216,6 +216,15 @@ abstract class BlockDisplayVariant extends VariantBase implements ContextAwareVa
       unset($vars[$key]);
     }
 
+    // The block plugin collection should also not be serialized, ensure that
+    // configuration is synced back.
+    if (($key = array_search('blockPluginCollection', $vars)) !== FALSE) {
+      if ($this->blockPluginCollection) {
+        $this->configuration['blocks'] = $this->blockPluginCollection->getConfiguration();
+      }
+      unset($vars[$key]);
+    }
+
     return $vars;
   }
 
