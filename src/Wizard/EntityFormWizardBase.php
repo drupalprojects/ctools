@@ -112,7 +112,7 @@ abstract class EntityFormWizardBase extends FormWizardBase implements EntityForm
         '@entity_type' => $definition->getLabel(),
       )));
     }
-    $form_state->setRedirectUrl($entity->urlInfo('collection'));
+    $form_state->setRedirectUrl($entity->toUrl('collection'));
     parent::finish($form, $form_state);
   }
 
