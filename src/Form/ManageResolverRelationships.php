@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\ctools\Form\ManageResolverRelationships.
- */
 
 namespace Drupal\ctools\Form;
 

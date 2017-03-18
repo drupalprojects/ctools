@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\ctools\Plugin\DisplayVariant\BlockDisplayVariant.
- */
-
 namespace Drupal\ctools\Plugin\DisplayVariant;
 
 use Drupal\Component\Uuid\UuidInterface;

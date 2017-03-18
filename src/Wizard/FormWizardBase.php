@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\ctools\Wizard\FormWizardBase.
- */
-
 namespace Drupal\ctools\Wizard;
 
 use Drupal\Core\Ajax\AjaxResponse;

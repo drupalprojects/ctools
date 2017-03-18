@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\ctools\Form\ManageConditions.
- */
-
 namespace Drupal\ctools\Form;
 
 

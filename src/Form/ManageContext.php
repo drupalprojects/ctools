@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\ctools\Form\ManageContext.
- */
 
 namespace Drupal\ctools\Form;
 

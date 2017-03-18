@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\ctools\Ajax\OpenModalWizardCommand.
- */
 
 namespace Drupal\ctools\Ajax;
 

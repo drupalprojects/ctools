@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\ctools_views\Tests\CToolsViewsBasicViewBlockTest.
- */
 
 namespace Drupal\ctools_views\Tests;
 
