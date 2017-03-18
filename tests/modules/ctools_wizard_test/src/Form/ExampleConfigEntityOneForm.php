@@ -33,7 +33,7 @@ class ExampleConfigEntityOneForm extends FormBase {
     $config_entity = $cached_values['ctools_wizard_test_config_entity'];
 
     $form['one'] = [
-      '#title' => t('One'),
+      '#title' => $this->t('One'),
       '#type' => 'textfield',
       '#default_value' => $config_entity->getOne() ?: '',
     ];

@@ -431,7 +431,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
 
     // If there are not steps after this one, label the button "Finish".
     if (!$after) {
-      $actions['submit']['#value'] = t('Finish');
+      $actions['submit']['#value'] = $this->t('Finish');
       $actions['submit']['#submit'][] = array($this, 'finish');
       if ($form_state->get('ajax')) {
         $actions['submit']['#ajax']['callback'] = [$this, 'ajaxFinish'];
