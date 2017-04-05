@@ -200,14 +200,14 @@ class EntityField extends BlockBase implements ContextAwarePluginInterface, Cont
         'hidden' => '- ' . $this->t('Hidden') . ' -',
         'visually_hidden' => '- ' . $this->t('Visually Hidden') . ' -',
       ],
-      '#default_value' => $form_state->getValue('formatter_label') ?: $config['formatter']['label'],
+      '#default_value' => $config['formatter']['label'],
     ];
 
     $form['formatter_type'] = [
       '#type' => 'select',
       '#title' => $this->t('Formatter'),
       '#options' => $this->getFormatterOptions(),
-      '#default_value' => $form_state->getValue('formatter_type') ?: $config['formatter']['type'],
+      '#default_value' => $config['formatter']['type'],
       '#ajax' => [
         'callback' => [static::class, 'formatterSettingsAjaxCallback'],
         'wrapper' => 'formatter-settings-wrapper',
