@@ -1,0 +1,8 @@
+name: 'Entity Mask test'
+core: 8.x
+type: module
+dependencies:
+  - block_content
+  - ctools_entity_mask
+  - image
+  - text
