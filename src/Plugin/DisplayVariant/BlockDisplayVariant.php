@@ -21,7 +21,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Provides a base class for a display variant that simply contains blocks.
  */
-abstract class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInterface, ContainerFactoryPluginInterface, BlockVariantInterface, RefinableCacheableDependencyInterface {
+abstract class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInterface, ContainerFactoryPluginInterface, BlockVariantInterface {
 
   use AjaxFormTrait;
   use BlockVariantTrait;
