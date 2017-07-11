@@ -8,6 +8,39 @@ use Drupal\Core\Entity\Sql\SqlContentEntityStorage;
 use Drupal\ctools_entity_mask\MaskContentEntityStorage;
 
 /**
+ * Ensures that mask entity types have the same display modes as masked ones.
+ *
+ * @param array $display_modes
+ *   The display modes.
+ *
+ * @see hook_entity_view_mode_info_alter()
+ * @see \Drupal\Core\Entity\EntityDisplayRepository::getAllDisplayModesByEntityType()
+ */
+function ctools_entity_mask_copy_display_modes(array &$display_modes) {
+  foreach (\Drupal::entityTypeManager()->getDefinitions() as $id => $entity_type) {
+    $mask = $entity_type->get('mask');
+
+    if ($mask && isset($display_modes[$mask])) {
+      $display_modes[$id] = $display_modes[$mask];
+    }
+  }
+}
+
+/**
+ * Implements hook_entity_view_mode_info_alter().
+ */
+function ctools_entity_mask_entity_view_mode_info_alter(&$view_modes) {
+  ctools_entity_mask_copy_display_modes($view_modes);
+}
+
+/**
+ * Implements hook_entity_form_mode_info_alter().
+ */
+function ctools_entity_mask_entity_form_mode_info_alter(&$form_modes) {
+  ctools_entity_mask_copy_display_modes($form_modes);
+}
+
+/**
  * Implements hook_entity_type_alter().
  */
 function ctools_entity_mask_entity_type_alter(array &$entity_types) {

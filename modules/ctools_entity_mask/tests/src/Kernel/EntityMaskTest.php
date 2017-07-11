@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\ctools_entity_mask\Kernel;
 
+use Drupal\Core\Entity\Entity\EntityFormMode;
 use Drupal\entity_mask_test\Entity\BlockContent;
 use Drupal\KernelTests\KernelTestBase;
 
@@ -56,6 +57,11 @@ class EntityMaskTest extends KernelTestBase {
    * Tests that entity view displays are correctly masked.
    */
   public function testViewDisplays() {
+    $view_modes = $this->container
+      ->get('entity_display.repository')
+      ->getAllViewModes();
+    $this->assertSame($view_modes['block_content'], $view_modes['fake_block_content']);
+
     $display = entity_get_display('fake_block_content', 'basic', 'default');
     $this->assertTrue($display->isNew());
 
@@ -69,6 +75,17 @@ class EntityMaskTest extends KernelTestBase {
    * Tests that entity form displays are correctly masked.
    */
   public function testFormDisplays() {
+    EntityFormMode::create([
+      'id' => 'block_content.foobar',
+      'label' => $this->randomString(),
+      'targetEntityType' => 'block_content',
+    ])->save();
+
+    $form_modes = $this->container
+      ->get('entity_display.repository')
+      ->getAllFormModes();
+    $this->assertSame($form_modes['block_content'], $form_modes['fake_block_content']);
+
     $display = entity_get_form_display('fake_block_content', 'basic', 'default');
     $this->assertTrue($display->isNew());
 
