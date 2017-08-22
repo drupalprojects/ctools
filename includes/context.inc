@@ -656,7 +656,7 @@ function ctools_context_keyword_substitute($string, $keywords, $contexts, $conve
 
       // If the keyword is already set by something passed in, don't try to
       // overwrite it.
-      if (!empty($keywords['%' . $keyword])) {
+      if (array_key_exists('%' . $keyword, $keywords)) {
         continue;
       }
 
