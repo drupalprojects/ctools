@@ -40,9 +40,18 @@ function ctools_requirements($phase) {
  * Implements hook_schema().
  */
 function ctools_schema() {
-  return ctools_schema_3();
+  return ctools_schema_4();
 }
 
+/**
+ * Version 4 of the CTools schema.
+ */
+function ctools_schema_4() {
+  $schema = ctools_schema_3();
+
+  // update the 'name' field to be 255 bytes long:
+  $schema['ctools_object_cache']['fields']['name']['length'] = 255;
+}
 /**
  * Version 3 of the CTools schema.
  */
@@ -261,5 +270,16 @@ function ctools_update_7001() {
     'length' => '128',
     'not null' => TRUE,
     'description' => 'The type of the object this cache is attached to; this essentially represents the owner so that several sub-systems can use this cache.',
+  ));
+}
+
+/**
+ * Increase the length of the ctools_object_cache.name column to 255.
+ */
+function ctools_update_7002() {
+  db_change_field('ctools_object_cache', 'name', 'name', array(
+    'type' => 'varchar',
+    'length' => '255',
+    'not null' => TRUE,
   ));
 }
