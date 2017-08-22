@@ -157,8 +157,12 @@ function ctools_entity_field_content_type_render($subtype, $conf, $panel_args, $
 
   $field_output = field_view_field($entity_type, $clone, $field_name, $field_settings, $language);
 
-  if (!empty($field_output) && !empty($conf['override_title'])) {
-    $field_output['#title'] = filter_xss_admin($conf['override_title_text']);
+  if (!empty($field_output)) {
+    if (!empty($conf['override_title'])) {
+      $field_output['#title'] = filter_xss_admin($conf['override_title_text']);
+    }
+    $field_output['#ctools_context'] = $context;
+    $field_output['#post_render'][] = 'ctools_entity_field_content_type_substitute_keywords';
   }
 
   // Build the content type block.
@@ -167,9 +171,6 @@ function ctools_entity_field_content_type_render($subtype, $conf, $panel_args, $
   if ($conf['label'] == 'title' && isset($field_output['#title'])) {
     $block->title = $field_output['#title'];
   }
-
-  $field_output['#ctools_context'] = $context;
-  $field_output['#post_render'][] = 'ctools_entity_field_content_type_substitute_keywords';
 
   $block->content = $field_output;
   $block->delta   = $ids[0];
