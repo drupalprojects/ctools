@@ -429,12 +429,11 @@ function ctools_export_ui_plugin_menu_path($plugin, $item_id, $export_key = NULL
  * Helper function to include CTools plugins and get an export-ui exportable.
  *
  * @param $plugin_name
- *   The plugin that should be laoded.
+ *   The plugin that should be loaded.
  */
 function ctools_get_export_ui($plugin_name) {
   ctools_include('plugins');
   return ctools_get_plugins('ctools', 'export_ui', $plugin_name);
-
 }
 
 /**
