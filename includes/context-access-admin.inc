@@ -306,6 +306,9 @@ function ctools_access_ajax_add($fragment = NULL, $name = NULL) {
   );
 
   $output = ctools_modal_form_wrapper('ctools_access_ajax_edit_item', $form_state);
+  $access = $form_state['access'];
+  $access['plugins'][$id] = $form_state['test'];
+
   if (!isset($output[0])) {
     $function = $module . '_ctools_access_set';
     if (function_exists($function)) {
@@ -372,6 +375,9 @@ function ctools_access_ajax_edit($fragment = NULL, $id = NULL) {
   );
 
   $output = ctools_modal_form_wrapper('ctools_access_ajax_edit_item', $form_state);
+  $access = $form_state['access'];
+  $access['plugins'][$id] = $form_state['test'];
+
   if (!isset($output[0])) {
     $function = $module . '_ctools_access_set';
     if (function_exists($function)) {
