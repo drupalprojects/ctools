@@ -302,7 +302,7 @@
 
     // Attach behaviors within a modal dialog.
     var settings = response.settings || ajax.settings || Drupal.settings;
-    Drupal.attachBehaviors('#modalContent', settings);
+    Drupal.attachBehaviors($('#modalContent'), settings);
 
     if ($('#modal-content').hasClass('ctools-modal-loading')) {
       $('#modal-content').removeClass('ctools-modal-loading');
