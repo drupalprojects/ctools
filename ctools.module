@@ -75,6 +75,9 @@ define('CTOOLS_MODULE_VERSION', '7.x-1.11');
  *   The minimum version of CTools necessary for your software to run with it.
  * @param $maximum
  *   The maximum version of CTools allowed for your software to run with it.
+ *
+ * @return bool
+ *   TRUE if the running ctools is usable, FALSE otherwise.
  */
 function ctools_api_version($minimum, $maximum = NULL) {
   if (version_compare(CTOOLS_API_VERSION, $minimum, '<')) {
@@ -172,6 +175,9 @@ function ctools_form_include_file(&$form_state, $filename) {
  *   Optional module containing the include.
  * @param $dir
  *   Optional subdirectory containing the include file.
+ *
+ * @return string
+ *   A string containing the appropriate path from drupal root.
  */
 function ctools_image_path($image, $module = 'ctools', $dir = 'images') {
   return drupal_get_path('module', $module) . "/$dir/" . $image;
@@ -211,6 +217,9 @@ function ctools_add_css($file, $module = 'ctools', $dir = 'css') {
  *   Optional module containing the include.
  * @param $dir
  *   Optional subdirectory containing the include file.
+ *
+ * @return string
+ *   A string containing the appropriate path from drupal root.
  */
 function ctools_attach_css($file, $module = 'ctools', $dir = 'css') {
   return drupal_get_path('module', $module) . "/$dir/$file.css";
@@ -249,6 +258,9 @@ function ctools_add_js($file, $module = 'ctools', $dir = 'js') {
  *   Optional module containing the include.
  * @param $dir
  *   Optional subdirectory containing the include file.
+ *
+ * @return string
+ *   A string containing the appropriate path from drupal root.
  */
 function ctools_attach_js($file, $module = 'ctools', $dir = 'js') {
   return drupal_get_path('module', $module) . "/$dir/$file.js";
@@ -268,15 +280,28 @@ function ctools_get_roles() {
 }
 
 /*
- * Break x,y,z and x+y+z into an array. Numeric only.
+ * Parse integer sequences of the form "x,y,z" or "x+y+z" into separate values.
+ *
+ * A string with integers separated by comma (,) is reported as an 'and' set;
+ * separation by a plus sign (+) or a space ( ) is an 'or' set. The meaning
+ * of this is up to the caller. Negative or fractional numbers are not
+ * recognised.
+ *
+ * Additional space characters within or around the sequence are not allowed.
  *
  * @param $str
  *   The string to parse.
  *
  * @return $object
- *   An object containing
- *   - operator: Either 'and' or 'or'
- *   - value: An array of numeric values.
+ *   An object containing the properties:
+ *
+ *   - operator: Either 'and' or 'or' when there are multiple matched values.
+ *     Absent when invalid_input is TRUE or there is only one value.
+ *   - value: An array of integers (never strings) from $str. An empty array is
+ *     returned if the input is empty. A single integer input is returned
+ *     as a single value, but no 'operator' is defined.
+ *   - invalid_input: TRUE if input could not be parsed and the values array
+ *     will contain just -1. This property is otherwise absent.
  */
 function ctools_break_phrase($str) {
   $object = new stdClass();
@@ -304,7 +329,7 @@ function ctools_break_phrase($str) {
 
   // Doubly ensure that all values are numeric only.
   foreach ($object->value as $id => $value) {
-    $object->value[$id] = intval($value);
+    $object->value[$id] = (int)$value;
   }
 
   return $object;
@@ -528,6 +553,8 @@ function ctools_class_add($classes, $hook = 'html') {
  */
 function ctools_class_remove($classes, $hook = 'html') {
   if (!is_array($classes)) {
+    // @todo Consider using explode(' ', $classes);
+    // @todo Consider checking that $classes is a string before adding.
     $classes = array($classes);
   }
 
@@ -539,6 +566,30 @@ function ctools_class_remove($classes, $hook = 'html') {
     $static[$hook]['remove'][] = $class;
   }
 }
+
+/**
+ * Reset the storage used for ctools_class_add and ctools_class_remove.
+ *
+ * @see ctools_class_add().
+ * @see ctools_class_remove().
+ */
+function ctools_class_reset() {
+  drupal_static_reset('ctools_process_classes');
+}
+
+/**
+ * Return the classes for the body (added by ctools_class_add).
+ *
+ * @return array
+ *   A copy of the array of classes to add to the body tag. If none have been
+ *   added, this will be an empty array.
+ *
+ * @see ctools_class_add().
+ */
+function ctools_get_classes() {
+  return drupal_static('ctools_process_classes', array());
+}
+
 
 // -----------------------------------------------------------------------
 // Drupal core hooks
@@ -804,7 +855,7 @@ function ctools_process(&$variables, $hook) {
     return;
   }
 
-  $classes = drupal_static('ctools_process_classes', array());
+  $classes = ctools_get_classes();
 
   // Process the classses to add.
   if (!empty($classes[$hook]['add'])) {
