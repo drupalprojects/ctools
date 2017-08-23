@@ -51,6 +51,8 @@ function ctools_schema_4() {
 
   // update the 'name' field to be 255 bytes long:
   $schema['ctools_object_cache']['fields']['name']['length'] = 255;
+
+  return $schema;
 }
 /**
  * Version 3 of the CTools schema.
