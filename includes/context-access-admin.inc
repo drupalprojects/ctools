@@ -245,10 +245,10 @@ function ctools_access_admin_form_submit($form, &$form_state) {
 
 // --------------------------------------------------------------------------
 // AJAX menu entry points.
-
 /**
  * AJAX callback to add a new access test to the list.
  */
+
 function ctools_access_ajax_add($fragment = NULL, $name = NULL) {
   ctools_include('ajax');
   ctools_include('modal');
@@ -263,7 +263,7 @@ function ctools_access_ajax_add($fragment = NULL, $name = NULL) {
     ctools_ajax_render_error();
   }
 
-  // Separate the fragment into 'module' and 'argument'
+  // Separate the fragment into 'module' and 'argument'.
   if (strpos($fragment, '-') === FALSE) {
     $module = $fragment;
     $argument = NULL;
@@ -279,7 +279,7 @@ function ctools_access_ajax_add($fragment = NULL, $name = NULL) {
 
   list($access, $contexts) = $function($argument);
 
-  // Make sure we have the logged in user context
+  // Make sure we have the logged in user context.
   if (!isset($contexts['logged-in-user'])) {
     $contexts['logged-in-user'] = ctools_access_get_loggedin_context();
   }
@@ -336,7 +336,7 @@ function ctools_access_ajax_edit($fragment = NULL, $id = NULL) {
     ctools_ajax_render_error();
   }
 
-  // Separate the fragment into 'module' and 'argument'
+  // Separate the fragment into 'module' and 'argument'.
   if (strpos($fragment, '-') === FALSE) {
     $module = $fragment;
     $argument = NULL;
@@ -356,7 +356,7 @@ function ctools_access_ajax_edit($fragment = NULL, $id = NULL) {
     ctools_ajax_render_error();
   }
 
-  // Make sure we have the logged in user context
+  // Make sure we have the logged in user context.
   if (!isset($contexts['logged-in-user'])) {
     $contexts['logged-in-user'] = ctools_access_get_loggedin_context();
   }
@@ -457,7 +457,7 @@ function ctools_access_ajax_delete($fragment = NULL, $id = NULL) {
     ajax_render_error();
   }
 
-  // Separate the fragment into 'module' and 'argument'
+  // Separate the fragment into 'module' and 'argument'.
   if (strpos($fragment, '-') === FALSE) {
     $module = $fragment;
     $argument = NULL;
@@ -477,7 +477,7 @@ function ctools_access_ajax_delete($fragment = NULL, $id = NULL) {
     unset($access['plugins'][$id]);
   }
 
-  // re-cache
+  // re-cache.
   $function = $module . '_ctools_access_set';
   if (function_exists($function)) {
     $function($argument, $access);

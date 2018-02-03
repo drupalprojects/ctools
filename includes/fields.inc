@@ -5,7 +5,6 @@
  * Extend core fields with some helper functions to reduce code complexity within views and ctools plugins.
  */
 
-
 /**
  * Fake an instance of a field.
  *
@@ -211,15 +210,15 @@ function ctools_field_label($field_name) {
  *   - Otherwise NULL.
  * @param $options
  *   An associative array of additional options, with the following keys:
- *  - 'field_name': The name of the field whose operation should be
+ *   - 'field_name': The name of the field whose operation should be
  *    invoked. By default, the operation is invoked on all the fields
  *    in the entity's bundle. NOTE: This option is not compatible with
  *    the 'deleted' option; the 'field_id' option should be used
  *    instead.
- *  - 'field_id': The id of the field whose operation should be
+ *   - 'field_id': The id of the field whose operation should be
  *    invoked. By default, the operation is invoked on all the fields
  *    in the entity's' bundles.
- *  - 'default': A boolean value, specifying which implementation of
+ *   - 'default': A boolean value, specifying which implementation of
  *    the operation should be invoked.
  *    - if FALSE (default), the field types implementation of the operation
  *      will be invoked (hook_field_[op])
@@ -227,10 +226,10 @@ function ctools_field_label($field_name) {
  *      will be invoked (field_default_[op])
  *    Internal use only. Do not explicitely set to TRUE, but use
  *    _field_invoke_default() instead.
- *  - 'deleted': If TRUE, the function will operate on deleted fields
+ *   - 'deleted': If TRUE, the function will operate on deleted fields
  *    as well as non-deleted fields. If unset or FALSE, only
  *    non-deleted fields are operated on.
- *  - 'language': A language code or an array of language codes keyed by field
+ *   - 'language': A language code or an array of language codes keyed by field
  *    name. It will be used to narrow down to a single value the available
  *    languages to act on.
  *
@@ -343,7 +342,7 @@ function ctools_field_foreign_keys($field_name) {
       $foreign_keys[$field_name] = $field['foreign keys'];
     }
     else {
-      // try to fetch foreign keys from schema, as not everything
+      // Try to fetch foreign keys from schema, as not everything
       // stores foreign keys properly in the field info.
       $module = $field['module'];
 

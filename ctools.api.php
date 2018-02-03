@@ -17,9 +17,9 @@
  * Inform CTools about plugin types.
  *
  * @return array
- *  An array of plugin types, keyed by the type name.
- *  See the advanced help topic 'plugins-creating' for details of the array
- *  properties.
+ *   An array of plugin types, keyed by the type name.
+ *   See the advanced help topic 'plugins-creating' for details of the array
+ *   properties.
  */
 function hook_ctools_plugin_type() {
   $plugins['my_type'] = array(
@@ -65,6 +65,7 @@ function hook_ctools_plugin_type() {
  *   directory location is being requested.
  * @param string $plugin_type
  *   The name of the plugin type for which a base directory is being requested.
+ *
  * @return string
  *   The path where CTools' plugin system should search for plugin files,
  *   relative to your module's root. Omit leading and trailing slashes.
@@ -155,7 +156,7 @@ function hook_ctools_api_hook_alter(&$list) {
  * allow to use it in the math expression api.
  *
  * @param $functions
- *    An array which has the functions as value.
+ *   An array which has the functions as value.
  */
 function hook_ctools_math_expression_functions_alter(&$functions) {
   // Allow to convert from degrees to radiant.
@@ -295,7 +296,7 @@ function hook_ctools_cleanstring_CLEAN_ID_alter(&$settings) {
  * Let other modules modify the context handler before it is rendered.
  *
  * @param object $handler
- *   A handler for a  current task and subtask,
+ *   A handler for a  current task and subtask,.
  * @param array $contexts
  *   An associative array of contexts.
  * @param array $args

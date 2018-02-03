@@ -92,8 +92,7 @@ function ctools_api_version($minimum, $maximum = NULL) {
 }
 
 // -----------------------------------------------------------------------
-// General utility functions
-
+// General utility functions.
 /**
  * Include .inc files as necessary.
  *
@@ -121,6 +120,7 @@ function ctools_api_version($minimum, $maximum = NULL) {
  * @param $dir
  *   Optional subdirectory containing the include file.
  */
+
 function ctools_include($file, $module = 'ctools', $dir = 'includes') {
   static $used = array();
 
@@ -150,7 +150,7 @@ function ctools_form_include(&$form_state, $file, $module = 'ctools', $dir = 'in
 /**
  * Add an arbitrary path to the $form_state so it can work with form cache.
  *
- * module_load_include uses an unfortunately annoying syntax to work, making it
+ * Module_load_include uses an unfortunately annoying syntax to work, making it
  * difficult to translate the more simple $path + $file syntax.
  */
 function ctools_form_include_file(&$form_state, $filename) {
@@ -279,7 +279,7 @@ function ctools_get_roles() {
   return user_roles();
 }
 
-/*
+/**
  * Parse integer sequences of the form "x,y,z" or "x+y+z" into separate values.
  *
  * A string with integers separated by comma (,) is reported as an 'and' set;
@@ -292,16 +292,16 @@ function ctools_get_roles() {
  * @param $str
  *   The string to parse.
  *
- * @return $object
+ * @return object
  *   An object containing the properties:
  *
  *   - operator: Either 'and' or 'or' when there are multiple matched values.
- *     Absent when invalid_input is TRUE or there is only one value.
+ *   Absent when invalid_input is TRUE or there is only one value.
  *   - value: An array of integers (never strings) from $str. An empty array is
- *     returned if the input is empty. A single integer input is returned
- *     as a single value, but no 'operator' is defined.
+ *   returned if the input is empty. A single integer input is returned
+ *   as a single value, but no 'operator' is defined.
  *   - invalid_input: TRUE if input could not be parsed and the values array
- *     will contain just -1. This property is otherwise absent.
+ *   will contain just -1. This property is otherwise absent.
  */
 function ctools_break_phrase($str) {
   $object = new stdClass();
@@ -311,7 +311,7 @@ function ctools_break_phrase($str) {
     $object->operator = 'or';
     $object->value = preg_split('/[+ ]/', $str);
   }
-  else if (preg_match('/^([0-9]+,)*[0-9]+$/', $str)) {
+  elseif (preg_match('/^([0-9]+,)*[0-9]+$/', $str)) {
     $object->operator = 'and';
     $object->value = explode(',', $str);
   }
@@ -329,7 +329,7 @@ function ctools_break_phrase($str) {
 
   // Doubly ensure that all values are numeric only.
   foreach ($object->value as $id => $value) {
-    $object->value[$id] = (int)$value;
+    $object->value[$id] = (int) $value;
   }
 
   return $object;
@@ -389,13 +389,13 @@ function ctools_reset_page_tokens() {
  * deleted if there was no such key by that point).
  *
  * @param string $token
- *   The token string for the page callback, e.g. 'title'
+ *   The token string for the page callback, e.g. 'title'.
  *
  * @return string
  *   The constructed token.
  *
- * @see ctools_set_callback_token().
- * @see ctools_page_token_processing().
+ * @see ctools_set_callback_token()
+ * @see ctools_page_token_processing()
  */
 function ctools_set_variable_token($token) {
   $string = '<!-- ctools-page-' . $token . ' -->';
@@ -421,7 +421,7 @@ function ctools_set_variable_token($token) {
  *   ctools_page_title_content_type_token($value_markup, $value_id, $value_class);
  *
  * @param string $token
- *   The token string for the page callback, e.g. 'title'
+ *   The token string for the page callback, e.g. 'title'.
  *
  * @param string|array $callback
  *   For callback functions that require no args, the name of the function as a
@@ -441,8 +441,8 @@ function ctools_set_variable_token($token) {
  * @return string
  *   The constructed token.
  *
- * @see ctools_set_variable_token().
- * @see ctools_page_token_processing().
+ * @see ctools_set_variable_token()
+ * @see ctools_page_token_processing()
  */
 function ctools_set_callback_token($token, $callback) {
   // If the callback uses arguments they are considered in the token.
@@ -469,9 +469,9 @@ function ctools_set_no_blocks($blocks = FALSE) {
 /**
  * Wrapper function to create UUIDs via ctools, falls back on UUID module
  * if it is enabled. This code is a copy of uuid.inc from the uuid module.
+ *
  * @see http://php.net/uniqid#65879
  */
-
 function ctools_uuid_generate() {
   if (!module_exists('uuid')) {
     ctools_include('uuid');
@@ -498,6 +498,7 @@ function ctools_uuid_generate() {
 
 /**
  * Check that a string appears to be in the format of a UUID.
+ *
  * @see http://drupal.org/project/uuid
  *
  * @param $uuid
@@ -570,8 +571,8 @@ function ctools_class_remove($classes, $hook = 'html') {
 /**
  * Reset the storage used for ctools_class_add and ctools_class_remove.
  *
- * @see ctools_class_add().
- * @see ctools_class_remove().
+ * @see ctools_class_add()
+ * @see ctools_class_remove()
  */
 function ctools_class_reset() {
   drupal_static_reset('ctools_process_classes');
@@ -584,19 +585,18 @@ function ctools_class_reset() {
  *   A copy of the array of classes to add to the body tag. If none have been
  *   added, this will be an empty array.
  *
- * @see ctools_class_add().
+ * @see ctools_class_add()
  */
 function ctools_get_classes() {
   return drupal_static('ctools_process_classes', array());
 }
 
-
 // -----------------------------------------------------------------------
-// Drupal core hooks
-
+// Drupal core hooks.
 /**
  * Implement hook_init to keep our global CSS at the ready.
  */
+
 function ctools_init() {
   ctools_add_css('ctools');
   // If we are sure that CTools' AJAX is in use, change the error handling.
@@ -615,7 +615,7 @@ function ctools_init() {
  * Shutdown handler used during ajax operations to help catch fatal errors.
  */
 function ctools_shutdown_handler() {
-  if (function_exists('error_get_last') AND ($error = error_get_last())) {
+  if (function_exists('error_get_last') and ($error = error_get_last())) {
     switch ($error['type']) {
       case E_ERROR:
       case E_CORE_ERROR:
@@ -694,7 +694,6 @@ function ctools_flush_caches() {
 
 /**
  * Implements hook_element_info_alter().
- *
  */
 function ctools_element_info_alter(&$type) {
   ctools_include('dependent');
@@ -730,10 +729,10 @@ function ctools_registry_files_alter(&$files, $indexed_modules) {
 
 // -----------------------------------------------------------------------
 // FAPI hooks that must be in the .module file.
-
 /**
  * Alter the comment form to get a little more control over it.
  */
+
 function ctools_form_comment_form_alter(&$form, &$form_state) {
   if (!empty($form_state['ctools comment alter'])) {
     // Force the form to post back to wherever we are.
@@ -751,11 +750,11 @@ function ctools_node_comment_form_submit(&$form, &$form_state) {
 
 // -----------------------------------------------------------------------
 // CTools hook implementations.
-
 /**
  * Implementation of hook_ctools_plugin_directory() to let the system know
  * where all our own plugins are.
  */
+
 function ctools_ctools_plugin_directory($owner, $plugin_type) {
   if ($owner == 'ctools') {
     return 'plugins/' . $plugin_type;
@@ -776,11 +775,11 @@ function ctools_ctools_plugin_type() {
 
 // -----------------------------------------------------------------------
 // Drupal theme preprocess hooks that must be in the .module file.
-
 /**
  * A theme preprocess function to automatically allow panels-based node
  * templates based upon input when the panel was configured.
  */
+
 function ctools_preprocess_node(&$vars) {
   // The 'ctools_template_identifier' attribute of the node is added when the pane is
   // rendered.
@@ -790,14 +789,13 @@ function ctools_preprocess_node(&$vars) {
   }
 }
 
-
 /**
  * Implements hook_page_alter().
  *
  * Last ditch attempt to remove sidebar regions if the "no blocks"
  * functionality has been activated.
  *
- * @see ctools_block_list_alter().
+ * @see ctools_block_list_alter()
  */
 function ctools_page_alter(&$page) {
   $check = drupal_static('ctools_set_no_blocks', TRUE);
@@ -827,6 +825,7 @@ function ctools_page_token_processing($children, $elements) {
         case 'variable':
           $tokens[$token] = isset($elements[$argument]) ? $elements[$argument] : '';
           break;
+
         case 'callback':
           if (is_string($argument) && function_exists($argument)) {
             $tokens[$token] = $argument($elements);
@@ -876,7 +875,6 @@ function ctools_process(&$variables, $hook) {
 
 // -----------------------------------------------------------------------
 // Menu callbacks that must be in the .module file.
-
 /**
  * Determine if the current user has access via a plugin.
  *
@@ -900,6 +898,7 @@ function ctools_process(&$variables, $hook) {
  * @return
  *   TRUE if access is granted, false if otherwise.
  */
+
 function ctools_access_menu($access) {
   // Short circuit everything if there are no access tests.
   if (empty($access['plugins'])) {
@@ -928,7 +927,7 @@ function ctools_access_menu($access) {
  *   An indexed array of zero or more permission strings to be checked by
  *   user_access().
  *
- * @return
+ * @return boolean
  *   Iff all checks pass will this function return TRUE. If an invalid argument
  *   is passed (e.g., not a string), this function errs on the safe said and
  *   returns FALSE.
@@ -990,7 +989,6 @@ function ctools_export_ui_load($item_name, $plugin_name) {
 
 // -----------------------------------------------------------------------
 // Caching callbacks on behalf of export-ui.
-
 /**
  * Menu access callback for various tasks of export-ui.
  */
@@ -1034,7 +1032,7 @@ function ctools_export_ui_ctools_access_get($argument) {
 }
 
 /**
- * Callback for access control ajax form on behalf of export ui
+ * Callback for access control ajax form on behalf of export ui.
  *
  * Returns the cached access config and contexts used.
  * Note that this is assuming that access will be in $item->access -- if it
@@ -1067,8 +1065,8 @@ function ctools_menu_local_tasks_alter(&$data, $router_item, $root_path) {
 }
 
 /**
- * Implement hook_block_list_alter() to potentially remove blocks.
- *
+ * Implements hook_block_list_alter().
+ * Used to potentially remove blocks.
  * This exists in order to replicate Drupal 6's "no blocks" functionality.
  */
 function ctools_block_list_alter(&$blocks) {
@@ -1131,6 +1129,7 @@ function ctools_ctools_entity_context_alter(&$plugin, &$entity, $plugin_id) {
     case 'entity_id:taxonomy_term':
       $plugin['no ui'] = TRUE;
       break;
+
     case 'entity:user':
       $plugin = ctools_get_context('user');
       unset($plugin['no ui']);
@@ -1164,18 +1163,21 @@ function ctools_field_create_field($field) {
 function ctools_field_create_instance($instance) {
   ctools_flush_field_caches();
 }
+
 /**
  * Implements hook_field_delete_field().
  */
 function ctools_field_delete_field($field) {
   ctools_flush_field_caches();
 }
+
 /**
  * Implements hook_field_delete_instance().
  */
 function ctools_field_delete_instance($instance) {
   ctools_flush_field_caches();
 }
+
 /**
  * Implements hook_field_update_field().
  */

@@ -49,18 +49,19 @@ function ctools_schema() {
 function ctools_schema_4() {
   $schema = ctools_schema_3();
 
-  // update the 'name' field to be 255 bytes long:
+  // Update the 'name' field to be 255 bytes long:
   $schema['ctools_object_cache']['fields']['name']['length'] = 255;
 
   return $schema;
 }
+
 /**
  * Version 3 of the CTools schema.
  */
 function ctools_schema_3() {
   $schema = ctools_schema_2();
 
-  // update the 'obj' field to be 128 bytes long:
+  // Update the 'obj' field to be 128 bytes long:
   $schema['ctools_object_cache']['fields']['obj']['length'] = 128;
 
   return $schema;
@@ -72,7 +73,7 @@ function ctools_schema_3() {
 function ctools_schema_2() {
   $schema = ctools_schema_1();
 
-  // update the 'name' field to be 128 bytes long:
+  // Update the 'name' field to be 128 bytes long:
   $schema['ctools_object_cache']['fields']['name']['length'] = 128;
 
   // Update the 'data' field to be type 'blob'.
@@ -106,10 +107,10 @@ function ctools_schema_2() {
         'serialize' => TRUE,
       ),
       'filter' => array(
-         'type' => 'int',
-         'size' => 'tiny',
-         'description' => 'Whether or not this CSS needs to be filtered.',
-       ),
+        'type' => 'int',
+        'size' => 'tiny',
+        'description' => 'Whether or not this CSS needs to be filtered.',
+      ),
     ),
     'primary key' => array('cid'),
   );
@@ -208,7 +209,7 @@ function ctools_update_6003() {
   if ($result) {
     db_delete('system')->condition('name', 'panels_views')->execute();
     module_enable(array('views_content'), TRUE);
- }
+  }
 }
 
 /**
@@ -227,7 +228,7 @@ function ctools_update_6005() {
 }
 
 /**
- * ctools_custom_content table was originally here, but is now moved to
+ * Ctools_custom_content table was originally here, but is now moved to
  * its own module.
  */
 function ctools_update_6007() {
@@ -241,18 +242,18 @@ function ctools_update_6007() {
 }
 
 /**
- * ctools_object_cache needs to be defined as a blob.
+ * Ctools_object_cache needs to be defined as a blob.
  */
 function ctools_update_6008() {
   db_delete('ctools_object_cache')
     ->execute();
 
   db_change_field('ctools_object_cache', 'data', 'data', array(
-      'type' => 'blob',
-      'size' => 'big',
-      'description' => 'Serialized data being stored.',
-      'serialize' => TRUE,
-    )
+    'type' => 'blob',
+    'size' => 'big',
+    'description' => 'Serialized data being stored.',
+    'serialize' => TRUE,
+  )
   );
 }
 
