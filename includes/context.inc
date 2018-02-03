@@ -220,13 +220,13 @@ class ctools_context_required {
   /**
    * Test to see if this context is required.
    */
-  public $required;
+  public $required = TRUE;
 
   /**
    * If TRUE, skip the check in ctools_context_required::select()
    * for contexts whose names may have changed.
    */
-  public $skip_name_check;
+  public $skip_name_check = FALSE;
 
   /**
    * The ctools_context_required constructor.
@@ -248,9 +248,6 @@ class ctools_context_required {
    *   changed.
    */
   public function __construct($title) {
-    $this->required = TRUE;
-    $this->skip_name_check = FALSE;
-
     // If it was possible, using variadic syntax this should be:
     // __construct($title, string ...$keywords, array $restrictions = NULL, bool $skip = NULL)
     // but that form isn't allowed.
@@ -390,6 +387,11 @@ class ctools_context_required {
 class ctools_context_optional extends ctools_context_required {
 
   /**
+   * {@inheritdoc}
+   */
+  public $required = FALSE;
+
+  /**
    * Add the 'empty' context to the existing set.
    *
    * @param array &$contexts
@@ -397,8 +399,6 @@ class ctools_context_optional extends ctools_context_required {
    */
   public function add_empty(&$contexts) {
     $context = new ctools_context('any');
-    // @todo Should this have been $this->required? As written it is useless.
-    $required = FALSE;
     $context->title = t('No context');
     $context->identifier = t('No context');
     $contexts['empty'] = $context;

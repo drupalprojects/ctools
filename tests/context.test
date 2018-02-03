@@ -330,3 +330,41 @@ class CtoolsContextKeywordsSubstitutionTestCase extends DrupalWebTestCase {
   }
 
 }
+
+/**
+ * Test the context classes.
+ */
+class CtoolsContextUnitTestCase extends DrupalUnitTestCase {
+
+  /**
+   * {@inheritDoc}
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Context unit tests',
+      'description' => 'Verifies that context classes behave correctly',
+      'group' => 'ctools',
+      'dependencies' => array('ctools'),
+    );
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  protected function setUp() {
+    parent::setUp();
+    require_once __DIR__ . '/../includes/context.inc';
+  }
+
+  /**
+   * Tests that contexts have the correct required property value.
+   */
+  public function testOptionalRequiredContext() {
+    $required_context = new ctools_context_required('test1');
+    $this->assertTrue($required_context->required);
+
+    $optional_context = new ctools_context_optional('test2');
+    $this->assertFalse($optional_context->required);
+  }
+
+}
