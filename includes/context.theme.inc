@@ -19,7 +19,6 @@ function ctools_context_theme(&$theme) {
   );
   $theme['ctools_context_item_form'] = array(
     'render element' => 'form',
-  // 'variables' => array('form' => NULL),.
     'file' => 'includes/context.theme.inc',
   );
   $theme['ctools_context_item_row'] = array(
@@ -253,8 +252,8 @@ function theme_ctools_context_list($vars) {
 }
 
 /**
- * Ctools_context_list() but not in a table format because tabledrag
- * won't let us have tables within tables and still drag.
+ * The ctools_context_list() function but not in a table format because
+ * tabledrag won't let us have tables within tables and still drag.
  */
 function theme_ctools_context_list_no_table($vars) {
   $object = $vars['object'];

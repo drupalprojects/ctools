@@ -63,8 +63,7 @@ function ctools_content_autocomplete_entity($entity_type, $string = '') {
 }
 
 /**
- * Use well known/tested entity reference code to build our search query
- * From EntityReference_SelectionHandler_Generic class.
+ * Use EntityReference_SelectionHandler_Generic class to build our search query.
  */
 function _ctools_buildQuery($entity_type, $entity_info, $match = NULL, $match_operator = 'CONTAINS') {
   $base_table = $entity_info['base table'];

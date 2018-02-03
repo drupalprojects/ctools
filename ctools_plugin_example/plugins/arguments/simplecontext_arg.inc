@@ -21,7 +21,6 @@ $plugin = array(
   'keyword' => 'simplecontext',
   'description' => t('Creates a "simplecontext" from the arg.'),
   'context' => 'simplecontext_arg_context',
-  // 'settings form' => 'simplecontext_arg_settings_form',.
   // placeholder_form is used in panels preview, for example, so we can
   // preview without getting the arg from a URL.
   'placeholder form' => array(

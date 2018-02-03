@@ -561,7 +561,6 @@ function ctools_export_load_object($table, $type = 'all', $args = array()) {
     }
   }
 
-  // For conditions,.
   return $return;
 }
 

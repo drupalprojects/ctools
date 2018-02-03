@@ -296,7 +296,7 @@ function hook_ctools_cleanstring_CLEAN_ID_alter(&$settings) {
  * Let other modules modify the context handler before it is rendered.
  *
  * @param object $handler
- *   A handler for a  current task and subtask,.
+ *   A handler for a current task and subtask.
  * @param array $contexts
  *   An associative array of contexts.
  * @param array $args

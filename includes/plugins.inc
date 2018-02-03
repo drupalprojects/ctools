@@ -470,7 +470,7 @@ function ctools_plugin_load_includes($info, $filename = NULL) {
       }
       else {
         // Parse a hook.
-        // ensure that we don't have something leftover from earlier.
+        // Ensure that we don't have something leftover from earlier.
         $plugin = NULL;
 
         if (isset($plugin_arrays[$file->uri])) {
@@ -480,8 +480,8 @@ function ctools_plugin_load_includes($info, $filename = NULL) {
           include_once DRUPAL_ROOT . '/' . $file->uri;
           // .inc files have a special format for the hook identifier.
           // For example, 'foo.inc' in the module 'mogul' using the plugin
-          // whose hook is named 'borg_type' should have a function named (deep breath)
-          // mogul_foo_borg_type()
+          // whose hook is named 'borg_type' should have a function named
+          // (deep breath) mogul_foo_borg_type().
           // If, however, the .inc file set the quasi-global $plugin array, we
           // can use that and not even call a function. Set the $identifier
           // appropriately and ctools_plugin_process() will handle it.

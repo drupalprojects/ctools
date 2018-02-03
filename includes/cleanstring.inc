@@ -2,11 +2,6 @@
 
 /**
  * @file
- * $Id $.
- */
-
-/**
- * @file
  * Helper class to clean strings to make them URL safe and translatable.
  *
  * This was copied directly from pathauto and put here to be made available

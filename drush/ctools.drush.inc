@@ -782,7 +782,7 @@ function _ctools_drush_object_is_disabled($object) {
 /**
  * Determine if an object is enabled.
  *
- * @see _ctools_drush_object_is_disabled
+ * @see _ctools_drush_object_is_disabled()
  */
 function _ctools_drush_object_is_enabled($object) {
   return (empty($object->disabled)) ? TRUE : FALSE;

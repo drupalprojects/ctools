@@ -150,8 +150,8 @@ function ctools_form_include(&$form_state, $file, $module = 'ctools', $dir = 'in
 /**
  * Add an arbitrary path to the $form_state so it can work with form cache.
  *
- * Module_load_include uses an unfortunately annoying syntax to work, making it
- * difficult to translate the more simple $path + $file syntax.
+ * The module_load_include() function uses an unfortunately annoying syntax to
+ * work, making it difficult to translate the more simple $path + $file syntax.
  */
 function ctools_form_include_file(&$form_state, $filename) {
   if (!isset($form_state['build_info']['args'])) {
@@ -615,7 +615,7 @@ function ctools_init() {
  * Shutdown handler used during ajax operations to help catch fatal errors.
  */
 function ctools_shutdown_handler() {
-  if (function_exists('error_get_last') and ($error = error_get_last())) {
+  if (function_exists('error_get_last') && ($error = error_get_last())) {
     switch ($error['type']) {
       case E_ERROR:
       case E_CORE_ERROR:
@@ -927,7 +927,7 @@ function ctools_access_menu($access) {
  *   An indexed array of zero or more permission strings to be checked by
  *   user_access().
  *
- * @return boolean
+ * @return bool
  *   Iff all checks pass will this function return TRUE. If an invalid argument
  *   is passed (e.g., not a string), this function errs on the safe said and
  *   returns FALSE.
@@ -1066,6 +1066,7 @@ function ctools_menu_local_tasks_alter(&$data, $router_item, $root_path) {
 
 /**
  * Implements hook_block_list_alter().
+ *
  * Used to potentially remove blocks.
  * This exists in order to replicate Drupal 6's "no blocks" functionality.
  */

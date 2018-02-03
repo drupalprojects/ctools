@@ -228,7 +228,7 @@ function ctools_update_6005() {
 }
 
 /**
- * Ctools_custom_content table was originally here, but is now moved to
+ * The ctools_custom_content table was originally here, but is now moved to
  * its own module.
  */
 function ctools_update_6007() {
@@ -242,7 +242,7 @@ function ctools_update_6007() {
 }
 
 /**
- * Ctools_object_cache needs to be defined as a blob.
+ * The ctools_object_cache needs to be defined as a blob.
  */
 function ctools_update_6008() {
   db_delete('ctools_object_cache')

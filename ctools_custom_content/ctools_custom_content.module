@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Ctools_custom_content module.
+ * The ctools_custom_content module.
  *
  * This module allows styles to be created and managed on behalf of modules
  * that implement styles.

@@ -240,7 +240,7 @@ class ctools_context_required {
    * @param string $title
    *   The title of the context for use in UI selectors when multiple contexts
    *   qualify.
-   * @param string $keywords,
+   * @param string $keywords
    *   One or more keywords to use for matching which contexts are allowed.
    * @param array $restrictions
    *   Array of context restrictions.
@@ -1009,10 +1009,7 @@ function ctools_context_create_empty($type) {
  * @return string
  *   The returned string, with substitutions performed.
  */
-function ctools_context_keyword_substitute($string,
- $keywords,
- $contexts,
-                                           array $converter_options = array()) {
+function ctools_context_keyword_substitute($string, $keywords, $contexts, array $converter_options = array()) {
   // Ensure a default keyword exists:
   $keywords['%%'] = '%';
 
@@ -1327,9 +1324,7 @@ function ctools_get_relationships() {
  * @see ctools_context_get_relevant_relationships()
  * @see ctools_context_get_context_from_relationships()
  */
-function ctools_context_get_context_from_relationship($relationship,
- $source_context,
-                                                      $placeholders = FALSE) {
+function ctools_context_get_context_from_relationship($relationship, $source_context, $placeholders = FALSE) {
   ctools_include('plugins');
   $function = ctools_plugin_load_function('ctools', 'relationships', $relationship['name'], 'context');
   if ($function) {
@@ -1412,10 +1407,7 @@ function ctools_context_get_relevant_relationships($contexts) {
  * @see ctools_context_get_context_from_relationship()
  * @see ctools_context_get_relevant_relationships()
  */
-function ctools_context_get_context_from_relationships($relationships,
- &$contexts,
-                                                       $placeholders = FALSE) {
-
+function ctools_context_get_context_from_relationships($relationships, &$contexts, $placeholders = FALSE) {
   foreach ($relationships as $rdata) {
     if (!isset($rdata['context'])) {
       continue;
@@ -1566,9 +1558,7 @@ function ctools_context_get_context_from_context($context, $type = 'context', $a
  * @return array
  *   Array of contexts, keyed by context ID.
  */
-function ctools_context_get_context_from_contexts($contexts,
- $type = 'context',
-                                                  $placeholders = FALSE) {
+function ctools_context_get_context_from_contexts($contexts, $type = 'context', $placeholders = FALSE) {
   $return = array();
   foreach ($contexts as $context) {
     $ctext = ctools_context_get_context_from_context($context, $type);
