@@ -23,7 +23,7 @@ define('CTOOLS_API_VERSION', '2.0.9');
  *   ; Requires CTools v7.x-1.4 or newer.
  *   dependencies[] = ctools (>=1.4)
  */
-define('CTOOLS_MODULE_VERSION', '7.x-1.11');
+define('CTOOLS_MODULE_VERSION', '7.x-1.13');
 
 /**
  * Test the CTools API version.
