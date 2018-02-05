@@ -6,7 +6,7 @@
 class CtoolsUUIDWithoutUUID extends DrupalWebTestCase {
 
   /**
-   * {@inheritDoc}
+   * {@inheritdoc}
    */
   public static function getInfo() {
     return array(
@@ -18,9 +18,9 @@ class CtoolsUUIDWithoutUUID extends DrupalWebTestCase {
   }
 
   /**
-   * {@inheritDoc}
+   * {@inheritdoc}
    */
-  function setUp(array $modules = array()) {
+  public function setUp(array $modules = array()) {
     $modules[] = 'ctools';
     parent::setUp($modules);
   }

@@ -202,7 +202,7 @@ function ctools_stylizer_get_settings_name($settings) {
 }
 
 /**
- * Get the path where images will be stored for a given style plugin and settings.
+ * Get the path where images will be stored for a style plugin and settings.
  *
  * This function will make sure the path exists.
  */

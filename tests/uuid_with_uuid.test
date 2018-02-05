@@ -6,7 +6,7 @@
 class CtoolsUUIDWithUUID extends DrupalWebTestCase {
 
   /**
-   * {@inheritDoc}
+   * {@inheritdoc}
    */
   public static function getInfo() {
     return array(
@@ -14,14 +14,14 @@ class CtoolsUUIDWithUUID extends DrupalWebTestCase {
       'description' => 'Check that the CTools UUID functions behave correctly when the UUID module is installed.',
       'group' => 'ctools',
       'dependencies' => array('ctools'),
-      // 'dependencies' => array('ctools', 'uuid'),
+      // 'dependencies' => array('ctools', 'uuid'),.
     );
   }
 
   /**
-   * {@inheritDoc}
+   * {@inheritdoc}
    */
-  function setUp(array $modules = array()) {
+  public function setUp(array $modules = array()) {
     $modules[] = 'ctools';
     // @todo Add UUID as a test dependency and then add comment out this line.
     // $modules[] = 'uuid';
@@ -41,13 +41,13 @@ class CtoolsUUIDWithUUID extends DrupalWebTestCase {
     if (drupal_get_filename('module', 'uuid') && !module_exists('uuid')) {
       module_enable(array('uuid'));
     }
-    // if we now have uuid module, use it.
+    // If we now have uuid module, use it.
     if (module_exists('uuid')) {
       $uuid = ctools_uuid_generate();
       $this->assertTrue(ctools_uuid_is_valid($uuid), 'UUID generated (uuid): ' . $uuid);
     }
     else {
-      // otherwise say we can't...
+      // Otherwise say we can't...
       $this->verbose('uuid module not present');
     }
   }
