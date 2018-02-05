@@ -183,7 +183,7 @@ abstract class RequiredContext extends FormBase {
    * Document the route name and parameters for edit/delete context operations.
    *
    * The route name returned from this method is used as a "base" to which
-   * ".edit" and ".delete" are appeneded in the getOperations() method.
+   * ".edit" and ".delete" are appended in the getOperations() method.
    * Subclassing '\Drupal\ctools\Form\ContextConfigure' and
    * '\Drupal\ctools\Form\RequiredContextDelete' should set you up for using
    * this approach quite seamlessly.
