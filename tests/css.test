@@ -51,10 +51,6 @@ class CtoolsCssTestCase extends DrupalWebTestCase {
   }
 
   /**
-   * @todo Test  db-row-exist but file-not-exist case in ctools_css_retrieve().
-   */
-
-  /**
    * Test that Stored CSS snippets can be correctly overwritten.
    */
   public function testCssStoreOverwrite() {
