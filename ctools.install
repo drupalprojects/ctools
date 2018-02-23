@@ -50,8 +50,8 @@ function ctools_schema() {
 function ctools_schema_4() {
   $schema = ctools_schema_3();
 
-  // Update the 'name' field to be 255 bytes long:
-  $schema['ctools_object_cache']['fields']['name']['length'] = 255;
+  // Removed due to alternative database configuration issues.
+  // @see https://www.drupal.org/project/ctools/issues/2941920
 
   return $schema;
 }
@@ -281,9 +281,19 @@ function ctools_update_7001() {
  * Increase the length of the ctools_object_cache.name column to 255.
  */
 function ctools_update_7002() {
+  // Removed due to alternative database configuration issues.
+  // @see https://www.drupal.org/project/ctools/issues/2941920
+}
+
+/**
+ * Revert the length of the ctools_object_cache.name column back to 128.
+ */
+function ctools_update_7003() {
+  db_delete('ctools_object_cache')->execute();
   db_change_field('ctools_object_cache', 'name', 'name', array(
     'type' => 'varchar',
-    'length' => '255',
+    'length' => '128',
     'not null' => TRUE,
+    'description' => 'The name of the object this cache is attached to.',
   ));
 }
