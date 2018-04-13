@@ -6,6 +6,11 @@ use Drupal\block_content\Entity\BlockContent as BaseBlockContent;
 use Drupal\ctools_entity_mask\MaskEntityTrait;
 
 /**
+ * Provides a masked version of BlockContent.
+ *
+ * @todo Investigate a better way to copy the upstream properties instead of
+ *   manually duplicating them.
+ *
  * @ContentEntityType(
  *   id = "fake_block_content",
  *   label = @Translation("Custom block"),
@@ -35,6 +40,7 @@ use Drupal\ctools_entity_mask\MaskEntityTrait;
  *     "delete-form" = "/block/{block_content}/delete",
  *     "edit-form" = "/block/{block_content}",
  *     "collection" = "/admin/structure/block/block-content",
+ *     "create" = "/block",
  *   },
  *   translatable = TRUE,
  *   entity_keys = {
@@ -43,7 +49,13 @@ use Drupal\ctools_entity_mask\MaskEntityTrait;
  *     "bundle" = "type",
  *     "label" = "info",
  *     "langcode" = "langcode",
- *     "uuid" = "uuid"
+ *     "uuid" = "uuid",
+ *     "published" = "status",
+ *   },
+ *   revision_metadata_keys = {
+ *     "revision_user" = "revision_user",
+ *     "revision_created" = "revision_created",
+ *     "revision_log_message" = "revision_log"
  *   },
  *   bundle_entity_type = "block_content_type",
  *   field_ui_base_route = "entity.block_content_type.edit_form",
