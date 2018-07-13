@@ -189,7 +189,7 @@ class EntityField extends BlockBase implements ContextAwarePluginInterface, Cont
     return [
       'formatter' => [
         'label' => 'above',
-        'type' => $field_type_definition['default_formatter'] ?: '',
+        'type' => isset($field_type_definition['default_formatter']) ? $field_type_definition['default_formatter'] : '',
         'settings' => [],
         'third_party_settings' => [],
         'weight' => 0,
