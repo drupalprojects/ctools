@@ -89,24 +89,25 @@ abstract class EntityFormWizardBase extends FormWizardBase implements EntityForm
    */
   public function finish(array &$form, FormStateInterface $form_state) {
     $cached_values = $form_state->getTemporaryValue('wizard');
-    /** @var $entity \Drupal\Core\Entity\EntityInterface */
+    /** @var \Drupal\Core\Entity\EntityInterface $entity */
     $entity = $cached_values[$this->getEntityType()];
     $entity->set('id', $cached_values['id']);
     $entity->set('label', $cached_values['label']);
     $status = $entity->save();
-    $definition = $this->entityManager->getDefinition($this->getEntityType());
-    if ($status) {
-      drupal_set_message($this->t('Saved the %label @entity_type.', array(
-        '%label' => $entity->label(),
-        '@entity_type' => $definition->getLabel(),
-      )));
+
+    $arguments = [
+      '@entity-type' => $entity->getEntityType()->getLowercaseLabel(),
+      '%label' => $entity->label(),
+    ];
+    if ($status === SAVED_UPDATED) {
+      drupal_set_message($this->t('The @entity-type %label has been updated.', $arguments));
+      $this->logger($entity->getEntityType()->getProvider())->notice('Updated @entity-type %label.', $arguments);
     }
-    else {
-      drupal_set_message($this->t('The %label @entity_type was not saved.', array(
-        '%label' => $entity->label(),
-        '@entity_type' => $definition->getLabel(),
-      )));
+    elseif ($status === SAVED_NEW) {
+      drupal_set_message($this->t('The @entity-type %label has been added.', $arguments));
+      $this->logger($entity->getEntityType()->getProvider())->notice('Added @entity-type %label.', $arguments);
     }
+
     $form_state->setRedirectUrl($entity->toUrl('collection'));
     parent::finish($form, $form_state);
   }
